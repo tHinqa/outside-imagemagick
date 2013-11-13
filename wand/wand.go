@@ -1,2645 +1,4088 @@
-package magickwand
+// Copyright (c) 2013 Tony Wilson. All rights reserved.
+// See LICENCE file for permissions and restrictions.
 
-import . "github.com/tHinqa/outside"
+//Package wand provides API definitions for
+//accessing CORE_RL_wand_.dll.
+package wand
+
+import (
+	. "github.com/tHinqa/outside"
+	T "github.com/tHinqa/outside-imagemagick/types"
+	// . "github.com/tHinqa/outside/types"
+)
 
 type (
 	fix int
 
-	AffineMatrix                  fix
-	AlignType                     fix
-	AlphaChannelType              fix
-	ChannelFeatures               fix
-	ChannelStatistics             fix
-	ChannelType                   fix
-	ClipPathUnits                 fix
-	ColorspaceType                fix
-	CompositeOperator             fix
-	CompressionType               fix
-	DecorationType                fix
-	DisposeType                   fix
-	DistortImageMethod            fix
-	DitherMethod                  fix
-	DrawBooleanType               fix
-	DrawInfo                      fix
-	DrawingWand                   struct{}
-	DrawWand                      fix
-	DuplexTransferPixelViewMethod fix
-	DuplexTransferWandViewMethod  fix
-	EndianType                    fix
-	ExceptionInfo                 fix
-	ExceptionType                 fix
-	FILE                          fix
-	FillRule                      fix
-	FilterTypes                   fix
-	GetPixelViewMethod            fix
-	GetWandViewMethod             fix
-	GravityType                   fix
-	Image                         struct{}
-	ImageInfo                     fix
-	ImageLayerMethod              fix
-	ImageType                     fix
-	ImageView                     fix
-	IndexPacket                   fix
-	InterlaceType                 fix
-	InterpolateMethodPixel        fix
-	InterpolatePixelMethod        fix
-	KernelInfo                    struct{}
-	LineCap                       fix
-	LineJoin                      fix
-	MagickCommand                 fix
-	MagickEvaluateOperator        fix
-	MagickFunction                fix
-	MagickOffsetType              fix
-	MagickPixelPacket             fix
-	MagickProgressMonitorType     fix
-	MagickSizeType                fix
-	MagickWand                    struct{}
-	MetricType                    fix
-	MontageMode                   fix
-	MorphologyMethod              fix
-	NoiseType                     fix
-	OrientationType               fix
-	PaintMethod                   fix
-	PixelIterator                 fix
-	Pixeliterator                 fix
-	PixelPacket                   fix
-	PixelView                     fix
-	PixelWand                     struct{}
-	PointInfo                     fix
-	PreviewType                   fix
-	Quantum                       fix
-	RectangeInfo                  fix
-	RectangleInfo                 fix
-	RenderingIntent               fix
-	ResolutionType                fix
-	ResourceType                  fix
-	SetPixelViewMethod            fix
-	SetWandViewMethod             fix
-	size_t                        fix
-	SparseColorMethod             fix
-	ssize_t                       fix
-	StatisticType                 fix
-	StorageType                   fix
-	StretchType                   fix
-	StyleType                     fix
-	TransferPixelViewMethod       fix
-	TransferWandViewMethod        fix
-	UpdatePixelViewMethod         fix
-	UpdateWandViewMethod          fix
-	VirtualPixelMethod            fix
-	Void                          struct{}
-	WandView                      fix
+	char fix
+
+	CacheView         T.CacheView
+	DrawContext       fix
+	DrawInfo          T.DrawInfo
+	DrawingWand       struct{}
+	ExceptionInfo     T.ExceptionInfo
+	FILE              T.FILE
+	Image             T.Image
+	ImageInfo         T.ImageInfo
+	ImageView         struct{}
+	MagickPixelPacket T.MagickPixelPacket
+	MagickWand        struct{}
+	PixelView         fix
+	PixelIterator     fix
+	PixelWand         struct{}
+	WandView          struct{}
 )
 
-//TODO(t): Is... -> IsValid?
+var NewMagickWand func() *MagickWand
 
-var (
-	NewMagickWand func() *MagickWand
+var NewPixelIterator func(m *MagickWand) *PixelIterator
 
-	NewPixelIterator       func(m *MagickWand) *PixelIterator
-	NewPixelRegionIterator func(m *MagickWand, x, y ssize_t, width, height size_t) *PixelIterator
-	NewPixelView           func(m *MagickWand) *PixelView
-	NewPixelViewRegion     func(m *MagickWand, x, y ssize_t, width, height size_t) *PixelView
-	NewWandView            func(m *MagickWand) *WandView
-	NewWandViewExtent      func(m *MagickWand, x, y ssize_t, width, height size_t) *WandView
+var NewPixelRegionIterator func(m *MagickWand, x, y int32, width, height uint32) *PixelIterator
 
-	ClearMagickWand        func(m *MagickWand)
-	CloneMagickWand        func(m *MagickWand) *MagickWand
-	DestroyMagickWand      func(m *MagickWand) *MagickWand
-	GetImageFromMagickWand func(m *MagickWand) *Image
-	IsMagickWand           func(m *MagickWand) bool
+var NewWandView func(m *MagickWand) *WandView
 
-	MagickAdaptiveBlurImage              func(m *MagickWand, radius, sigma float64) bool
-	MagickAdaptiveBlurImageChannel       func(m *MagickWand, channel ChannelType, radius, sigma float64) bool
-	MagickAdaptiveResizeImage            func(m *MagickWand, columns, rows size_t) bool
-	MagickAdaptiveSharpenImage           func(m *MagickWand, radius, sigma float64) bool
-	MagickAdaptiveSharpenImageChannel    func(m *MagickWand, channel ChannelType, radius, sigma float64) bool
-	MagickAdaptiveThresholdImage         func(m *MagickWand, width, height size_t, offset ssize_t) bool
-	MagickAddImage                       func(m *MagickWand, addWand *MagickWand) bool
-	MagickAddNoiseImage                  func(m *MagickWand, noise_type NoiseType) bool
-	MagickAddNoiseImageChannel           func(m *MagickWand, channel ChannelType, noise_type NoiseType) bool
-	MagickAffineTransformImage           func(m *MagickWand, d *DrawingWand) bool
-	MagickAnimateImages                  func(m *MagickWand, server_name string) bool
-	MagickAnnotateImage                  func(m *MagickWand, d *DrawingWand, x, y, angle float64, text string) bool
-	MagickAppendImages                   func(m *MagickWand, stack bool) *MagickWand
-	MagickAutoGammaImage                 func(m *MagickWand) bool
-	MagickAutoGammaImageChannel          func(m *MagickWand, channel ChannelType) bool
-	MagickAutoLevelImage                 func(m *MagickWand) bool
-	MagickAutoLevelImageChannel          func(m *MagickWand, channel ChannelType) bool
-	MagickAverageImages                  func(m *MagickWand) *MagickWand
-	MagickBlackThresholdImage            func(m *MagickWand, threshold *PixelWand) bool
-	MagickBlueShiftImage                 func(m *MagickWand, factor float64) bool
-	MagickBlurImage                      func(m *MagickWand, radius, sigma float64) bool
-	MagickBlurImageChannel               func(m *MagickWand, channel ChannelType, radius, sigma float64) bool
-	MagickBorderImage                    func(m *MagickWand, bordercolor *PixelWand, width, height size_t) bool
-	MagickBrightnessContrastImage        func(m *MagickWand, brightness, contrast float64) bool
-	MagickBrightnessContrastImageChannel func(m *MagickWand, channel ChannelType, brightness, contrast float64) bool
-	MagickCharcoalImage                  func(m *MagickWand, radius, sigma float64) bool
-	MagickChopImage                      func(m *MagickWand, width, height size_t, x, y ssize_t) bool
-	MagickClampImage                     func(m *MagickWand) bool
-	MagickClampImageChannel              func(m *MagickWand, channel ChannelType) bool
-	MagickClearException                 func(m *MagickWand) bool
-	MagickClipImage                      func(m *MagickWand) bool
-	MagickClipImagePath                  func(m *MagickWand, pathname string, inside bool) bool
-	MagickClipPathImage                  func(m *MagickWand, pathname string, inside bool) bool
-	MagickClutImage                      func(m *MagickWand, clutWand *MagickWand) bool
-	MagickClutImageChannel               func(m *MagickWand, channel ChannelType, clutWand *MagickWand) bool
-	MagickCoalesceImages                 func(m *MagickWand) *MagickWand
-	MagickColorDecisionListImage         func(m *MagickWand, color_correction_collection string) bool
-	MagickColorFloodfillImage            func(m *MagickWand, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y ssize_t) bool
-	MagickColorizeImage                  func(m *MagickWand, colorize, opacity *PixelWand) bool
-	MagickColorMatrixImage               func(m *MagickWand, color_matrix *KernelInfo) bool
-	MagickCombineImages                  func(m *MagickWand, channel ChannelType) *MagickWand
-	MagickCommentImage                   func(m *MagickWand, comment string) bool
-	MagickCompareImageChannels           func(m *MagickWand, reference *MagickWand, channel ChannelType, metric MetricType, distortion *float64) *MagickWand
-	MagickCompareImageLayers             func(m *MagickWand, method ImageLayerMethod) *MagickWand
-	MagickCompareImages                  func(m *MagickWand, reference *MagickWand, metric MetricType, distortion *float64) *MagickWand
-	MagickCompositeImage                 func(m *MagickWand, sourceWand *MagickWand, compose CompositeOperator, x, y ssize_t) bool
-	MagickCompositeImageChannel          func(m *MagickWand, channel ChannelType, compositeWand *MagickWand, compose CompositeOperator, x, y ssize_t) bool
-	MagickCompositeLayers                func(m *MagickWand, sourceWand *MagickWand, compose CompositeOperator, x, y ssize_t) bool
-	MagickConstituteImage                func(m *MagickWand, columns, rows size_t, map_ string, storage StorageType, pixels *Void) bool
-	MagickContrastImage                  func(m *MagickWand, sharpen bool) bool
-	MagickContrastStretchImage           func(m *MagickWand, black_point, white_point float64) bool
-	MagickContrastStretchImageChannel    func(m *MagickWand, channel ChannelType, black_point, white_point float64) bool
-	MagickConvolveImage                  func(m *MagickWand, order size_t, kernel *float64) bool
-	MagickConvolveImageChannel           func(m *MagickWand, channel ChannelType, order size_t, kernel *float64) bool
-	MagickCropImage                      func(m *MagickWand, width, height size_t, x, y ssize_t) bool
-	MagickCycleColormapImage             func(m *MagickWand, displace ssize_t) bool
-	MagickDecipherImage                  func(m *MagickWand, passphrase string) bool
-	MagickDeconstructImages              func(m *MagickWand) *MagickWand
-	MagickDeleteImageArtifact            func(m *MagickWand, artifact string) bool
-	MagickDeleteImageProperty            func(m *MagickWand, property string) bool
-	MagickDeleteOption                   func(m *MagickWand, option string) bool
-	MagickDescribeImage                  func(m *MagickWand) string
-	MagickDeskewImage                    func(m *MagickWand, threshold float64) bool
-	MagickDespeckleImage                 func(m *MagickWand) bool
-	MagickDisplayImage                   func(m *MagickWand, server_name string) bool
-	MagickDisplayImages                  func(m *MagickWand, server_name string) bool
-	MagickDistortImage                   func(m *MagickWand, method DistortImageMethod, number_arguments size_t, arguments *float64, bestfit bool) bool
-	MagickDrawImage                      func(m *MagickWand, d *DrawingWand) bool
-	MagickEdgeImage                      func(m *MagickWand, radius float64) bool
-	MagickEmbossImage                    func(m *MagickWand, radius, sigma float64) bool
-	MagickEncipherImage                  func(m *MagickWand, passphrase string) bool
-	MagickEnhanceImage                   func(m *MagickWand) bool
-	MagickEqualizeImage                  func(m *MagickWand) bool
-	MagickEqualizeImageChannel           func(m *MagickWand, channel ChannelType) bool
-	MagickEvaluateImage                  func(m *MagickWand, operator MagickEvaluateOperator, value float64) bool
-	MagickEvaluateImageChannel           func(m *MagickWand, channel ChannelType, op MagickEvaluateOperator, value float64) bool
-	MagickEvaluateImages                 func(m *MagickWand, operator MagickEvaluateOperator) bool
-	MagickExportImagePixels              func(m *MagickWand, x, y ssize_t, columns, rows size_t, map_ string, storage StorageType, pixels *Void) bool
-	MagickExtentImage                    func(m *MagickWand, width, height size_t, x, y ssize_t) bool
-	MagickFilterImage                    func(m *MagickWand, kernel *KernelInfo) bool
-	MagickFilterImageChannel             func(m *MagickWand, channel ChannelType, kernel *KernelInfo) bool
-	MagickFlattenImages                  func(m *MagickWand) *MagickWand
-	MagickFlipImage                      func(m *MagickWand) bool
-	MagickFloodfillPaintImage            func(m *MagickWand, channel ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y ssize_t, invert bool) bool
-	MagickFlopImage                      func(m *MagickWand) bool
-	MagickForwardFourierTransformImage   func(m *MagickWand, magnitude bool) bool
-	MagickFrameImage                     func(m *MagickWand, matte_color *PixelWand, width, height size_t, inner_bevel, outer_bevel ssize_t) bool
-	MagickFunctionImage                  func(m *MagickWand, function MagickFunction, number_arguments size_t, arguments *float64) bool
-	MagickFunctionImageChannel           func(m *MagickWand, channel ChannelType, function MagickFunction, number_arguments size_t, arguments *float64) bool
-	MagickFxImage                        func(m *MagickWand, expression string) *MagickWand
-	MagickFxImageChannel                 func(m *MagickWand, channel ChannelType, expression string) *MagickWand
-	MagickGammaImage                     func(m *MagickWand, gamma float64) bool
-	MagickGammaImageChannel              func(m *MagickWand, channel ChannelType, gamma float64) bool
-	MagickGaussianBlurImage              func(m *MagickWand, radius, sigma float64) bool
-	MagickGaussianBlurImageChannel       func(m *MagickWand, channel ChannelType, radius, sigma float64) bool
-	MagickGetAntialias                   func(m *MagickWand) bool
-	MagickGetBackgroundColor             func(m *MagickWand) *PixelWand
-	MagickGetColorspace                  func(m *MagickWand) ColorspaceType
-	MagickGetCompression                 func(m *MagickWand) CompressionType
-	MagickGetCompressionQuality          func(m *MagickWand) size_t
-	MagickGetException                   func(m *MagickWand, severity *ExceptionType) string
-	MagickGetExceptionType               func(m *MagickWand) ExceptionType
-	MagickGetFilename                    func(m *MagickWand) string
-	MagickGetFont                        func(m *MagickWand) string
-	MagickGetFormat                      func(m *MagickWand) string
-	MagickGetGravity                     func(m *MagickWand) GravityType
-	MagickGetImage                       func(m *MagickWand) *MagickWand
-	MagickGetImageAlphaChannel           func(m *MagickWand) size_t
-	MagickGetImageArtifact               func(m *MagickWand, artifact string) string
-	MagickGetImageArtifacts              func(m *MagickWand, pattern, number_artifacts *size_t) string
-	MagickGetImageAttribute              func(m *MagickWand, property string) string
-	MagickGetImageBackgroundColor        func(m *MagickWand, background_color *PixelWand) bool
-	MagickGetImageBlob                   func(m *MagickWand, length *size_t) *uint8
-	MagickGetImageBluePrimary            func(m *MagickWand, x, y *float64) bool
-	MagickGetImageBorderColor            func(m *MagickWand, border_color *PixelWand) bool
-	MagickGetImageChannelDepth           func(m *MagickWand, channel ChannelType) size_t
-	MagickGetImageChannelDistortion      func(m *MagickWand, reference *MagickWand, channel ChannelType, metric MetricType, distortion *float64) bool
-	MagickGetImageChannelDistortionFIX   func(m *MagickWand, reference *MagickWand, metric MetricType) *float64
-	MagickGetImageChannelFeatures        func(m *MagickWand, distance size_t) *ChannelFeatures
-	MagickGetImageChannelKurtosis        func(m *MagickWand, channel ChannelType, kurtosis, skewness *float64) bool
-	MagickGetImageChannelMean            func(m *MagickWand, channel ChannelType, mean, standard_deviation *float64) bool
-	MagickGetImageChannelRange           func(m *MagickWand, channel ChannelType, minima, maxima *float64) bool
-	MagickGetImageChannelStatistics      func(m *MagickWand) *ChannelStatistics
-	MagickGetImageClipMask               func(m *MagickWand) *MagickWand
-	MagickGetImageColormapColor          func(m *MagickWand, index size_t, color *PixelWand) bool
-	MagickGetImageColors                 func(m *MagickWand) size_t
-	MagickGetImageColorspace             func(m *MagickWand) ColorspaceType
-	MagickGetImageCompose                func(m *MagickWand) CompositeOperator
-	MagickGetImageCompression            func(m *MagickWand) CompressionType
-	MagickGetImageCompressionQuality     func(m *MagickWand) size_t
-	MagickGetImageDelay                  func(m *MagickWand) size_t
-	MagickGetImageDepth                  func(m *MagickWand) size_t
-	MagickGetImageDispose                func(m *MagickWand) DisposeType
-	MagickGetImageDistortion             func(m *MagickWand, reference *MagickWand, metric MetricType, distortion *float64) bool
-	MagickGetImageFilename               func(m *MagickWand) string
-	MagickGetImageFormat                 func(m *MagickWand) string
-	MagickGetImageFuzz                   func(m *MagickWand) float64
-	MagickGetImageGamma                  func(m *MagickWand) float64
-	MagickGetImageGravity                func(m *MagickWand) GravityType
-	MagickGetImageGreenPrimary           func(m *MagickWand, x, y *float64) bool
-	MagickGetImageHeight                 func(m *MagickWand) size_t
-	MagickGetImageHistogram              func(m *MagickWand, number_colors *size_t) **PixelWand
-	MagickGetImageInterlaceScheme        func(m *MagickWand) InterlaceType
-	MagickGetImageInterpolateMethod      func(m *MagickWand) InterpolatePixelMethod
-	MagickGetImageIterations             func(m *MagickWand) size_t
-	MagickGetImageLength                 func(m *MagickWand, length *MagickSizeType) bool
-	MagickGetImageMatte                  func(m *MagickWand) size_t
-	MagickGetImageMatteColor             func(m *MagickWand, matte_color *PixelWand) bool
-	MagickGetImageOrientation            func(m *MagickWand) OrientationType
-	MagickGetImagePage                   func(m *MagickWand, width, height *size_t, x, y *ssize_t) bool
-	MagickGetImagePixelColor             func(m *MagickWand, x, y ssize_t, color *PixelWand) bool
-	MagickGetImagePixels                 func(m *MagickWand, x, y ssize_t, columns, rows size_t, map_ string, storage StorageType, pixels *Void) bool
-	MagickGetImageProfile                func(m *MagickWand, name string, length *size_t) *uint8
-	MagickGetImageProfiles               func(m *MagickWand, pattern, number_profiles *size_t) string
-	MagickGetImageProperties             func(m *MagickWand, pattern, number_properties *size_t) string
-	MagickGetImageProperty               func(m *MagickWand, property string) string
-	MagickGetImageRedPrimary             func(m *MagickWand, x, y *float64) bool
-	MagickGetImageRegion                 func(m *MagickWand, width, height size_t, x, y ssize_t) *MagickWand
-	MagickGetImageRenderingIntent        func(m *MagickWand) RenderingIntent
-	MagickGetImageResolution             func(m *MagickWand, x, y *float64) bool
-	MagickGetImagesBlob                  func(m *MagickWand, length *size_t) *uint8
-	MagickGetImageScene                  func(m *MagickWand) size_t
-	MagickGetImageSignature              func(m *MagickWand) string
-	MagickGetImageSize                   func(m *MagickWand, length *MagickSizeType) bool
-	MagickGetImageTicksPerSecond         func(m *MagickWand) size_t
-	MagickGetImageTotalInkDensity        func(m *MagickWand) float64
-	MagickGetImageType                   func(m *MagickWand) ImageType
-	MagickGetImageUnits                  func(m *MagickWand) ResolutionType
-	MagickGetImageVirtualPixelMethod     func(m *MagickWand) VirtualPixelMethod
-	MagickGetImageWhitePoint             func(m *MagickWand, x, y *float64) bool
-	MagickGetImageWidth                  func(m *MagickWand) size_t
-	MagickGetInterlaceScheme             func(m *MagickWand) InterlaceType
-	MagickGetInterpolateMethod           func(m *MagickWand) InterpolatePixelMethod
-	MagickGetIteratorIndex               func(m *MagickWand) ssize_t
-	MagickGetNumberImages                func(m *MagickWand) size_t
-	MagickGetOption                      func(m *MagickWand, key string) string
-	MagickGetOptions                     func(m *MagickWand, pattern, number_options *size_t) string
-	MagickGetOrientation                 func(m *MagickWand) OrientationType
-	MagickGetPage                        func(m *MagickWand, width, height *size_t, x, y *ssize_t) bool
-	MagickGetPointsize                   func(m *MagickWand) float64
-	MagickGetResolution                  func(m *MagickWand, x, y *float64) bool
-	MagickGetSamplingFactor              func(m *MagickWand, number_factors *size_t) *float64
-	MagickGetSize                        func(m *MagickWand, columns, rows *size_t) bool
-	MagickGetSizeOffset                  func(m *MagickWand, offset *ssize_t) bool
-	MagickGetType                        func(m *MagickWand) ImageType
-	MagickHaldClutImage                  func(m *MagickWand, haldWand *MagickWand) bool
-	MagickHaldClutImageChannel           func(m *MagickWand, channel ChannelType, haldWand *MagickWand) bool
-	MagickHasNextImage                   func(m *MagickWand) bool
-	MagickHasPreviousImage               func(m *MagickWand) bool
-	MagickIdentifyImage                  func(m *MagickWand) string
-	MagickImplodeImage                   func(m *MagickWand, radius float64) bool
-	MagickImportImagePixels              func(m *MagickWand, x, y ssize_t, columns, rows size_t, map_ string, storage StorageType, pixels *Void) bool
-	MagickInverseFourierTransformImage   func(m *MagickWand, phaseWand *MagickWand, magnitude bool) bool
-	MagickLabelImage                     func(m *MagickWand, label string) bool
-	MagickLevelImage                     func(m *MagickWand, black_point, gamma, white_point float64) bool
-	MagickLevelImageChannel              func(m *MagickWand, channel ChannelType, black_point, gamma, white_point float64) bool
-	MagickLinearStretchImage             func(m *MagickWand, black_point, white_point float64) bool
-	MagickMagnifyImage                   func(m *MagickWand) bool
-	MagickMapImage                       func(m *MagickWand, mapWand *MagickWand, dither bool) bool
-	MagickMatteFloodfillImage            func(m *MagickWand, alpha, fuzz float64, bordercolor *PixelWand, x, y ssize_t) bool
-	MagickMaximumImages                  func(m *MagickWand) *MagickWand
-	MagickMedianFilterImage              func(m *MagickWand, radius float64) bool
-	MagickMergeImageLayers               func(m *MagickWand, method ImageLayerMethod) *MagickWand
-	MagickMinifyImage                    func(m *MagickWand) bool
-	MagickMinimumImages                  func(m *MagickWand) *MagickWand
-	MagickModeImage                      func(m *MagickWand, radius float64) bool
-	MagickModulateImage                  func(m *MagickWand, brightness, saturation, hue float64) bool
-	MagickMontageImage                   func(m *MagickWand, drawingWand DrawingWand, tile_geometry, thumbnail_geometry string, mode MontageMode, frame string) *MagickWand
-	MagickMorphImages                    func(m *MagickWand, number_frames size_t) *MagickWand
-	MagickMorphologyImage                func(m *MagickWand, method MorphologyMethod, iterations ssize_t, kernel *KernelInfo) bool
-	MagickMorphologyImageChannel         func(m *MagickWand, channel ChannelType, method MorphologyMethod, iterations ssize_t, kernel *KernelInfo) bool
-	MagickMosaicImages                   func(m *MagickWand) *MagickWand
-	MagickMotionBlurImage                func(m *MagickWand, radius, sigma, angle float64) bool
-	MagickMotionBlurImageChannel         func(m *MagickWand, channel ChannelType, radius, sigma, angle float64) bool
-	MagickNegateImage                    func(m *MagickWand, gray bool) bool
-	MagickNegateImageChannel             func(m *MagickWand, channel ChannelType, gray bool) bool
-	MagickNewImage                       func(m *MagickWand, columns, rows size_t, background *PixelWand) bool
-	MagickNextImage                      func(m *MagickWand) bool
-	MagickNormalizeImage                 func(m *MagickWand) bool
-	MagickNormalizeImageChannel          func(m *MagickWand, channel ChannelType) bool
-	MagickOilPaintImage                  func(m *MagickWand, radius float64) bool
-	MagickOpaqueImage                    func(m *MagickWand, target, fill *PixelWand, fuzz float64) bool
-	MagickOpaquePaintImage               func(m *MagickWand, target, fill *PixelWand, fuzz float64, invert bool) bool
-	MagickOpaquePaintImageChannel        func(m *MagickWand, channel ChannelType, target, fill *PixelWand, fuzz float64, invert bool) bool
-	MagickOptimizeImageLayers            func(m *MagickWand) *MagickWand
-	MagickOrderedPosterizeImage          func(m *MagickWand, threshold_map string) bool
-	MagickOrderedPosterizeImageChannel   func(m *MagickWand, channel ChannelType, threshold_map string) bool
-	MagickPaintFloodfillImage            func(m *MagickWand, channel ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y ssize_t) bool
-	MagickPaintOpaqueImage               func(m *MagickWand, target, fill *PixelWand, fuzz float64) bool
-	MagickPaintOpaqueImageChannel        func(m *MagickWand, channel ChannelType, target, fill *PixelWand, fuzz float64) bool
-	MagickPaintTransparentImage          func(m *MagickWand, target *PixelWand, alpha, fuzz float64) bool
-	MagickPingImage                      func(m *MagickWand, filename string) bool
-	MagickPingImageBlob                  func(m *MagickWand, blob *Void, length size_t) bool
-	MagickPingImageFile                  func(m *MagickWand, file *FILE) bool
-	MagickPolaroidImage                  func(m *MagickWand, d *DrawingWand, angle float64) bool
-	MagickPosterizeImage                 func(m *MagickWand, levels size_t, dither bool) bool
-	MagickPreviewImages                  func(m *MagickWand, preview PreviewType) *MagickWand
-	MagickPreviousImage                  func(m *MagickWand) bool
-	MagickProfileImage                   func(m *MagickWand, name string, profile *Void, length size_t) bool
-	MagickQuantizeImage                  func(m *MagickWand, number_colors size_t, colorspace ColorspaceType, treedepth size_t, dither, measure_error bool) bool
-	MagickQuantizeImages                 func(m *MagickWand, number_colors size_t, colorspace ColorspaceType, treedepth size_t, dither, measure_error bool) bool
-	MagickQueryFontMetrics               func(m *MagickWand, drawingWand *DrawingWand, text string) []float64
-	MagickQueryMultilineFontMetrics      func(m *MagickWand, drawingWand *DrawingWand, text string) []float64
-	MagickRadialBlurImage                func(m *MagickWand, angle float64) bool
-	MagickRadialBlurImageChannel         func(m *MagickWand, channel ChannelType, angle float64) bool
-	MagickRaiseImage                     func(m *MagickWand, width, height size_t, x, y ssize_t, raise bool) bool
-	MagickRandomThresholdImage           func(m *MagickWand, low, high float64) bool
-	MagickRandomThresholdImageChannel    func(m *MagickWand, channel ChannelType, low, high float64) bool
-	MagickReadImage                      func(m *MagickWand, filename string) bool
-	MagickReadImageBlob                  func(m *MagickWand, blob *Void, length size_t) bool
-	MagickReadImageFile                  func(m *MagickWand, file *FILE) bool
-	MagickRecolorImage                   func(m *MagickWand, order size_t, color_matrix *float64) bool
-	MagickReduceNoiseImage               func(m *MagickWand, radius float64) bool
-	MagickRegionOfInterestImage          func(m *MagickWand, width, height size_t, x, y ssize_t) *MagickWand
-	MagickRemapImage                     func(m *MagickWand, remapWand *MagickWand, method DitherMethod) bool
-	MagickRemoveImage                    func(m *MagickWand) bool
-	MagickRemoveImageProfile             func(m *MagickWand, name string, length *size_t) *uint8
-	MagickResampleImage                  func(m *MagickWand, x_resolution, y_resolution float64, filter FilterTypes, blur float64) bool
-	MagickResetImagePage                 func(m *MagickWand, page string) bool
-	MagickResetIterator                  func(m *MagickWand)
-	MagickResizeImage                    func(m *MagickWand, columns, rows size_t, filter FilterTypes, blur float64) bool
-	MagickRollImage                      func(m *MagickWand, x ssize_t, y size_t) bool
-	MagickRotateImage                    func(m *MagickWand, background *PixelWand, degrees float64) bool
-	MagickSampleImage                    func(m *MagickWand, columns, rows size_t) bool
-	MagickScaleImage                     func(m *MagickWand, columns, rows size_t) bool
-	MagickSegmentImage                   func(m *MagickWand, colorspace ColorspaceType, verbose bool, cluster_threshold, smooth_threshold float64) bool
-	MagickSelectiveBlurImage             func(m *MagickWand, radius, sigma, threshold float64) bool
-	MagickSelectiveBlurImageChannel      func(m *MagickWand, channel ChannelType, radius, sigma, threshold float64) bool
-	MagickSeparateImageChannel           func(m *MagickWand, channel ChannelType) bool
-	MagickSepiaToneImage                 func(m *MagickWand, threshold float64) bool
-	MagickSetAntialias                   func(m *MagickWand, antialias bool) bool
-	MagickSetBackgroundColor             func(m *MagickWand, background *PixelWand) bool
-	MagickSetColorspace                  func(m *MagickWand, colorspace ColorspaceType) bool
-	MagickSetCompression                 func(m *MagickWand, compression CompressionType) bool
-	MagickSetCompressionQuality          func(m *MagickWand, quality size_t) bool
-	MagickSetDepth                       func(m *MagickWand, depth size_t) bool
-	MagickSetExtract                     func(m *MagickWand, geometry string) bool
-	MagickSetFilename                    func(m *MagickWand, filename string) bool
-	MagickSetFirstIterator               func(m *MagickWand)
-	MagickSetFont                        func(m *MagickWand, font string) bool
-	MagickSetFormat                      func(m *MagickWand, format string) bool
-	MagickSetGravity                     func(m *MagickWand, type_ GravityType) bool
-	MagickSetImage                       func(m *MagickWand, setWand *MagickWand) bool
-	MagickSetImageAlphaChannel           func(m *MagickWand, alpha_type AlphaChannelType) bool
-	MagickSetImageArtifact               func(m *MagickWand, artifact, value string) bool
-	MagickSetImageAttribute              func(m *MagickWand, property, value string) bool
-	MagickSetImageBackgroundColor        func(m *MagickWand, background *PixelWand) bool
-	MagickSetImageBias                   func(m *MagickWand, bias float64) bool
-	MagickSetImageBluePrimary            func(m *MagickWand, x, y float64) bool
-	MagickSetImageBorderColor            func(m *MagickWand, border *PixelWand) bool
-	MagickSetImageChannelDepth           func(m *MagickWand, channel ChannelType, depth size_t) bool
-	MagickSetImageClipMask               func(m *MagickWand, clip_mask *MagickWand) bool
-	MagickSetImageColor                  func(m *MagickWand, color *PixelWand) bool
-	MagickSetImageColormapColor          func(m *MagickWand, index size_t, color *PixelWand) bool
-	MagickSetImageColorspace             func(m *MagickWand, colorspace ColorspaceType) bool
-	MagickSetImageCompose                func(m *MagickWand, compose CompositeOperator) bool
-	MagickSetImageCompression            func(m *MagickWand, compression CompressionType) bool
-	MagickSetImageCompressionQuality     func(m *MagickWand, quality size_t) bool
-	MagickSetImageDelay                  func(m *MagickWand, delay size_t) bool
-	MagickSetImageDepth                  func(m *MagickWand, depth size_t) bool
-	MagickSetImageDispose                func(m *MagickWand, dispose DisposeType) bool
-	MagickSetImageEndian                 func(m *MagickWand, endian EndianType) bool
-	MagickSetImageExtent                 func(m *MagickWand, columns size_t, rows uint) bool
-	MagickSetImageFilename               func(m *MagickWand, filename string) bool
-	MagickSetImageFormat                 func(m *MagickWand, format string) bool
-	MagickSetImageFuzz                   func(m *MagickWand, fuzz float64) bool
-	MagickSetImageGamma                  func(m *MagickWand, gamma float64) bool
-	MagickSetImageGravity                func(m *MagickWand, gravity GravityType) bool
-	MagickSetImageGreenPrimary           func(m *MagickWand, x, y float64) bool
-	MagickSetImageIndex                  func(m *MagickWand, index ssize_t) bool
-	MagickSetImageInterlaceScheme        func(m *MagickWand, interlace InterlaceType) bool
-	MagickSetImageInterpolateMethod      func(m *MagickWand, method InterpolatePixelMethod) bool
-	MagickSetImageIterations             func(m *MagickWand, iterations size_t) bool
-	MagickSetImageMatteColor             func(m *MagickWand, matte *bool) bool
-	MagickSetImageMatteColorFIX          func(m *MagickWand, matte *PixelWand) bool
-	MagickSetImageOpacity                func(m *MagickWand, alpha float64) bool
-	MagickSetImageOrientation            func(m *MagickWand, orientation OrientationType) bool
-	MagickSetImagePage                   func(m *MagickWand, width, height size_t, x, y ssize_t) bool
-	MagickSetImagePixels                 func(m *MagickWand, x, y ssize_t, columns, rows size_t, map_ string, storage StorageType, pixels *Void) bool
-	MagickSetImageProfile                func(m *MagickWand, name string, profile *Void, length size_t) bool
-	MagickSetImageProgressMonitor        func(m *MagickWand, progress_monitor, client_data *Void) MagickProgressMonitorType
-	MagickSetImageProperty               func(m *MagickWand, property, value string) bool
-	MagickSetImageRedPrimary             func(m *MagickWand, x, y float64) bool
-	MagickSetImageRenderingIntent        func(m *MagickWand, rendering_intent RenderingIntent) bool
-	MagickSetImageResolution             func(m *MagickWand, x_resolution, y_resolution float64) bool
-	MagickSetImageScene                  func(m *MagickWand, scene size_t) bool
-	MagickSetImageTicksPerSecond         func(m *MagickWand, ticks_per_second ssize_t) bool
-	MagickSetImageType                   func(m *MagickWand, image_type ImageType) bool
-	MagickSetImageUnits                  func(m *MagickWand, units ResolutionType) bool
-	MagickSetImageVirtualPixelMethod     func(m *MagickWand, method VirtualPixelMethod) VirtualPixelMethod
-	MagickSetImageWhitePoint             func(m *MagickWand, x, y float64) bool
-	MagickSetInterlaceScheme             func(m *MagickWand, interlace_scheme InterlaceType) bool
-	MagickSetInterpolateMethod           func(m *MagickWand, method InterpolateMethodPixel) bool
-	MagickSetIteratorIndex               func(m *MagickWand, index ssize_t) bool
-	MagickSetLastIterator                func(m *MagickWand)
-	MagickSetOption                      func(m *MagickWand, key, value string) bool
-	MagickSetOrientation                 func(m *MagickWand, orientation OrientationType) bool
-	MagickSetPage                        func(m *MagickWand, width, height size_t, x, y ssize_t) bool
-	MagickSetPassphrase                  func(m *MagickWand, passphrase string) bool
-	MagickSetPointsize                   func(m *MagickWand, pointsize float64) bool
-	MagickSetProgressMonitor             func(m *MagickWand, progress_monitor, client_data *Void) MagickProgressMonitorType
-	MagickSetResolution                  func(m *MagickWand, x_resolution, y_resolution float64) bool
-	MagickSetSamplingFactors             func(m *MagickWand, number_factors size_t, sampling_factors *float64) bool
-	MagickSetSize                        func(m *MagickWand, columns, rows size_t) bool
-	MagickSetSizeOffset                  func(m *MagickWand, columns, rows size_t, offset ssize_t) bool
-	MagickSetType                        func(m *MagickWand, image_type ImageType) bool
-	MagickShadeImage                     func(m *MagickWand, gray bool, azimuth, elevation float64) bool
-	MagickShadowImage                    func(m *MagickWand, opacity, sigma float64, x, y ssize_t) bool
-	MagickSharpenImage                   func(m *MagickWand, radius, sigma float64) bool
-	MagickSharpenImageChannel            func(m *MagickWand, channel ChannelType, radius, sigma float64) bool
-	MagickShaveImage                     func(m *MagickWand, columns, rows size_t) bool
-	MagickShearImage                     func(m *MagickWand, background *PixelWand, x_shear, y_shear float64) bool
-	MagickSigmoidalContrastImage         func(m *MagickWand, sharpen bool, alpha, beta float64) bool
-	MagickSigmoidalContrastImageChannel  func(m *MagickWand, channel ChannelType, sharpen bool, alpha, beta float64) bool
-	MagickSimilarityImage                func(m *MagickWand, reference *MagickWand, offset *RectangeInfo, similarity *float64) *MagickWand
-	MagickSketchImage                    func(m *MagickWand, radius, sigma, angle float64) bool
-	MagickSmushImages                    func(m *MagickWand, stack bool, offset ssize_t) *MagickWand
-	MagickSolarizeImage                  func(m *MagickWand, threshold float64) bool
-	MagickSparseColorImage               func(m *MagickWand, channel ChannelType, method SparseColorMethod, number_arguments size_t, arguments *float64) bool
-	MagickSpliceImage                    func(m *MagickWand, width, height size_t, x, y ssize_t) bool
-	MagickSpreadImage                    func(m *MagickWand, radius float64) bool
-	MagickStatisticImage                 func(m *MagickWand, type_ StatisticType, width float64, height size_t) bool
-	MagickStatisticImageChannel          func(m *MagickWand, channel ChannelType, type_ StatisticType, width float64, height size_t) bool
-	MagickSteganoImage                   func(m *MagickWand, watermarkWand, offset ssize_t) *MagickWand
-	MagickStereoImage                    func(m *MagickWand, offsetWand *MagickWand) *MagickWand
-	MagickStripImage                     func(m *MagickWand) bool
-	MagickSwirlImage                     func(m *MagickWand, degrees float64) bool
-	MagickTextureImage                   func(m *MagickWand, texture_wand *MagickWand) *MagickWand
-	MagickThresholdImage                 func(m *MagickWand, threshold float64) bool
-	MagickThresholdImageChannel          func(m *MagickWand, channel ChannelType, threshold float64) bool
-	MagickThumbnailImage                 func(m *MagickWand, columns, rows size_t) bool
-	MagickTintImage                      func(m *MagickWand, tint, opacity *PixelWand) bool
-	MagickTransformImage                 func(m *MagickWand, crop, geometry string) *MagickWand
-	MagickTransformImageColorspace       func(m *MagickWand, colorspace ColorspaceType) bool
-	MagickTransparentImage               func(m *MagickWand, target *PixelWand, alpha, fuzz float64) bool
-	MagickTransparentPaintImage          func(m *MagickWand, target *PixelWand, alpha, fuzz float64, invert bool) bool
-	MagickTransposeImage                 func(m *MagickWand) bool
-	MagickTransverseImage                func(m *MagickWand) bool
-	MagickTrimImage                      func(m *MagickWand, fuzz float64) bool
-	MagickUniqueImageColors              func(m *MagickWand) bool
-	MagickUnsharpMaskImage               func(m *MagickWand, radius, sigma, amount, threshold float64) bool
-	MagickUnsharpMaskImageChannel        func(m *MagickWand, channel ChannelType, radius, sigma, amount, threshold float64) bool
-	MagickVignetteImage                  func(m *MagickWand, black_point, white_point float64, x, y ssize_t) bool
-	MagickWaveImage                      func(m *MagickWand, amplitude, wave_length float64) bool
-	MagickWhiteThresholdImage            func(m *MagickWand, threshold *PixelWand) bool
-	MagickWriteImage                     func(m *MagickWand, filename string) bool
-	MagickWriteImageBlob                 func(m *MagickWand, length *size_t) *uint8
-	MagickWriteImageFile                 func(m *MagickWand, file *FILE) bool
-	MagickWriteImages                    func(m *MagickWand, filename string, adjoin bool) bool
-	MagickWriteImagesFile                func(m *MagickWand, file *FILE) bool
-)
+var NewWandViewExtent func(m *MagickWand, x, y int32, width, height uint32) *WandView
 
-func (m *MagickWand) Clear()               { ClearMagickWand(m) }
-func (m *MagickWand) Clone() *MagickWand   { return CloneMagickWand(m) }
-func (m *MagickWand) Destroy() *MagickWand { return DestroyMagickWand(m) }
-func (m *MagickWand) ImageFrom() *Image    { return GetImageFromMagickWand(m) }
-func (m *MagickWand) IsMagickWand() bool   { return IsMagickWand(m) }
+var ClearMagickWand func(m *MagickWand)
 
-func (m *MagickWand) AdaptiveBlurImage(radius, sigma float64) bool {
-	return MagickAdaptiveBlurImage(m, radius, sigma)
-}
-func (m *MagickWand) AdaptiveBlurImageChannel(channel ChannelType, radius, sigma float64) bool {
-	return MagickAdaptiveBlurImageChannel(m, channel, radius, sigma)
-}
-func (m *MagickWand) AdaptiveResizeImage(columns, rows size_t) bool {
-	return MagickAdaptiveResizeImage(m, columns, rows)
-}
-func (m *MagickWand) AdaptiveSharpenImage(radius, sigma float64) bool {
-	return MagickAdaptiveSharpenImage(m, radius, sigma)
-}
-func (m *MagickWand) AdaptiveSharpenImageChannel(channel ChannelType, radius, sigma float64) bool {
-	return MagickAdaptiveSharpenImageChannel(m, channel, radius, sigma)
-}
-func (m *MagickWand) AdaptiveThresholdImage(width, height size_t, offset ssize_t) bool {
-	return MagickAdaptiveThresholdImage(m, width, height, offset)
-}
-func (m *MagickWand) AddImage(add_wand *MagickWand) bool { return MagickAddImage(m, add_wand) }
-func (m *MagickWand) AddNoiseImage(noise_type NoiseType) bool {
-	return MagickAddNoiseImage(m, noise_type)
-}
-func (m *MagickWand) AddNoiseImageChannel(channel ChannelType, noise_type NoiseType) bool {
-	return MagickAddNoiseImageChannel(m, channel, noise_type)
-}
-func (m *MagickWand) AffineTransformImage(d *DrawingWand) bool {
-	return MagickAffineTransformImage(m, d)
-}
-func (m *MagickWand) AnimateImages(server_name string) bool {
-	return MagickAnimateImages(m, server_name)
-}
-func (m *MagickWand) AnnotateImage(d *DrawingWand, x, y, angle float64, text string) bool {
-	return MagickAnnotateImage(m, d, x, y, angle, text)
-}
-func (m *MagickWand) AppendImages(stack bool) *MagickWand { return MagickAppendImages(m, stack) }
-func (m *MagickWand) AutoGammaImage() bool                { return MagickAutoGammaImage(m) }
-func (m *MagickWand) AutoGammaImageChannel(channel ChannelType) bool {
-	return MagickAutoGammaImageChannel(m, channel)
-}
-func (m *MagickWand) AutoLevelImage() bool { return MagickAutoLevelImage(m) }
-func (m *MagickWand) AutoLevelImageChannel(channel ChannelType) bool {
-	return MagickAutoLevelImageChannel(m, channel)
-}
-func (m *MagickWand) AverageImages() *MagickWand { return MagickAverageImages(m) }
-func (m *MagickWand) BlackThresholdImage(threshold *PixelWand) bool {
-	return MagickBlackThresholdImage(m, threshold)
-}
-func (m *MagickWand) BlueShiftImage(factor float64) bool   { return MagickBlueShiftImage(m, factor) }
-func (m *MagickWand) BlurImage(radius, sigma float64) bool { return MagickBlurImage(m, radius, sigma) }
-func (m *MagickWand) BlurImageChannel(channel ChannelType, radius, sigma float64) bool {
-	return MagickBlurImageChannel(m, channel, radius, sigma)
-}
-func (m *MagickWand) BorderImage(bordercolor *PixelWand, width, height size_t) bool {
-	return MagickBorderImage(m, bordercolor, width, height)
-}
-func (m *MagickWand) BrightnessContrastImage(brightness, contrast float64) bool {
-	return MagickBrightnessContrastImage(m, brightness, contrast)
-}
-func (m *MagickWand) BrightnessContrastImageChannel(channel ChannelType, brightness, contrast float64) bool {
-	return MagickBrightnessContrastImageChannel(m, channel, brightness, contrast)
-}
-func (m *MagickWand) CharcoalImage(radius, sigma float64) bool {
-	return MagickCharcoalImage(m, radius, sigma)
-}
-func (m *MagickWand) ChopImage(width, height size_t, x, y ssize_t) bool {
-	return MagickChopImage(m, width, height, x, y)
-}
-func (m *MagickWand) ClampImage() bool { return MagickClampImage(m) }
-func (m *MagickWand) ClampImageChannel(channel ChannelType) bool {
-	return MagickClampImageChannel(m, channel)
-}
-func (m *MagickWand) ClearException() bool { return MagickClearException(m) }
-func (m *MagickWand) ClipImage() bool      { return MagickClipImage(m) }
-func (m *MagickWand) ClipImagePath(pathname string, inside bool) bool {
-	return MagickClipImagePath(m, pathname, inside)
-}
-func (m *MagickWand) ClipPathImage(pathname string, inside bool) bool {
-	return MagickClipPathImage(m, pathname, inside)
-}
-func (m *MagickWand) ClutImage(clut_wand *MagickWand) bool { return MagickClutImage(m, clut_wand) }
-func (m *MagickWand) ClutImageChannel(channel ChannelType, clut_wand *MagickWand) bool {
-	return MagickClutImageChannel(m, channel, clut_wand)
-}
-func (m *MagickWand) CoalesceImages() *MagickWand { return MagickCoalesceImages(m) }
-func (m *MagickWand) ColorDecisionListImage(color_correction_collection string) bool {
-	return MagickColorDecisionListImage(m, color_correction_collection)
-}
-func (m *MagickWand) ColorFloodfillImage(fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y ssize_t) bool {
-	return MagickColorFloodfillImage(m, fill, fuzz, bordercolor, x, y)
-}
-func (m *MagickWand) ColorizeImage(colorize, opacity *PixelWand) bool {
-	return MagickColorizeImage(m, colorize, opacity)
-}
-func (m *MagickWand) ColorMatrixImage(color_matrix *KernelInfo) bool {
-	return MagickColorMatrixImage(m, color_matrix)
-}
-func (m *MagickWand) CombineImages(channel ChannelType) *MagickWand {
-	return MagickCombineImages(m, channel)
-}
-func (m *MagickWand) CommentImage(comment string) bool { return MagickCommentImage(m, comment) }
-func (m *MagickWand) CompareImageChannels(reference *MagickWand, channel ChannelType, metric MetricType, distortion *float64) *MagickWand {
-	return MagickCompareImageChannels(m, reference, channel, metric, distortion)
-}
-func (m *MagickWand) CompareImageLayers(method ImageLayerMethod) *MagickWand {
-	return MagickCompareImageLayers(m, method)
-}
-func (m *MagickWand) CompareImages(reference *MagickWand, metric MetricType, distortion *float64) *MagickWand {
-	return MagickCompareImages(m, reference, metric, distortion)
-}
-func (m *MagickWand) CompositeImage(source_wand *MagickWand, compose CompositeOperator, x, y ssize_t) bool {
-	return MagickCompositeImage(m, source_wand, compose, x, y)
-}
-func (m *MagickWand) CompositeImageChannel(channel ChannelType, composite_wand *MagickWand, compose CompositeOperator, x, y ssize_t) bool {
-	return MagickCompositeImageChannel(m, channel, composite_wand, compose, x, y)
-}
-func (m *MagickWand) CompositeLayers(source_wand *MagickWand, compose CompositeOperator, x, y ssize_t) bool {
-	return MagickCompositeLayers(m, source_wand, compose, x, y)
-}
-func (m *MagickWand) ConstituteImage(columns, rows size_t, map_ string, storage StorageType, pixels *Void) bool {
-	return MagickConstituteImage(m, columns, rows, map_, storage, pixels)
-}
-func (m *MagickWand) ContrastImage(sharpen bool) bool { return MagickContrastImage(m, sharpen) }
-func (m *MagickWand) ContrastStretchImage(black_point, white_point float64) bool {
-	return MagickContrastStretchImage(m, black_point, white_point)
-}
-func (m *MagickWand) ContrastStretchImageChannel(channel ChannelType, black_point, white_point float64) bool {
-	return MagickContrastStretchImageChannel(m, channel, black_point, white_point)
-}
-func (m *MagickWand) ConvolveImage(order size_t, kernel *float64) bool {
-	return MagickConvolveImage(m, order, kernel)
-}
-func (m *MagickWand) ConvolveImageChannel(channel ChannelType, order size_t, kernel *float64) bool {
-	return MagickConvolveImageChannel(m, channel, order, kernel)
-}
-func (m *MagickWand) CropImage(width, height size_t, x, y ssize_t) bool {
-	return MagickCropImage(m, width, height, x, y)
-}
-func (m *MagickWand) CycleColormapImage(displace ssize_t) bool {
-	return MagickCycleColormapImage(m, displace)
-}
-func (m *MagickWand) DecipherImage(passphrase string) bool { return MagickDecipherImage(m, passphrase) }
-func (m *MagickWand) DeconstructImages() *MagickWand       { return MagickDeconstructImages(m) }
-func (m *MagickWand) DeleteImageArtifact(artifact string) bool {
-	return MagickDeleteImageArtifact(m, artifact)
-}
-func (m *MagickWand) DeleteImageProperty(property string) bool {
-	return MagickDeleteImageProperty(m, property)
-}
-func (m *MagickWand) DeleteOption(option string) bool      { return MagickDeleteOption(m, option) }
-func (m *MagickWand) DescribeImage() string                { return MagickDescribeImage(m) }
-func (m *MagickWand) DeskewImage(threshold float64) bool   { return MagickDeskewImage(m, threshold) }
-func (m *MagickWand) DespeckleImage() bool                 { return MagickDespeckleImage(m) }
-func (m *MagickWand) DisplayImage(server_name string) bool { return MagickDisplayImage(m, server_name) }
-func (m *MagickWand) DisplayImages(server_name string) bool {
-	return MagickDisplayImages(m, server_name)
-}
-func (m *MagickWand) DistortImage(method DistortImageMethod, number_arguments size_t, arguments *float64, bestfit bool) bool {
-	return MagickDistortImage(m, method, number_arguments, arguments, bestfit)
-}
-func (m *MagickWand) DrawImage(d *DrawingWand) bool { return MagickDrawImage(m, d) }
-func (m *MagickWand) EdgeImage(radius float64) bool { return MagickEdgeImage(m, radius) }
-func (m *MagickWand) EmbossImage(radius, sigma float64) bool {
-	return MagickEmbossImage(m, radius, sigma)
-}
-func (m *MagickWand) EncipherImage(passphrase string) bool { return MagickEncipherImage(m, passphrase) }
-func (m *MagickWand) EnhanceImage() bool                   { return MagickEnhanceImage(m) }
-func (m *MagickWand) EqualizeImage() bool                  { return MagickEqualizeImage(m) }
-func (m *MagickWand) EqualizeImageChannel(channel ChannelType) bool {
-	return MagickEqualizeImageChannel(m, channel)
-}
-func (m *MagickWand) EvaluateImage(operator MagickEvaluateOperator, value float64) bool {
-	return MagickEvaluateImage(m, operator, value)
-}
-func (m *MagickWand) EvaluateImageChannel(channel ChannelType, op MagickEvaluateOperator, value float64) bool {
-	return MagickEvaluateImageChannel(m, channel, op, value)
-}
-func (m *MagickWand) EvaluateImages(operator MagickEvaluateOperator) bool {
-	return MagickEvaluateImages(m, operator)
-}
-func (m *MagickWand) ExportImagePixels(x, y ssize_t, columns, rows size_t, map_ string, storage StorageType, pixels *Void) bool {
-	return MagickExportImagePixels(m, x, y, columns, rows, map_, storage, pixels)
-}
-func (m *MagickWand) ExtentImage(width, height size_t, x, y ssize_t) bool {
-	return MagickExtentImage(m, width, height, x, y)
-}
-func (m *MagickWand) FilterImage(kernel *KernelInfo) bool { return MagickFilterImage(m, kernel) }
-func (m *MagickWand) FilterImageChannel(channel ChannelType, kernel *KernelInfo) bool {
-	return MagickFilterImageChannel(m, channel, kernel)
-}
-func (m *MagickWand) FlattenImages() *MagickWand { return MagickFlattenImages(m) }
-func (m *MagickWand) FlipImage() bool            { return MagickFlipImage(m) }
-func (m *MagickWand) FloodfillPaintImage(channel ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y ssize_t, invert bool) bool {
-	return MagickFloodfillPaintImage(m, channel, fill, fuzz, bordercolor, x, y, invert)
-}
-func (m *MagickWand) FlopImage() bool { return MagickFlopImage(m) }
-func (m *MagickWand) ForwardFourierTransformImage(magnitude bool) bool {
-	return MagickForwardFourierTransformImage(m, magnitude)
-}
-func (m *MagickWand) FrameImage(matte_color *PixelWand, width, height size_t, inner_bevel, outer_bevel ssize_t) bool {
-	return MagickFrameImage(m, matte_color, width, height, inner_bevel, outer_bevel)
-}
-func (m *MagickWand) FunctionImage(function MagickFunction, number_arguments size_t, arguments *float64) bool {
-	return MagickFunctionImage(m, function, number_arguments, arguments)
-}
-func (m *MagickWand) FunctionImageChannel(channel ChannelType, function MagickFunction, number_arguments size_t, arguments *float64) bool {
-	return MagickFunctionImageChannel(m, channel, function, number_arguments, arguments)
-}
-func (m *MagickWand) FxImage(expression string) *MagickWand { return MagickFxImage(m, expression) }
-func (m *MagickWand) FxImageChannel(channel ChannelType, expression string) *MagickWand {
-	return MagickFxImageChannel(m, channel, expression)
-}
-func (m *MagickWand) GammaImage(gamma float64) bool { return MagickGammaImage(m, gamma) }
-func (m *MagickWand) GammaImageChannel(channel ChannelType, gamma float64) bool {
-	return MagickGammaImageChannel(m, channel, gamma)
-}
-func (m *MagickWand) GaussianBlurImage(radius, sigma float64) bool {
-	return MagickGaussianBlurImage(m, radius, sigma)
-}
-func (m *MagickWand) GaussianBlurImageChannel(channel ChannelType, radius, sigma float64) bool {
-	return MagickGaussianBlurImageChannel(m, channel, radius, sigma)
-}
-func (m *MagickWand) Antialias() bool                          { return MagickGetAntialias(m) }
-func (m *MagickWand) BackgroundColor() *PixelWand              { return MagickGetBackgroundColor(m) }
-func (m *MagickWand) Colorspace() ColorspaceType               { return MagickGetColorspace(m) }
-func (m *MagickWand) Compression() CompressionType             { return MagickGetCompression(m) }
-func (m *MagickWand) CompressionQuality() size_t               { return MagickGetCompressionQuality(m) }
-func (m *MagickWand) Exception(severity *ExceptionType) string { return MagickGetException(m, severity) }
-func (m *MagickWand) ExceptionType() ExceptionType             { return MagickGetExceptionType(m) }
-func (m *MagickWand) Filename() string                         { return MagickGetFilename(m) }
-func (m *MagickWand) Font() string                             { return MagickGetFont(m) }
-func (m *MagickWand) Format() string                           { return MagickGetFormat(m) }
-func (m *MagickWand) Gravity() GravityType                     { return MagickGetGravity(m) }
-func (m *MagickWand) Image() *MagickWand                       { return MagickGetImage(m) }
-func (m *MagickWand) ImageAlphaChannel() size_t                { return MagickGetImageAlphaChannel(m) }
-func (m *MagickWand) ImageArtifact(artifact string) string     { return MagickGetImageArtifact(m, artifact) }
-func (m *MagickWand) ImageArtifacts(pattern, number_artifacts *size_t) string {
-	return MagickGetImageArtifacts(m, pattern, number_artifacts)
-}
-func (m *MagickWand) ImageAttribute(property string) string {
-	return MagickGetImageAttribute(m, property)
-}
-func (m *MagickWand) ImageBackgroundColor(background_color *PixelWand) bool {
-	return MagickGetImageBackgroundColor(m, background_color)
-}
-func (m *MagickWand) ImageBlob(length *size_t) *uint8     { return MagickGetImageBlob(m, length) }
-func (m *MagickWand) ImageBluePrimary(x, y *float64) bool { return MagickGetImageBluePrimary(m, x, y) }
-func (m *MagickWand) ImageBorderColor(border_color *PixelWand) bool {
-	return MagickGetImageBorderColor(m, border_color)
-}
-func (m *MagickWand) ImageChannelDepth(channel ChannelType) size_t {
-	return MagickGetImageChannelDepth(m, channel)
-}
-func (m *MagickWand) ImageChannelDistortion(reference *MagickWand, channel ChannelType, metric MetricType, distortion *float64) bool {
-	return MagickGetImageChannelDistortion(m, reference, channel, metric, distortion)
-}
-func (m *MagickWand) ImageChannelDistortionFIX(reference *MagickWand, metric MetricType) *float64 {
-	return MagickGetImageChannelDistortionFIX(m, reference, metric)
-}
-func (m *MagickWand) ImageChannelFeatures(distance size_t) *ChannelFeatures {
-	return MagickGetImageChannelFeatures(m, distance)
-}
-func (m *MagickWand) ImageChannelKurtosis(channel ChannelType, kurtosis, skewness *float64) bool {
-	return MagickGetImageChannelKurtosis(m, channel, kurtosis, skewness)
-}
-func (m *MagickWand) ImageChannelMean(channel ChannelType, mean, standard_deviation *float64) bool {
-	return MagickGetImageChannelMean(m, channel, mean, standard_deviation)
-}
-func (m *MagickWand) ImageChannelRange(channel ChannelType, minima, maxima *float64) bool {
-	return MagickGetImageChannelRange(m, channel, minima, maxima)
-}
-func (m *MagickWand) ImageChannelStatistics() *ChannelStatistics {
-	return MagickGetImageChannelStatistics(m)
-}
-func (m *MagickWand) ImageClipMask() *MagickWand { return MagickGetImageClipMask(m) }
-func (m *MagickWand) ImageColormapColor(index size_t, color *PixelWand) bool {
-	return MagickGetImageColormapColor(m, index, color)
-}
-func (m *MagickWand) ImageColors() size_t               { return MagickGetImageColors(m) }
-func (m *MagickWand) ImageColorspace() ColorspaceType   { return MagickGetImageColorspace(m) }
-func (m *MagickWand) ImageCompose() CompositeOperator   { return MagickGetImageCompose(m) }
-func (m *MagickWand) ImageCompression() CompressionType { return MagickGetImageCompression(m) }
-func (m *MagickWand) ImageCompressionQuality() size_t   { return MagickGetImageCompressionQuality(m) }
-func (m *MagickWand) ImageDelay() size_t                { return MagickGetImageDelay(m) }
-func (m *MagickWand) ImageDepth() size_t                { return MagickGetImageDepth(m) }
-func (m *MagickWand) ImageDispose() DisposeType         { return MagickGetImageDispose(m) }
-func (m *MagickWand) ImageDistortion(reference *MagickWand, metric MetricType, distortion *float64) bool {
-	return MagickGetImageDistortion(m, reference, metric, distortion)
-}
-func (m *MagickWand) ImageFilename() string                { return MagickGetImageFilename(m) }
-func (m *MagickWand) ImageFormat() string                  { return MagickGetImageFormat(m) }
-func (m *MagickWand) ImageFuzz() float64                   { return MagickGetImageFuzz(m) }
-func (m *MagickWand) ImageGamma() float64                  { return MagickGetImageGamma(m) }
-func (m *MagickWand) ImageGravity() GravityType            { return MagickGetImageGravity(m) }
-func (m *MagickWand) ImageGreenPrimary(x, y *float64) bool { return MagickGetImageGreenPrimary(m, x, y) }
-func (m *MagickWand) ImageHeight() size_t                  { return MagickGetImageHeight(m) }
-func (m *MagickWand) ImageHistogram(number_colors *size_t) **PixelWand {
-	return MagickGetImageHistogram(m, number_colors)
-}
-func (m *MagickWand) ImageInterlaceScheme() InterlaceType { return MagickGetImageInterlaceScheme(m) }
-func (m *MagickWand) ImageInterpolateMethod() InterpolatePixelMethod {
-	return MagickGetImageInterpolateMethod(m)
-}
-func (m *MagickWand) ImageIterations() size_t                 { return MagickGetImageIterations(m) }
-func (m *MagickWand) ImageLength(length *MagickSizeType) bool { return MagickGetImageLength(m, length) }
-func (m *MagickWand) ImageMatte() size_t                      { return MagickGetImageMatte(m) }
-func (m *MagickWand) ImageMatteColor(matte_color *PixelWand) bool {
-	return MagickGetImageMatteColor(m, matte_color)
-}
-func (m *MagickWand) ImageOrientation() OrientationType { return MagickGetImageOrientation(m) }
-func (m *MagickWand) ImagePage(width, height *size_t, x, y *ssize_t) bool {
-	return MagickGetImagePage(m, width, height, x, y)
-}
-func (m *MagickWand) ImagePixelColor(x, y ssize_t, color *PixelWand) bool {
-	return MagickGetImagePixelColor(m, x, y, color)
-}
-func (m *MagickWand) ImagePixels(x, y ssize_t, columns, rows size_t, map_ string, storage StorageType, pixels *Void) bool {
-	return MagickGetImagePixels(m, x, y, columns, rows, map_, storage, pixels)
-}
-func (m *MagickWand) ImageProfile(name string, length *size_t) *uint8 {
-	return MagickGetImageProfile(m, name, length)
-}
-func (m *MagickWand) ImageProfiles(pattern, number_profiles *size_t) string {
-	return MagickGetImageProfiles(m, pattern, number_profiles)
-}
-func (m *MagickWand) ImageProperties(pattern, number_properties *size_t) string {
-	return MagickGetImageProperties(m, pattern, number_properties)
-}
-func (m *MagickWand) ImageProperty(property string) string { return MagickGetImageProperty(m, property) }
-func (m *MagickWand) ImageRedPrimary(x, y *float64) bool   { return MagickGetImageRedPrimary(m, x, y) }
-func (m *MagickWand) ImageRegion(width, height size_t, x, y ssize_t) *MagickWand {
-	return MagickGetImageRegion(m, width, height, x, y)
-}
-func (m *MagickWand) ImageRenderingIntent() RenderingIntent { return MagickGetImageRenderingIntent(m) }
-func (m *MagickWand) ImageResolution(x, y *float64) bool    { return MagickGetImageResolution(m, x, y) }
-func (m *MagickWand) ImagesBlob(length *size_t) *uint8      { return MagickGetImagesBlob(m, length) }
-func (m *MagickWand) ImageScene() size_t                    { return MagickGetImageScene(m) }
-func (m *MagickWand) ImageSignature() string                { return MagickGetImageSignature(m) }
-func (m *MagickWand) ImageSize(length *MagickSizeType) bool { return MagickGetImageSize(m, length) }
-func (m *MagickWand) ImageTicksPerSecond() size_t           { return MagickGetImageTicksPerSecond(m) }
-func (m *MagickWand) ImageTotalInkDensity() float64         { return MagickGetImageTotalInkDensity(m) }
-func (m *MagickWand) ImageType() ImageType                  { return MagickGetImageType(m) }
-func (m *MagickWand) ImageUnits() ResolutionType            { return MagickGetImageUnits(m) }
-func (m *MagickWand) ImageVirtualPixelMethod() VirtualPixelMethod {
-	return MagickGetImageVirtualPixelMethod(m)
-}
-func (m *MagickWand) ImageWhitePoint(x, y *float64) bool        { return MagickGetImageWhitePoint(m, x, y) }
-func (m *MagickWand) ImageWidth() size_t                        { return MagickGetImageWidth(m) }
-func (m *MagickWand) InterlaceScheme() InterlaceType            { return MagickGetInterlaceScheme(m) }
-func (m *MagickWand) InterpolateMethod() InterpolatePixelMethod { return MagickGetInterpolateMethod(m) }
-func (m *MagickWand) IteratorIndex() ssize_t                    { return MagickGetIteratorIndex(m) }
-func (m *MagickWand) NumberImages() size_t                      { return MagickGetNumberImages(m) }
-func (m *MagickWand) Option(key string) string                  { return MagickGetOption(m, key) }
-func (m *MagickWand) Options(pattern, number_options *size_t) string {
-	return MagickGetOptions(m, pattern, number_options)
-}
-func (m *MagickWand) Orientation() OrientationType { return MagickGetOrientation(m) }
-func (m *MagickWand) Page(width, height *size_t, x, y *ssize_t) bool {
-	return MagickGetPage(m, width, height, x, y)
-}
-func (m *MagickWand) Pointsize() float64            { return MagickGetPointsize(m) }
-func (m *MagickWand) Resolution(x, y *float64) bool { return MagickGetResolution(m, x, y) }
-func (m *MagickWand) SamplingFactor(number_factors *size_t) *float64 {
-	return MagickGetSamplingFactor(m, number_factors)
-}
-func (m *MagickWand) Size(columns, rows *size_t) bool { return MagickGetSize(m, columns, rows) }
-func (m *MagickWand) SizeOffset(offset *ssize_t) bool { return MagickGetSizeOffset(m, offset) }
-func (m *MagickWand) Type() ImageType                 { return MagickGetType(m) }
-func (m *MagickWand) HaldClutImage(hald_wand *MagickWand) bool {
-	return MagickHaldClutImage(m, hald_wand)
-}
-func (m *MagickWand) HaldClutImageChannel(channel ChannelType, hald_wand *MagickWand) bool {
-	return MagickHaldClutImageChannel(m, channel, hald_wand)
-}
-func (m *MagickWand) HasNextImage() bool               { return MagickHasNextImage(m) }
-func (m *MagickWand) HasPreviousImage() bool           { return MagickHasPreviousImage(m) }
-func (m *MagickWand) IdentifyImage() string            { return MagickIdentifyImage(m) }
-func (m *MagickWand) ImplodeImage(radius float64) bool { return MagickImplodeImage(m, radius) }
-func (m *MagickWand) ImportImagePixels(x, y ssize_t, columns, rows size_t, map_ string, storage StorageType, pixels *Void) bool {
-	return MagickImportImagePixels(m, x, y, columns, rows, map_, storage, pixels)
-}
-func (m *MagickWand) InverseFourierTransformImage(phase_wand *MagickWand, magnitude bool) bool {
-	return MagickInverseFourierTransformImage(m, phase_wand, magnitude)
-}
-func (m *MagickWand) LabelImage(label string) bool { return MagickLabelImage(m, label) }
-func (m *MagickWand) LevelImage(black_point, gamma, white_point float64) bool {
-	return MagickLevelImage(m, black_point, gamma, white_point)
-}
-func (m *MagickWand) LevelImageChannel(channel ChannelType, black_point, gamma, white_point float64) bool {
-	return MagickLevelImageChannel(m, channel, black_point, gamma, white_point)
-}
-func (m *MagickWand) LinearStretchImage(black_point, white_point float64) bool {
-	return MagickLinearStretchImage(m, black_point, white_point)
-}
-func (m *MagickWand) MagnifyImage() bool { return MagickMagnifyImage(m) }
-func (m *MagickWand) MapImage(map_wand *MagickWand, dither bool) bool {
-	return MagickMapImage(m, map_wand, dither)
-}
-func (m *MagickWand) MatteFloodfillImage(alpha, fuzz float64, bordercolor *PixelWand, x, y ssize_t) bool {
-	return MagickMatteFloodfillImage(m, alpha, fuzz, bordercolor, x, y)
-}
-func (m *MagickWand) MaximumImages() *MagickWand { return MagickMaximumImages(m) }
-func (m *MagickWand) MedianFilterImage(radius float64) bool {
-	return MagickMedianFilterImage(m, radius)
-}
-func (m *MagickWand) MergeImageLayers(method ImageLayerMethod) *MagickWand {
-	return MagickMergeImageLayers(m, method)
-}
-func (m *MagickWand) MinifyImage() bool             { return MagickMinifyImage(m) }
-func (m *MagickWand) MinimumImages() *MagickWand    { return MagickMinimumImages(m) }
-func (m *MagickWand) ModeImage(radius float64) bool { return MagickModeImage(m, radius) }
-func (m *MagickWand) ModulateImage(brightness, saturation, hue float64) bool {
-	return MagickModulateImage(m, brightness, saturation, hue)
-}
-func (m *MagickWand) MontageImage(drawing_wand DrawingWand, tile_geometry, thumbnail_geometry string, mode MontageMode, frame string) *MagickWand {
-	return MagickMontageImage(m, drawing_wand, tile_geometry, thumbnail_geometry, mode, frame)
-}
-func (m *MagickWand) MorphImages(number_frames size_t) *MagickWand {
-	return MagickMorphImages(m, number_frames)
-}
-func (m *MagickWand) MorphologyImage(method MorphologyMethod, iterations ssize_t, kernel *KernelInfo) bool {
-	return MagickMorphologyImage(m, method, iterations, kernel)
-}
-func (m *MagickWand) MorphologyImageChannel(channel ChannelType, method MorphologyMethod, iterations ssize_t, kernel *KernelInfo) bool {
-	return MagickMorphologyImageChannel(m, channel, method, iterations, kernel)
-}
-func (m *MagickWand) MosaicImages() *MagickWand { return MagickMosaicImages(m) }
-func (m *MagickWand) MotionBlurImage(radius, sigma, angle float64) bool {
-	return MagickMotionBlurImage(m, radius, sigma, angle)
-}
-func (m *MagickWand) MotionBlurImageChannel(channel ChannelType, radius, sigma, angle float64) bool {
-	return MagickMotionBlurImageChannel(m, channel, radius, sigma, angle)
-}
-func (m *MagickWand) NegateImage(gray bool) bool { return MagickNegateImage(m, gray) }
-func (m *MagickWand) NegateImageChannel(channel ChannelType, gray bool) bool {
-	return MagickNegateImageChannel(m, channel, gray)
-}
-func (m *MagickWand) NewImage(columns, rows size_t, background *PixelWand) bool {
-	return MagickNewImage(m, columns, rows, background)
-}
-func (m *MagickWand) NextImage() bool      { return MagickNextImage(m) }
-func (m *MagickWand) NormalizeImage() bool { return MagickNormalizeImage(m) }
-func (m *MagickWand) NormalizeImageChannel(channel ChannelType) bool {
-	return MagickNormalizeImageChannel(m, channel)
-}
-func (m *MagickWand) OilPaintImage(radius float64) bool { return MagickOilPaintImage(m, radius) }
-func (m *MagickWand) OpaqueImage(target, fill *PixelWand, fuzz float64) bool {
-	return MagickOpaqueImage(m, target, fill, fuzz)
-}
-func (m *MagickWand) OpaquePaintImage(target, fill *PixelWand, fuzz float64, invert bool) bool {
-	return MagickOpaquePaintImage(m, target, fill, fuzz, invert)
-}
-func (m *MagickWand) OpaquePaintImageChannel(channel ChannelType, target, fill *PixelWand, fuzz float64, invert bool) bool {
-	return MagickOpaquePaintImageChannel(m, channel, target, fill, fuzz, invert)
-}
-func (m *MagickWand) OptimizeImageLayers() *MagickWand { return MagickOptimizeImageLayers(m) }
-func (m *MagickWand) OrderedPosterizeImage(threshold_map string) bool {
-	return MagickOrderedPosterizeImage(m, threshold_map)
-}
-func (m *MagickWand) OrderedPosterizeImageChannel(channel ChannelType, threshold_map string) bool {
-	return MagickOrderedPosterizeImageChannel(m, channel, threshold_map)
-}
-func (m *MagickWand) PaintFloodfillImage(channel ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y ssize_t) bool {
-	return MagickPaintFloodfillImage(m, channel, fill, fuzz, bordercolor, x, y)
-}
-func (m *MagickWand) PaintOpaqueImage(target, fill *PixelWand, fuzz float64) bool {
-	return MagickPaintOpaqueImage(m, target, fill, fuzz)
-}
-func (m *MagickWand) PaintOpaqueImageChannel(channel ChannelType, target, fill *PixelWand, fuzz float64) bool {
-	return MagickPaintOpaqueImageChannel(m, channel, target, fill, fuzz)
-}
-func (m *MagickWand) PaintTransparentImage(target *PixelWand, alpha, fuzz float64) bool {
-	return MagickPaintTransparentImage(m, target, alpha, fuzz)
-}
-func (m *MagickWand) PingImage(filename string) bool { return MagickPingImage(m, filename) }
-func (m *MagickWand) PingImageBlob(blob *Void, length size_t) bool {
-	return MagickPingImageBlob(m, blob, length)
-}
-func (m *MagickWand) PingImageFile(file *FILE) bool { return MagickPingImageFile(m, file) }
-func (m *MagickWand) PolaroidImage(d *DrawingWand, angle float64) bool {
-	return MagickPolaroidImage(m, d, angle)
-}
-func (m *MagickWand) PosterizeImage(levels size_t, dither bool) bool {
-	return MagickPosterizeImage(m, levels, dither)
-}
-func (m *MagickWand) PreviewImages(preview PreviewType) *MagickWand {
-	return MagickPreviewImages(m, preview)
-}
-func (m *MagickWand) PreviousImage() bool { return MagickPreviousImage(m) }
-func (m *MagickWand) ProfileImage(name string, profile *Void, length size_t) bool {
-	return MagickProfileImage(m, name, profile, length)
-}
-func (m *MagickWand) QuantizeImage(number_colors size_t, colorspace ColorspaceType, treedepth size_t, dither, measure_error bool) bool {
-	return MagickQuantizeImage(m, number_colors, colorspace, treedepth, dither, measure_error)
-}
-func (m *MagickWand) QuantizeImages(number_colors size_t, colorspace ColorspaceType, treedepth size_t, dither, measure_error bool) bool {
-	return MagickQuantizeImages(m, number_colors, colorspace, treedepth, dither, measure_error)
-}
+func (m *MagickWand) Clear() { ClearMagickWand(m) }
+
+var CloneMagickWand func(m *MagickWand) *MagickWand
+
+func (m *MagickWand) Clone() *MagickWand { return CloneMagickWand(m) }
+
+var DestroyMagickWand func(m *MagickWand)
+
+func (m *MagickWand) Destroy() (_ *MagickWand) { DestroyMagickWand(m); return }
+
+var GetImageFromMagickWand func(m *MagickWand) *Image
+
+func (m *MagickWand) ImageFrom() *Image { return GetImageFromMagickWand(m) }
+
+var IsMagickWand func(m *MagickWand) bool
+
+func (m *MagickWand) IsMagickWand() bool { return IsMagickWand(m) }
+
+var AdaptiveBlurImage func(m *MagickWand, radius, sigma float64) bool
+
+func (m *MagickWand) AdaptiveBlur(radius, sigma float64) bool {
+	return AdaptiveBlurImage(m, radius, sigma)
+}
+
+var AdaptiveBlurImageChannel func(m *MagickWand, channel T.ChannelType, radius, sigma float64) bool
+
+func (m *MagickWand) AdaptiveBlurChannel(channel T.ChannelType, radius, sigma float64) bool {
+	return AdaptiveBlurImageChannel(m, channel, radius, sigma)
+}
+
+var AdaptiveResizeImage func(m *MagickWand, columns, rows uint32) bool
+
+func (m *MagickWand) AdaptiveResize(columns, rows uint32) bool {
+	return AdaptiveResizeImage(m, columns, rows)
+}
+
+var AdaptiveSharpenImage func(m *MagickWand, radius, sigma float64) bool
+
+func (m *MagickWand) AdaptiveSharpen(radius, sigma float64) bool {
+	return AdaptiveSharpenImage(m, radius, sigma)
+}
+
+var AdaptiveSharpenImageChannel func(m *MagickWand, channel T.ChannelType, radius, sigma float64) bool
+
+func (m *MagickWand) AdaptiveSharpenChannel(channel T.ChannelType, radius, sigma float64) bool {
+	return AdaptiveSharpenImageChannel(m, channel, radius, sigma)
+}
+
+var AdaptiveThresholdImage func(m *MagickWand, width, height uint32, offset int32) bool
+
+func (m *MagickWand) AdaptiveThreshold(width, height uint32, offset int32) bool {
+	return AdaptiveThresholdImage(m, width, height, offset)
+}
+
+var AddImage func(m *MagickWand, addWand *MagickWand) bool
+
+func (m *MagickWand) Add(addWand *MagickWand) bool { return AddImage(m, addWand) }
+
+var AddNoiseImage func(m *MagickWand, noiseType T.NoiseType) bool
+
+func (m *MagickWand) AddNoise(noiseType T.NoiseType) bool {
+	return AddNoiseImage(m, noiseType)
+}
+
+var AddNoiseImageChannel func(m *MagickWand, channel T.ChannelType, noiseType T.NoiseType) bool
+
+func (m *MagickWand) AddNoiseChannel(channel T.ChannelType, noiseType T.NoiseType) bool {
+	return AddNoiseImageChannel(m, channel, noiseType)
+}
+
+var AffineTransformImage func(m *MagickWand, d *DrawingWand) bool
+
+func (m *MagickWand) AffineTransform(d *DrawingWand) bool {
+	return AffineTransformImage(m, d)
+}
+
+var AnimateImages func(m *MagickWand, xServerName string) bool
+
+func (m *MagickWand) Animate(xServerName string) bool {
+	return AnimateImages(m, xServerName)
+}
+
+var AnnotateImage func(m *MagickWand, d *DrawingWand, x, y, angle float64, text string) bool
+
+func (m *MagickWand) Annotate(d *DrawingWand, x, y, angle float64, text string) bool {
+	return AnnotateImage(m, d, x, y, angle, text)
+}
+
+var AppendImages func(m *MagickWand, stack bool) *MagickWand
+
+func (m *MagickWand) Append(stack bool) *MagickWand { return AppendImages(m, stack) }
+
+var AutoGammaImage func(m *MagickWand) bool
+
+func (m *MagickWand) AutoGamma() bool { return AutoGammaImage(m) }
+
+var AutoGammaImageChannel func(m *MagickWand, channel T.ChannelType) bool
+
+func (m *MagickWand) AutoGammaChannel(channel T.ChannelType) bool {
+	return AutoGammaImageChannel(m, channel)
+}
+
+var AutoLevelImage func(m *MagickWand) bool
+
+func (m *MagickWand) AutoLevel() bool { return AutoLevelImage(m) }
+
+var AutoLevelImageChannel func(m *MagickWand, channel T.ChannelType) bool
+
+func (m *MagickWand) AutoLevelChannel(channel T.ChannelType) bool {
+	return AutoLevelImageChannel(m, channel)
+}
+
+var BlackThresholdImage func(m *MagickWand, threshold *PixelWand) bool
+
+func (m *MagickWand) BlackThreshold(threshold *PixelWand) bool {
+	return BlackThresholdImage(m, threshold)
+}
+
+var BlueShiftImage func(m *MagickWand, factor float64) bool
+
+func (m *MagickWand) BlueShift(factor float64) bool { return BlueShiftImage(m, factor) }
+
+var BlurImage func(m *MagickWand, radius, sigma float64) bool
+
+func (m *MagickWand) Blur(radius, sigma float64) bool { return BlurImage(m, radius, sigma) }
+
+var BlurImageChannel func(m *MagickWand, channel T.ChannelType, radius, sigma float64) bool
+
+func (m *MagickWand) BlurChannel(channel T.ChannelType, radius, sigma float64) bool {
+	return BlurImageChannel(m, channel, radius, sigma)
+}
+
+var BorderImage func(m *MagickWand, bordercolor *PixelWand, width, height uint32) bool
+
+func (m *MagickWand) Border(bordercolor *PixelWand, width, height uint32) bool {
+	return BorderImage(m, bordercolor, width, height)
+}
+
+var BrightnessContrastImage func(m *MagickWand, brightness, contrast float64) bool
+
+func (m *MagickWand) BrightnessContrast(brightness, contrast float64) bool {
+	return BrightnessContrastImage(m, brightness, contrast)
+}
+
+var BrightnessContrastImageChannel func(m *MagickWand, channel T.ChannelType, brightness, contrast float64) bool
+
+func (m *MagickWand) BrightnessContrastChannel(channel T.ChannelType, brightness, contrast float64) bool {
+	return BrightnessContrastImageChannel(m, channel, brightness, contrast)
+}
+
+var CharcoalImage func(m *MagickWand, radius, sigma float64) bool
+
+func (m *MagickWand) Charcoal(radius, sigma float64) bool {
+	return CharcoalImage(m, radius, sigma)
+}
+
+var ChopImage func(m *MagickWand, width, height uint32, x, y int32) bool
+
+func (m *MagickWand) Chop(width, height uint32, x, y int32) bool {
+	return ChopImage(m, width, height, x, y)
+}
+
+var ClampImage func(m *MagickWand) bool
+
+func (m *MagickWand) Clamp() bool { return ClampImage(m) }
+
+var ClampImageChannel func(m *MagickWand, channel T.ChannelType) bool
+
+func (m *MagickWand) ClampChannel(channel T.ChannelType) bool {
+	return ClampImageChannel(m, channel)
+}
+
+var ClearException func(m *MagickWand) bool
+
+func (m *MagickWand) ClearException() bool { return ClearException(m) }
+
+var ClipImage func(m *MagickWand) bool
+
+func (m *MagickWand) Clip() bool { return ClipImage(m) }
+
+var ClipImagePath func(m *MagickWand, pathname string, inside bool) bool
+
+func (m *MagickWand) ClipPath(pathname string, inside bool) bool {
+	return ClipImagePath(m, pathname, inside)
+}
+
+var ClutImage func(m *MagickWand, clutWand *MagickWand) bool
+
+func (m *MagickWand) Clut(clutWand *MagickWand) bool { return ClutImage(m, clutWand) }
+
+var ClutImageChannel func(m *MagickWand, channel T.ChannelType, clutWand *MagickWand) bool
+
+func (m *MagickWand) ClutChannel(channel T.ChannelType, clutWand *MagickWand) bool {
+	return ClutImageChannel(m, channel, clutWand)
+}
+
+var CoalesceImages func(m *MagickWand) *MagickWand
+
+func (m *MagickWand) Coalesce() *MagickWand { return CoalesceImages(m) }
+
+var ColorDecisionListImage func(m *MagickWand, colorCorrectionCollection string) bool
+
+func (m *MagickWand) ColorDecisionList(colorCorrectionCollection string) bool {
+	return ColorDecisionListImage(m, colorCorrectionCollection)
+}
+
+var ColorizeImage func(m *MagickWand, colorize, opacity *PixelWand) bool
+
+func (m *MagickWand) Colorize(colorize, opacity *PixelWand) bool {
+	return ColorizeImage(m, colorize, opacity)
+}
+
+var ColorMatrixImage func(m *MagickWand, colorMatrix *T.KernelInfo) bool
+
+func (m *MagickWand) ColorMatrix(colorMatrix *T.KernelInfo) bool {
+	return ColorMatrixImage(m, colorMatrix)
+}
+
+var CombineImages func(m *MagickWand, channel T.ChannelType) *MagickWand
+
+func (m *MagickWand) Combine(channel T.ChannelType) *MagickWand {
+	return CombineImages(m, channel)
+}
+
+var CommentImage func(m *MagickWand, comment string) bool
+
+func (m *MagickWand) Comment(comment string) bool { return CommentImage(m, comment) }
+
+var CompareImageChannels func(m *MagickWand, reference *MagickWand, channel T.ChannelType, metric T.MetricType, distortion *float64) *MagickWand
+
+func (m *MagickWand) CompareChannels(reference *MagickWand, channel T.ChannelType, metric T.MetricType, distortion *float64) *MagickWand {
+	return CompareImageChannels(m, reference, channel, metric, distortion)
+}
+
+var CompareImageLayers func(m *MagickWand, method T.ImageLayerMethod) *MagickWand
+
+func (m *MagickWand) CompareLayers(method T.ImageLayerMethod) *MagickWand {
+	return CompareImageLayers(m, method)
+}
+
+var CompareImages func(m *MagickWand, reference *MagickWand, metric T.MetricType, distortion *float64) *MagickWand
+
+func (m *MagickWand) Compare(reference *MagickWand, metric T.MetricType, distortion *float64) *MagickWand {
+	return CompareImages(m, reference, metric, distortion)
+}
+
+var CompositeImage func(m *MagickWand, sourceWand *MagickWand, compose T.CompositeOperator, x, y int32) bool
+
+func (m *MagickWand) Composite(sourceWand *MagickWand, compose T.CompositeOperator, x, y int32) bool {
+	return CompositeImage(m, sourceWand, compose, x, y)
+}
+
+var CompositeImageChannel func(m *MagickWand, channel T.ChannelType, compositeWand *MagickWand, compose T.CompositeOperator, x, y int32) bool
+
+func (m *MagickWand) CompositeChannel(channel T.ChannelType, compositeWand *MagickWand, compose T.CompositeOperator, x, y int32) bool {
+	return CompositeImageChannel(m, channel, compositeWand, compose, x, y)
+}
+
+var CompositeLayers func(m *MagickWand, sourceWand *MagickWand, compose T.CompositeOperator, x, y int32) bool
+
+func (m *MagickWand) CompositeLayers(sourceWand *MagickWand, compose T.CompositeOperator, x, y int32) bool {
+	return CompositeLayers(m, sourceWand, compose, x, y)
+}
+
+var ConstituteImage func(m *MagickWand, columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool
+
+func (m *MagickWand) Constitute(columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool {
+	return ConstituteImage(m, columns, rows, map_, storage, pixels)
+}
+
+var ContrastImage func(m *MagickWand, sharpen bool) bool
+
+func (m *MagickWand) Contrast(sharpen bool) bool { return ContrastImage(m, sharpen) }
+
+var ContrastStretchImage func(m *MagickWand, blackPoint, whitePoint float64) bool
+
+func (m *MagickWand) ContrastStretch(blackPoint, whitePoint float64) bool {
+	return ContrastStretchImage(m, blackPoint, whitePoint)
+}
+
+var ContrastStretchImageChannel func(m *MagickWand, channel T.ChannelType, blackPoint, whitePoint float64) bool
+
+func (m *MagickWand) ContrastStretchChannel(channel T.ChannelType, blackPoint, whitePoint float64) bool {
+	return ContrastStretchImageChannel(m, channel, blackPoint, whitePoint)
+}
+
+var ConvolveImage func(m *MagickWand, order uint32, kernel []float64) bool
+
+func (m *MagickWand) Convolve(order uint32, kernel []float64) bool {
+	return ConvolveImage(m, order, kernel)
+}
+
+var ConvolveImageChannel func(m *MagickWand, channel T.ChannelType, order uint32, kernel *float64) bool
+
+func (m *MagickWand) ConvolveChannel(channel T.ChannelType, order uint32, kernel *float64) bool {
+	return ConvolveImageChannel(m, channel, order, kernel)
+}
+
+var CropImage func(m *MagickWand, width, height uint32, x, y int32) bool
+
+func (m *MagickWand) Crop(width, height uint32, x, y int32) bool {
+	return CropImage(m, width, height, x, y)
+}
+
+var CycleColormapImage func(m *MagickWand, displace int32) bool
+
+func (m *MagickWand) CycleColormap(displace int32) bool {
+	return CycleColormapImage(m, displace)
+}
+
+var DecipherImage func(m *MagickWand, passphrase string) bool
+
+func (m *MagickWand) Decipher(passphrase string) bool { return DecipherImage(m, passphrase) }
+
+var DeconstructImages func(m *MagickWand) *MagickWand
+
+func (m *MagickWand) Deconstruct() *MagickWand { return DeconstructImages(m) }
+
+var DeleteImageArtifact func(m *MagickWand, artifact string) bool
+
+func (m *MagickWand) DeleteArtifact(artifact string) bool {
+	return DeleteImageArtifact(m, artifact)
+}
+
+var DeleteImageProperty func(m *MagickWand, property string) bool
+
+func (m *MagickWand) DeleteProperty(property string) bool {
+	return DeleteImageProperty(m, property)
+}
+
+var DeleteOption func(m *MagickWand, option string) bool
+
+func (m *MagickWand) DeleteOption(option string) bool { return DeleteOption(m, option) }
+
+var DeskewImage func(m *MagickWand, threshold float64) bool
+
+func (m *MagickWand) Deskew(threshold float64) bool { return DeskewImage(m, threshold) }
+
+var DespeckleImage func(m *MagickWand) bool
+
+func (m *MagickWand) Despeckle() bool { return DespeckleImage(m) }
+
+var DisplayImage func(m *MagickWand, xServerName string) bool
+
+func (m *MagickWand) Display(xServerName string) bool { return DisplayImage(m, xServerName) }
+
+var DisplayImages func(m *MagickWand, xServerName string) bool
+
+func (m *MagickWand) DisplayImages(xServerName string) bool {
+	return DisplayImages(m, xServerName)
+}
+
+var DistortImage func(m *MagickWand, method T.DistortImageMethod, numberArguments uint32, arguments *float64, bestfit bool) bool
+
+func (m *MagickWand) Distort(method T.DistortImageMethod, numberArguments uint32, arguments *float64, bestfit bool) bool {
+	return DistortImage(m, method, numberArguments, arguments, bestfit)
+}
+
+var DrawImage func(m *MagickWand, d *DrawingWand) bool
+
+func (m *MagickWand) Draw(d *DrawingWand) bool { return DrawImage(m, d) }
+
+var EdgeImage func(m *MagickWand, radius float64) bool
+
+func (m *MagickWand) Edge(radius float64) bool { return EdgeImage(m, radius) }
+
+var EmbossImage func(m *MagickWand, radius, sigma float64) bool
+
+func (m *MagickWand) Emboss(radius, sigma float64) bool {
+	return EmbossImage(m, radius, sigma)
+}
+
+var EncipherImage func(m *MagickWand, passphrase string) bool
+
+func (m *MagickWand) Encipher(passphrase string) bool { return EncipherImage(m, passphrase) }
+
+var EnhanceImage func(m *MagickWand) bool
+
+func (m *MagickWand) Enhance() bool { return EnhanceImage(m) }
+
+var EqualizeImage func(m *MagickWand) bool
+
+func (m *MagickWand) Equalize() bool { return EqualizeImage(m) }
+
+var EqualizeImageChannel func(m *MagickWand, channel T.ChannelType) bool
+
+func (m *MagickWand) EqualizeChannel(channel T.ChannelType) bool {
+	return EqualizeImageChannel(m, channel)
+}
+
+var EvaluateImage func(m *MagickWand, operator T.MagickEvaluateOperator, value float64) bool
+
+func (m *MagickWand) Evaluate(operator T.MagickEvaluateOperator, value float64) bool {
+	return EvaluateImage(m, operator, value)
+}
+
+var EvaluateImageChannel func(m *MagickWand, channel T.ChannelType, op T.MagickEvaluateOperator, value float64) bool
+
+func (m *MagickWand) EvaluateChannel(channel T.ChannelType, op T.MagickEvaluateOperator, value float64) bool {
+	return EvaluateImageChannel(m, channel, op, value)
+}
+
+var EvaluateImages func(m *MagickWand, operator T.MagickEvaluateOperator) bool
+
+func (m *MagickWand) EvaluateImages(operator T.MagickEvaluateOperator) bool {
+	return EvaluateImages(m, operator)
+}
+
+var ExportImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool
+
+func (m *MagickWand) ExportPixels(x, y int32, columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool {
+	return ExportImagePixels(m, x, y, columns, rows, map_, storage, pixels)
+}
+
+var ExtentImage func(m *MagickWand, width, height uint32, x, y int32) bool
+
+func (m *MagickWand) Extent(width, height uint32, x, y int32) bool {
+	return ExtentImage(m, width, height, x, y)
+}
+
+var FilterImage func(m *MagickWand, kernel *T.KernelInfo) bool
+
+func (m *MagickWand) Filter(kernel *T.KernelInfo) bool { return FilterImage(m, kernel) }
+
+var FilterImageChannel func(m *MagickWand, channel T.ChannelType, kernel *T.KernelInfo) bool
+
+func (m *MagickWand) FilterChannel(channel T.ChannelType, kernel *T.KernelInfo) bool {
+	return FilterImageChannel(m, channel, kernel)
+}
+
+var FlipImage func(m *MagickWand) bool
+
+func (m *MagickWand) Flip() bool { return FlipImage(m) }
+
+var FloodfillPaintImage func(m *MagickWand, channel T.ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32, invert bool) bool
+
+func (m *MagickWand) FloodfillPaint(channel T.ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32, invert bool) bool {
+	return FloodfillPaintImage(m, channel, fill, fuzz, bordercolor, x, y, invert)
+}
+
+var FlopImage func(m *MagickWand) bool
+
+func (m *MagickWand) Flop() bool { return FlopImage(m) }
+
+var ForwardFourierTransformImage func(m *MagickWand, magnitude bool) bool
+
+func (m *MagickWand) ForwardFourierTransform(magnitude bool) bool {
+	return ForwardFourierTransformImage(m, magnitude)
+}
+
+var FrameImage func(m *MagickWand, matteColor *PixelWand, width, height uint32, innerBevel, outerBevel int32) bool
+
+func (m *MagickWand) Frame(matteColor *PixelWand, width, height uint32, innerBevel, outerBevel int32) bool {
+	return FrameImage(m, matteColor, width, height, innerBevel, outerBevel)
+}
+
+var FunctionImage func(m *MagickWand, function T.MagickFunction, numberArguments uint32, arguments *float64) bool
+
+func (m *MagickWand) Function(function T.MagickFunction, numberArguments uint32, arguments *float64) bool {
+	return FunctionImage(m, function, numberArguments, arguments)
+}
+
+var FunctionImageChannel func(m *MagickWand, channel T.ChannelType, function T.MagickFunction, numberArguments uint32, arguments *float64) bool
+
+func (m *MagickWand) FunctionChannel(channel T.ChannelType, function T.MagickFunction, numberArguments uint32, arguments *float64) bool {
+	return FunctionImageChannel(m, channel, function, numberArguments, arguments)
+}
+
+var FxImage func(m *MagickWand, expression string) *MagickWand
+
+func (m *MagickWand) Fx(expression string) *MagickWand { return FxImage(m, expression) }
+
+var FxImageChannel func(m *MagickWand, channel T.ChannelType, expression string) *MagickWand
+
+func (m *MagickWand) FxChannel(channel T.ChannelType, expression string) *MagickWand {
+	return FxImageChannel(m, channel, expression)
+}
+
+var GammaImage func(m *MagickWand, gamma float64) bool
+
+func (m *MagickWand) Gamma(gamma float64) bool { return GammaImage(m, gamma) }
+
+var GammaImageChannel func(m *MagickWand, channel T.ChannelType, gamma float64) bool
+
+func (m *MagickWand) GammaChannel(channel T.ChannelType, gamma float64) bool {
+	return GammaImageChannel(m, channel, gamma)
+}
+
+var GaussianBlurImage func(m *MagickWand, radius, sigma float64) bool
+
+func (m *MagickWand) GaussianBlur(radius, sigma float64) bool {
+	return GaussianBlurImage(m, radius, sigma)
+}
+
+var GaussianBlurImageChannel func(m *MagickWand, channel T.ChannelType, radius, sigma float64) bool
+
+func (m *MagickWand) GaussianBlurChannel(channel T.ChannelType, radius, sigma float64) bool {
+	return GaussianBlurImageChannel(m, channel, radius, sigma)
+}
+
+var GetAntialias func(m *MagickWand) bool
+
+func (m *MagickWand) Antialias() bool { return GetAntialias(m) }
+
+var GetBackgroundColor func(m *MagickWand) *PixelWand
+
+func (m *MagickWand) BackgroundColor() *PixelWand { return GetBackgroundColor(m) }
+
+var GetColorspace func(m *MagickWand) T.ColorspaceType
+
+func (m *MagickWand) Colorspace() T.ColorspaceType { return GetColorspace(m) }
+
+var GetCompression func(m *MagickWand) T.CompressionType
+
+func (m *MagickWand) Compression() T.CompressionType { return GetCompression(m) }
+
+var GetCompressionQuality func(m *MagickWand) uint32
+
+func (m *MagickWand) CompressionQuality() uint32 { return GetCompressionQuality(m) }
+
+var GetException func(m *MagickWand, severity *T.ExceptionType) string
+
+func (m *MagickWand) Exception(severity *T.ExceptionType) string {
+	return GetException(m, severity)
+}
+
+var GetExceptionType func(m *MagickWand) T.ExceptionType
+
+func (m *MagickWand) ExceptionType() T.ExceptionType { return GetExceptionType(m) }
+
+var GetFilename func(m *MagickWand) string
+
+func (m *MagickWand) Filename() string { return GetFilename(m) }
+
+var GetFont func(m *MagickWand) string
+
+func (m *MagickWand) Font() string { return GetFont(m) }
+
+var GetFormat func(m *MagickWand) string
+
+func (m *MagickWand) Format() string { return GetFormat(m) }
+
+var GetGravity func(m *MagickWand) T.GravityType
+
+func (m *MagickWand) Gravity() T.GravityType { return GetGravity(m) }
+
+var GetImage func(m *MagickWand) *MagickWand
+
+func (m *MagickWand) Image() *MagickWand { return GetImage(m) }
+
+var GetImageAlphaChannel func(m *MagickWand) uint32
+
+func (m *MagickWand) AlphaChannel() uint32 { return GetImageAlphaChannel(m) }
+
+var GetImageArtifact func(m *MagickWand, artifact string) string
+
+func (m *MagickWand) Artifact(artifact string) string { return GetImageArtifact(m, artifact) }
+
+var GetImageArtifacts func(m *MagickWand, pattern, numberArtifacts *uint32) string
+
+func (m *MagickWand) Artifacts(pattern, numberArtifacts *uint32) string {
+	return GetImageArtifacts(m, pattern, numberArtifacts)
+}
+
+var GetImageBackgroundColor func(m *MagickWand, backgroundColor *PixelWand) bool
+
+func (m *MagickWand) ImageBackgroundColor(backgroundColor *PixelWand) bool {
+	return GetImageBackgroundColor(m, backgroundColor)
+}
+
+var GetImageBlob func(m *MagickWand, length *uint32) *byte
+
+func (m *MagickWand) Blob(length *uint32) *byte { return GetImageBlob(m, length) }
+
+var GetImageBluePrimary func(m *MagickWand, x, y *float64) bool
+
+func (m *MagickWand) BluePrimary(x, y *float64) bool { return GetImageBluePrimary(m, x, y) }
+
+var GetImageBorderColor func(m *MagickWand, borderColor *PixelWand) bool
+
+func (m *MagickWand) BorderColor(borderColor *PixelWand) bool {
+	return GetImageBorderColor(m, borderColor)
+}
+
+var GetImageChannelDepth func(m *MagickWand, channel T.ChannelType) uint32
+
+func (m *MagickWand) ChannelDepth(channel T.ChannelType) uint32 {
+	return GetImageChannelDepth(m, channel)
+}
+
+var GetImageChannelDistortion func(m *MagickWand, reference *MagickWand, channel T.ChannelType, metric T.MetricType, distortion *float64) bool
+
+func (m *MagickWand) ChannelDistortion(reference *MagickWand, channel T.ChannelType, metric T.MetricType, distortion *float64) bool {
+	return GetImageChannelDistortion(m, reference, channel, metric, distortion)
+}
+
+var GetImageChannelDistortions func(m *MagickWand, reference *MagickWand, metric T.MetricType) []float64
+
+func (m *MagickWand) ChannelDistortions(reference *MagickWand, metric T.MetricType) []float64 {
+	return GetImageChannelDistortions(m, reference, metric)
+}
+
+var GetImageChannelFeatures func(m *MagickWand, distance uint32) []T.ChannelFeatures
+
+func (m *MagickWand) ChannelFeatures(distance uint32) []T.ChannelFeatures {
+	return GetImageChannelFeatures(m, distance)
+}
+
+var GetImageChannelKurtosis func(m *MagickWand, channel T.ChannelType, kurtosis, skewness *float64) bool
+
+func (m *MagickWand) ChannelKurtosis(channel T.ChannelType, kurtosis, skewness *float64) bool {
+	return GetImageChannelKurtosis(m, channel, kurtosis, skewness)
+}
+
+var GetImageChannelMean func(m *MagickWand, channel T.ChannelType, mean, standardDeviation *float64) bool
+
+func (m *MagickWand) ChannelMean(channel T.ChannelType, mean, standardDeviation *float64) bool {
+	return GetImageChannelMean(m, channel, mean, standardDeviation)
+}
+
+var GetImageChannelRange func(m *MagickWand, channel T.ChannelType, minima, maxima *float64) bool
+
+func (m *MagickWand) ChannelRange(channel T.ChannelType, minima, maxima *float64) bool {
+	return GetImageChannelRange(m, channel, minima, maxima)
+}
+
+var GetImageChannelStatistics func(m *MagickWand) []T.ChannelStatistics
+
+func (m *MagickWand) ChannelStatistics() []T.ChannelStatistics {
+	return GetImageChannelStatistics(m)
+}
+
+var GetImageClipMask func(m *MagickWand) *MagickWand
+
+func (m *MagickWand) ClipMask() *MagickWand { return GetImageClipMask(m) }
+
+var GetImageColormapColor func(m *MagickWand, index uint32, color *PixelWand) bool
+
+func (m *MagickWand) ColormapColor(index uint32, color *PixelWand) bool {
+	return GetImageColormapColor(m, index, color)
+}
+
+var GetImageColors func(m *MagickWand) uint32
+
+func (m *MagickWand) Colors() uint32 { return GetImageColors(m) }
+
+var GetImageColorspace func(m *MagickWand) T.ColorspaceType
+
+func (m *MagickWand) ImageColorspace() T.ColorspaceType { return GetImageColorspace(m) }
+
+var GetImageCompose func(m *MagickWand) T.CompositeOperator
+
+func (m *MagickWand) Compose() T.CompositeOperator { return GetImageCompose(m) }
+
+var GetImageCompression func(m *MagickWand) T.CompressionType
+
+func (m *MagickWand) ImageCompression() T.CompressionType { return GetImageCompression(m) }
+
+var GetImageCompressionQuality func(m *MagickWand) uint32
+
+func (m *MagickWand) ImageCompressionQuality() uint32 { return GetImageCompressionQuality(m) }
+
+var GetImageDelay func(m *MagickWand) uint32
+
+func (m *MagickWand) Delay() uint32 { return GetImageDelay(m) }
+
+var GetImageDepth func(m *MagickWand) uint32
+
+func (m *MagickWand) Depth() uint32 { return GetImageDepth(m) }
+
+var GetImageDispose func(m *MagickWand) T.DisposeType
+
+func (m *MagickWand) Dispose() T.DisposeType { return GetImageDispose(m) }
+
+var GetImageDistortion func(m *MagickWand, reference *MagickWand, metric T.MetricType, distortion *float64) bool
+
+func (m *MagickWand) Distortion(reference *MagickWand, metric T.MetricType, distortion *float64) bool {
+	return GetImageDistortion(m, reference, metric, distortion)
+}
+
+var GetImageFilename func(m *MagickWand) string
+
+func (m *MagickWand) ImageFilename() string { return GetImageFilename(m) }
+
+var GetImageFormat func(m *MagickWand) string
+
+func (m *MagickWand) ImageFormat() string { return GetImageFormat(m) }
+
+var GetImageFuzz func(m *MagickWand) float64
+
+func (m *MagickWand) Fuzz() float64 { return GetImageFuzz(m) }
+
+var GetImageGamma func(m *MagickWand) float64
+
+func (m *MagickWand) ImageGamma() float64 { return GetImageGamma(m) }
+
+var GetImageGravity func(m *MagickWand) T.GravityType
+
+func (m *MagickWand) ImageGravity() T.GravityType { return GetImageGravity(m) }
+
+var GetImageGreenPrimary func(m *MagickWand, x, y *float64) bool
+
+func (m *MagickWand) GreenPrimary(x, y *float64) bool { return GetImageGreenPrimary(m, x, y) }
+
+var GetImageHeight func(m *MagickWand) uint32
+
+func (m *MagickWand) Height() uint32 { return GetImageHeight(m) }
+
+var GetImageHistogram func(m *MagickWand, numberColors *uint32) []*PixelWand
+
+func (m *MagickWand) Histogram(numberColors *uint32) []*PixelWand {
+	return GetImageHistogram(m, numberColors)
+}
+
+var GetImageInterlaceScheme func(m *MagickWand) T.InterlaceType
+
+func (m *MagickWand) ImageInterlaceScheme() T.InterlaceType { return GetImageInterlaceScheme(m) }
+
+var GetImageInterpolateMethod func(m *MagickWand) T.InterpolatePixelMethod
+
+func (m *MagickWand) ImageInterpolateMethod() T.InterpolatePixelMethod {
+	return GetImageInterpolateMethod(m)
+}
+
+var GetImageIterations func(m *MagickWand) uint32
+
+func (m *MagickWand) Iterations() uint32 { return GetImageIterations(m) }
+
+var GetImageLength func(m *MagickWand, length *T.MagickSizeType) bool
+
+func (m *MagickWand) Length(length *T.MagickSizeType) bool {
+	return GetImageLength(m, length)
+}
+
+var GetImageMatteColor func(m *MagickWand, matteColor *PixelWand) bool
+
+func (m *MagickWand) MatteColor(matteColor *PixelWand) bool {
+	return GetImageMatteColor(m, matteColor)
+}
+
+var GetImageOrientation func(m *MagickWand) T.OrientationType
+
+func (m *MagickWand) ImageOrientation() T.OrientationType { return GetImageOrientation(m) }
+
+var GetImagePage func(m *MagickWand, width, height *uint32, x, y *int32) bool
+
+func (m *MagickWand) ImagePage(width, height *uint32, x, y *int32) bool {
+	return GetImagePage(m, width, height, x, y)
+}
+
+var GetImagePixelColor func(m *MagickWand, x, y int32, color *PixelWand) bool
+
+func (m *MagickWand) PixelColor(x, y int32, color *PixelWand) bool {
+	return GetImagePixelColor(m, x, y, color)
+}
+
+var GetImageProfile func(m *MagickWand, name string, length *uint32) *byte
+
+func (m *MagickWand) Profile(name string, length *uint32) *byte {
+	return GetImageProfile(m, name, length)
+}
+
+var GetImageProfiles func(m *MagickWand, pattern, numberProfiles *uint32) string
+
+func (m *MagickWand) Profiles(pattern, numberProfiles *uint32) string {
+	return GetImageProfiles(m, pattern, numberProfiles)
+}
+
+var GetImageProperties func(m *MagickWand, pattern, numberProperties *uint32) string
+
+func (m *MagickWand) Properties(pattern, numberProperties *uint32) string {
+	return GetImageProperties(m, pattern, numberProperties)
+}
+
+var GetImageProperty func(m *MagickWand, property string) string
+
+func (m *MagickWand) Property(property string) string { return GetImageProperty(m, property) }
+
+var GetImageRedPrimary func(m *MagickWand, x, y *float64) bool
+
+func (m *MagickWand) RedPrimary(x, y *float64) bool { return GetImageRedPrimary(m, x, y) }
+
+var GetImageRegion func(m *MagickWand, width, height uint32, x, y int32) *MagickWand
+
+func (m *MagickWand) Region(width, height uint32, x, y int32) *MagickWand {
+	return GetImageRegion(m, width, height, x, y)
+}
+
+var GetImageRenderingIntent func(m *MagickWand) T.RenderingIntent
+
+func (m *MagickWand) RenderingIntent() T.RenderingIntent { return GetImageRenderingIntent(m) }
+
+var GetImageResolution func(m *MagickWand, x, y *float64) bool
+
+func (m *MagickWand) ImageResolution(x, y *float64) bool { return GetImageResolution(m, x, y) }
+
+var GetImagesBlob func(m *MagickWand, length *uint32) *byte
+
+func (m *MagickWand) ImagesBlob(length *uint32) *byte { return GetImagesBlob(m, length) }
+
+var GetImageScene func(m *MagickWand) uint32
+
+func (m *MagickWand) ImageScene() uint32 { return GetImageScene(m) }
+
+var GetImageSignature func(m *MagickWand) string
+
+func (m *MagickWand) ImageSignature() string { return GetImageSignature(m) }
+
+var GetImageTicksPerSecond func(m *MagickWand) uint32
+
+func (m *MagickWand) TicksPerSecond() uint32 { return GetImageTicksPerSecond(m) }
+
+var GetImageTotalInkDensity func(m *MagickWand) float64
+
+func (m *MagickWand) TotalInkDensity() float64 { return GetImageTotalInkDensity(m) }
+
+var GetImageType func(m *MagickWand) T.ImageType
+
+func (m *MagickWand) ImageType() T.ImageType { return GetImageType(m) }
+
+var GetImageUnits func(m *MagickWand) T.ResolutionType
+
+func (m *MagickWand) ImageUnits() T.ResolutionType { return GetImageUnits(m) }
+
+var GetImageVirtualPixelMethod func(m *MagickWand) T.VirtualPixelMethod
+
+func (m *MagickWand) ImageVirtualPixelMethod() T.VirtualPixelMethod {
+	return GetImageVirtualPixelMethod(m)
+}
+
+var GetImageWhitePoint func(m *MagickWand, x, y *float64) bool
+
+func (m *MagickWand) ImageWhitePoint(x, y *float64) bool { return GetImageWhitePoint(m, x, y) }
+
+var GetImageWidth func(m *MagickWand) uint32
+
+func (m *MagickWand) ImageWidth() uint32 { return GetImageWidth(m) }
+
+var GetInterlaceScheme func(m *MagickWand) T.InterlaceType
+
+func (m *MagickWand) InterlaceScheme() T.InterlaceType { return GetInterlaceScheme(m) }
+
+var GetInterpolateMethod func(m *MagickWand) T.InterpolatePixelMethod
+
+func (m *MagickWand) InterpolateMethod() T.InterpolatePixelMethod {
+	return GetInterpolateMethod(m)
+}
+
+var GetIteratorIndex func(m *MagickWand) int32
+
+func (m *MagickWand) IteratorIndex() int32 { return GetIteratorIndex(m) }
+
+var GetNumberImages func(m *MagickWand) uint32
+
+func (m *MagickWand) NumberImages() uint32 { return GetNumberImages(m) }
+
+var GetOption func(m *MagickWand, key string) string
+
+func (m *MagickWand) Option(key string) string { return GetOption(m, key) }
+
+var GetOptions func(m *MagickWand, pattern, numberOptions *uint32) string
+
+func (m *MagickWand) Options(pattern, numberOptions *uint32) string {
+	return GetOptions(m, pattern, numberOptions)
+}
+
+var GetOrientation func(m *MagickWand) T.OrientationType
+
+func (m *MagickWand) Orientation() T.OrientationType { return GetOrientation(m) }
+
+var GetPage func(m *MagickWand, width, height *uint32, x, y *int32) bool
+
+func (m *MagickWand) Page(width, height *uint32, x, y *int32) bool {
+	return GetPage(m, width, height, x, y)
+}
+
+var GetPointsize func(m *MagickWand) float64
+
+func (m *MagickWand) Pointsize() float64 { return GetPointsize(m) }
+
+var GetResolution func(m *MagickWand, x, y *float64) bool
+
+func (m *MagickWand) Resolution(x, y *float64) bool { return GetResolution(m, x, y) }
+
+var GetSamplingFactors func(m *MagickWand, numberFactors *uint32) []float64
+
+func (m *MagickWand) SamplingFactors(numberFactors *uint32) []float64 {
+	return GetSamplingFactors(m, numberFactors)
+}
+
+var GetSize func(m *MagickWand, columns, rows *uint32) bool
+
+func (m *MagickWand) Size(columns, rows *uint32) bool { return GetSize(m, columns, rows) }
+
+var GetSizeOffset func(m *MagickWand, offset *int32) bool
+
+func (m *MagickWand) SizeOffset(offset *int32) bool { return GetSizeOffset(m, offset) }
+
+var GetType func(m *MagickWand) T.ImageType
+
+func (m *MagickWand) Type() T.ImageType { return GetType(m) }
+
+var HaldClutImage func(m *MagickWand, haldWand *MagickWand) bool
+
+func (m *MagickWand) HaldClut(haldWand *MagickWand) bool {
+	return HaldClutImage(m, haldWand)
+}
+
+var HaldClutImageChannel func(m *MagickWand, channel T.ChannelType, haldWand *MagickWand) bool
+
+func (m *MagickWand) HaldClutChannel(channel T.ChannelType, haldWand *MagickWand) bool {
+	return HaldClutImageChannel(m, channel, haldWand)
+}
+
+var HasNextImage func(m *MagickWand) bool
+
+func (m *MagickWand) HasNext() bool { return HasNextImage(m) }
+
+var HasPreviousImage func(m *MagickWand) bool
+
+func (m *MagickWand) HasPrevious() bool { return HasPreviousImage(m) }
+
+var IdentifyImage func(m *MagickWand) string
+
+func (m *MagickWand) Identify() string { return IdentifyImage(m) }
+
+var ImplodeImage func(m *MagickWand, radius float64) bool
+
+func (m *MagickWand) Implode(radius float64) bool { return ImplodeImage(m, radius) }
+
+var ImportImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool
+
+func (m *MagickWand) ImportPixels(x, y int32, columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool {
+	return ImportImagePixels(m, x, y, columns, rows, map_, storage, pixels)
+}
+
+var InverseFourierTransformImage func(m *MagickWand, phaseWand *MagickWand, magnitude bool) bool
+
+func (m *MagickWand) InverseFourierTransform(phaseWand *MagickWand, magnitude bool) bool {
+	return InverseFourierTransformImage(m, phaseWand, magnitude)
+}
+
+var LabelImage func(m *MagickWand, label string) bool
+
+func (m *MagickWand) Label(label string) bool { return LabelImage(m, label) }
+
+var LevelImage func(m *MagickWand, blackPoint, gamma, whitePoint float64) bool
+
+func (m *MagickWand) Level(blackPoint, gamma, whitePoint float64) bool {
+	return LevelImage(m, blackPoint, gamma, whitePoint)
+}
+
+var LevelImageChannel func(m *MagickWand, channel T.ChannelType, blackPoint, gamma, whitePoint float64) bool
+
+func (m *MagickWand) LevelChannel(channel T.ChannelType, blackPoint, gamma, whitePoint float64) bool {
+	return LevelImageChannel(m, channel, blackPoint, gamma, whitePoint)
+}
+
+var LinearStretchImage func(m *MagickWand, blackPoint, whitePoint float64) bool
+
+func (m *MagickWand) LinearStretch(blackPoint, whitePoint float64) bool {
+	return LinearStretchImage(m, blackPoint, whitePoint)
+}
+
+var MagnifyImage func(m *MagickWand) bool
+
+func (m *MagickWand) Magnify() bool { return MagnifyImage(m) }
+
+var MapImage func(m *MagickWand, mapWand *MagickWand, dither bool) bool
+
+func (m *MagickWand) Map(mapWand *MagickWand, dither bool) bool {
+	return MapImage(m, mapWand, dither)
+}
+
+var MergeImageLayers func(m *MagickWand, method T.ImageLayerMethod) *MagickWand
+
+func (m *MagickWand) MergeLayers(method T.ImageLayerMethod) *MagickWand {
+	return MergeImageLayers(m, method)
+}
+
+var MinifyImage func(m *MagickWand) bool
+
+func (m *MagickWand) Minify() bool { return MinifyImage(m) }
+
+var ModulateImage func(m *MagickWand, brightness, saturation, hue float64) bool
+
+func (m *MagickWand) Modulate(brightness, saturation, hue float64) bool {
+	return ModulateImage(m, brightness, saturation, hue)
+}
+
+var MontageImage func(m *MagickWand, drawingWand DrawingWand, tileGeometry, thumbnailGeometry string, mode T.MontageMode, frame string) *MagickWand
+
+func (m *MagickWand) Montage(drawingWand DrawingWand, tileGeometry, thumbnailGeometry string, mode T.MontageMode, frame string) *MagickWand {
+	return MontageImage(m, drawingWand, tileGeometry, thumbnailGeometry, mode, frame)
+}
+
+var MorphImages func(m *MagickWand, numberFrames uint32) *MagickWand
+
+func (m *MagickWand) Morph(numberFrames uint32) *MagickWand {
+	return MorphImages(m, numberFrames)
+}
+
+var MorphologyImage func(m *MagickWand, method T.MorphologyMethod, iterations int32, kernel *T.KernelInfo) bool
+
+func (m *MagickWand) Morphology(method T.MorphologyMethod, iterations int32, kernel *T.KernelInfo) bool {
+	return MorphologyImage(m, method, iterations, kernel)
+}
+
+var MorphologyImageChannel func(m *MagickWand, channel T.ChannelType, method T.MorphologyMethod, iterations int32, kernel *T.KernelInfo) bool
+
+func (m *MagickWand) MorphologyChannel(channel T.ChannelType, method T.MorphologyMethod, iterations int32, kernel *T.KernelInfo) bool {
+	return MorphologyImageChannel(m, channel, method, iterations, kernel)
+}
+
+var MotionBlurImage func(m *MagickWand, radius, sigma, angle float64) bool
+
+func (m *MagickWand) MotionBlur(radius, sigma, angle float64) bool {
+	return MotionBlurImage(m, radius, sigma, angle)
+}
+
+var MotionBlurImageChannel func(m *MagickWand, channel T.ChannelType, radius, sigma, angle float64) bool
+
+func (m *MagickWand) MotionBlurChannel(channel T.ChannelType, radius, sigma, angle float64) bool {
+	return MotionBlurImageChannel(m, channel, radius, sigma, angle)
+}
+
+var NegateImage func(m *MagickWand, gray bool) bool
+
+func (m *MagickWand) Negate(gray bool) bool { return NegateImage(m, gray) }
+
+var NegateImageChannel func(m *MagickWand, channel T.ChannelType, gray bool) bool
+
+func (m *MagickWand) NegateChannel(channel T.ChannelType, gray bool) bool {
+	return NegateImageChannel(m, channel, gray)
+}
+
+var NewImage func(m *MagickWand, columns, rows uint32, background *PixelWand) bool
+
+func (m *MagickWand) New(columns, rows uint32, background *PixelWand) bool {
+	return NewImage(m, columns, rows, background)
+}
+
+var NextImage func(m *MagickWand) bool
+
+func (m *MagickWand) Next() bool { return NextImage(m) }
+
+var NormalizeImage func(m *MagickWand) bool
+
+func (m *MagickWand) Normalize() bool { return NormalizeImage(m) }
+
+var NormalizeImageChannel func(m *MagickWand, channel T.ChannelType) bool
+
+func (m *MagickWand) NormalizeChannel(channel T.ChannelType) bool {
+	return NormalizeImageChannel(m, channel)
+}
+
+var OilPaintImage func(m *MagickWand, radius float64) bool
+
+func (m *MagickWand) OilPaint(radius float64) bool { return OilPaintImage(m, radius) }
+
+var OpaquePaintImage func(m *MagickWand, target, fill *PixelWand, fuzz float64, invert bool) bool
+
+func (m *MagickWand) OpaquePaint(target, fill *PixelWand, fuzz float64, invert bool) bool {
+	return OpaquePaintImage(m, target, fill, fuzz, invert)
+}
+
+var OpaquePaintImageChannel func(m *MagickWand, channel T.ChannelType, target, fill *PixelWand, fuzz float64, invert bool) bool
+
+func (m *MagickWand) OpaquePaintChannel(channel T.ChannelType, target, fill *PixelWand, fuzz float64, invert bool) bool {
+	return OpaquePaintImageChannel(m, channel, target, fill, fuzz, invert)
+}
+
+var OptimizeImageLayers func(m *MagickWand) *MagickWand
+
+func (m *MagickWand) OptimizeLayers() *MagickWand { return OptimizeImageLayers(m) }
+
+var OrderedPosterizeImage func(m *MagickWand, thresholdMap string) bool
+
+func (m *MagickWand) OrderedPosterize(thresholdMap string) bool {
+	return OrderedPosterizeImage(m, thresholdMap)
+}
+
+var OrderedPosterizeImageChannel func(m *MagickWand, channel T.ChannelType, thresholdMap string) bool
+
+func (m *MagickWand) OrderedPosterizeChannel(channel T.ChannelType, thresholdMap string) bool {
+	return OrderedPosterizeImageChannel(m, channel, thresholdMap)
+}
+
+var PaintOpaqueImageChannel func(m *MagickWand, channel T.ChannelType, target, fill *PixelWand, fuzz float64) bool
+
+func (m *MagickWand) PaintOpaqueChannel(channel T.ChannelType, target, fill *PixelWand, fuzz float64) bool {
+	return PaintOpaqueImageChannel(m, channel, target, fill, fuzz)
+}
+
+var PingImage func(m *MagickWand, filename string) bool
+
+func (m *MagickWand) Ping(filename string) bool { return PingImage(m, filename) }
+
+var PingImageBlob func(m *MagickWand, blob *T.Void, length uint32) bool
+
+func (m *MagickWand) PingBlob(blob *T.Void, length uint32) bool {
+	return PingImageBlob(m, blob, length)
+}
+
+var PingImageFile func(m *MagickWand, file *FILE) bool
+
+func (m *MagickWand) PingFile(file *FILE) bool { return PingImageFile(m, file) }
+
+var PolaroidImage func(m *MagickWand, d *DrawingWand, angle float64) bool
+
+func (m *MagickWand) Polaroid(d *DrawingWand, angle float64) bool {
+	return PolaroidImage(m, d, angle)
+}
+
+var PosterizeImage func(m *MagickWand, levels uint32, dither bool) bool
+
+func (m *MagickWand) Posterize(levels uint32, dither bool) bool {
+	return PosterizeImage(m, levels, dither)
+}
+
+var PreviewImages func(m *MagickWand, preview T.PreviewType) *MagickWand
+
+func (m *MagickWand) PreviewImages(preview T.PreviewType) *MagickWand {
+	return PreviewImages(m, preview)
+}
+
+var PreviousImage func(m *MagickWand) bool
+
+func (m *MagickWand) Previous() bool { return PreviousImage(m) }
+
+var ProfileImage func(m *MagickWand, name string, profile *T.Void, length uint32) bool
+
+func (m *MagickWand) ProfileImage(name string, profile *T.Void, length uint32) bool {
+	return ProfileImage(m, name, profile, length)
+}
+
+var QuantizeImage func(m *MagickWand, numberColors uint32, colorspace T.ColorspaceType, treedepth uint32, dither, measureError bool) bool
+
+func (m *MagickWand) Quantize(numberColors uint32, colorspace T.ColorspaceType, treedepth uint32, dither, measureError bool) bool {
+	return QuantizeImage(m, numberColors, colorspace, treedepth, dither, measureError)
+}
+
+var QuantizeImages func(m *MagickWand, numberColors uint32, colorspace T.ColorspaceType, treedepth uint32, dither, measureError bool) bool
+
+func (m *MagickWand) QuantizeImages(numberColors uint32, colorspace T.ColorspaceType, treedepth uint32, dither, measureError bool) bool {
+	return QuantizeImages(m, numberColors, colorspace, treedepth, dither, measureError)
+}
+
+var QueryFontMetrics func(m *MagickWand, drawingWand *DrawingWand, text string) []float64
+
 func (m *MagickWand) QueryFontMetrics(drawingWand *DrawingWand, text string) []float64 {
-	return MagickQueryFontMetrics(m, drawingWand, text)
+	return QueryFontMetrics(m, drawingWand, text)
 }
+
+var QueryMultilineFontMetrics func(m *MagickWand, drawingWand *DrawingWand, text string) []float64
+
 func (m *MagickWand) QueryMultilineFontMetrics(drawingWand *DrawingWand, text string) []float64 {
-	return MagickQueryMultilineFontMetrics(m, drawingWand, text)
+	return QueryMultilineFontMetrics(m, drawingWand, text)
 }
-func (m *MagickWand) RadialBlurImage(angle float64) bool { return MagickRadialBlurImage(m, angle) }
-func (m *MagickWand) RadialBlurImageChannel(channel ChannelType, angle float64) bool {
-	return MagickRadialBlurImageChannel(m, channel, angle)
+
+var RadialBlurImage func(m *MagickWand, angle float64) bool
+
+func (m *MagickWand) RadialBlur(angle float64) bool { return RadialBlurImage(m, angle) }
+
+var RadialBlurImageChannel func(m *MagickWand, channel T.ChannelType, angle float64) bool
+
+func (m *MagickWand) RadialBlurChannel(channel T.ChannelType, angle float64) bool {
+	return RadialBlurImageChannel(m, channel, angle)
 }
-func (m *MagickWand) RaiseImage(width, height size_t, x, y ssize_t, raise bool) bool {
-	return MagickRaiseImage(m, width, height, x, y, raise)
+
+var RaiseImage func(m *MagickWand, width, height uint32, x, y int32, raise bool) bool
+
+func (m *MagickWand) Raise(width, height uint32, x, y int32, raise bool) bool {
+	return RaiseImage(m, width, height, x, y, raise)
 }
-func (m *MagickWand) RandomThresholdImage(low, high float64) bool {
-	return MagickRandomThresholdImage(m, low, high)
+
+var RandomThresholdImage func(m *MagickWand, low, high float64) bool
+
+func (m *MagickWand) RandomThreshold(low, high float64) bool {
+	return RandomThresholdImage(m, low, high)
 }
-func (m *MagickWand) RandomThresholdImageChannel(channel ChannelType, low, high float64) bool {
-	return MagickRandomThresholdImageChannel(m, channel, low, high)
+
+var RandomThresholdImageChannel func(m *MagickWand, channel T.ChannelType, low, high float64) bool
+
+func (m *MagickWand) RandomThresholdChannel(channel T.ChannelType, low, high float64) bool {
+	return RandomThresholdImageChannel(m, channel, low, high)
 }
-func (m *MagickWand) ReadImage(filename string) bool { return MagickReadImage(m, filename) }
-func (m *MagickWand) ReadImageBlob(blob *Void, length size_t) bool {
-	return MagickReadImageBlob(m, blob, length)
+
+var ReadImage func(m *MagickWand, filename string) bool
+
+func (m *MagickWand) Read(filename string) bool { return ReadImage(m, filename) }
+
+var ReadImageBlob func(m *MagickWand, blob *byte, length uint32) bool
+
+func (m *MagickWand) ReadBlob(blob *byte, length uint32) bool {
+	return ReadImageBlob(m, blob, length)
 }
-func (m *MagickWand) ReadImageFile(file *FILE) bool { return MagickReadImageFile(m, file) }
-func (m *MagickWand) RecolorImage(order size_t, color_matrix *float64) bool {
-	return MagickRecolorImage(m, order, color_matrix)
+
+var ReadImageFile func(m *MagickWand, file *FILE) bool
+
+func (m *MagickWand) ReadFile(file *FILE) bool { return ReadImageFile(m, file) }
+
+var RemapImage func(m *MagickWand, remapWand *MagickWand, method T.DitherMethod) bool
+
+func (m *MagickWand) Remap(remapWand *MagickWand, method T.DitherMethod) bool {
+	return RemapImage(m, remapWand, method)
 }
-func (m *MagickWand) ReduceNoiseImage(radius float64) bool { return MagickReduceNoiseImage(m, radius) }
-func (m *MagickWand) RegionOfInterestImage(width, height size_t, x, y ssize_t) *MagickWand {
-	return MagickRegionOfInterestImage(m, width, height, x, y)
+
+var RemoveImage func(m *MagickWand) bool
+
+func (m *MagickWand) Remove() bool { return RemoveImage(m) }
+
+var RemoveImageProfile func(m *MagickWand, name string, length *uint32) []byte
+
+func (m *MagickWand) RemoveProfile(name string, length *uint32) []byte {
+	return RemoveImageProfile(m, name, length)
 }
-func (m *MagickWand) RemapImage(remap_wand *MagickWand, method DitherMethod) bool {
-	return MagickRemapImage(m, remap_wand, method)
+
+var ResampleImage func(m *MagickWand, xResolution, yResolution float64, filter T.FilterTypes, blur float64) bool
+
+func (m *MagickWand) Resample(xResolution, yResolution float64, filter T.FilterTypes, blur float64) bool {
+	return ResampleImage(m, xResolution, yResolution, filter, blur)
 }
-func (m *MagickWand) RemoveImage() bool { return MagickRemoveImage(m) }
-func (m *MagickWand) RemoveImageProfile(name string, length *size_t) *uint8 {
-	return MagickRemoveImageProfile(m, name, length)
+
+var ResetImagePage func(m *MagickWand, page string) bool
+
+func (m *MagickWand) ResetPage(page string) bool { return ResetImagePage(m, page) }
+
+var ResetIterator func(m *MagickWand)
+
+func (m *MagickWand) ResetIterator() { ResetIterator(m) }
+
+var ResizeImage func(m *MagickWand, columns, rows uint32, filter T.FilterTypes, blur float64) bool
+
+func (m *MagickWand) Resize(columns, rows uint32, filter T.FilterTypes, blur float64) bool {
+	return ResizeImage(m, columns, rows, filter, blur)
 }
-func (m *MagickWand) ResampleImage(x_resolution, y_resolution float64, filter FilterTypes, blur float64) bool {
-	return MagickResampleImage(m, x_resolution, y_resolution, filter, blur)
+
+var RollImage func(m *MagickWand, x int32, y uint32) bool
+
+func (m *MagickWand) Roll(x int32, y uint32) bool { return RollImage(m, x, y) }
+
+var RotateImage func(m *MagickWand, background *PixelWand, degrees float64) bool
+
+func (m *MagickWand) Rotate(background *PixelWand, degrees float64) bool {
+	return RotateImage(m, background, degrees)
 }
-func (m *MagickWand) ResetImagePage(page string) bool { return MagickResetImagePage(m, page) }
-func (m *MagickWand) ResetIterator()                  { MagickResetIterator(m) }
-func (m *MagickWand) ResizeImage(columns, rows size_t, filter FilterTypes, blur float64) bool {
-	return MagickResizeImage(m, columns, rows, filter, blur)
+
+var SampleImage func(m *MagickWand, columns, rows uint32) bool
+
+func (m *MagickWand) Sample(columns, rows uint32) bool {
+	return SampleImage(m, columns, rows)
 }
-func (m *MagickWand) RollImage(x ssize_t, y size_t) bool { return MagickRollImage(m, x, y) }
-func (m *MagickWand) RotateImage(background *PixelWand, degrees float64) bool {
-	return MagickRotateImage(m, background, degrees)
+
+var ScaleImage func(m *MagickWand, columns, rows uint32) bool
+
+func (m *MagickWand) Scale(columns, rows uint32) bool { return ScaleImage(m, columns, rows) }
+
+var SegmentImage func(m *MagickWand, colorspace T.ColorspaceType, verbose bool, clusterThreshold, smoothThreshold float64) bool
+
+func (m *MagickWand) Segment(colorspace T.ColorspaceType, verbose bool, clusterThreshold, smoothThreshold float64) bool {
+	return SegmentImage(m, colorspace, verbose, clusterThreshold, smoothThreshold)
 }
-func (m *MagickWand) SampleImage(columns, rows size_t) bool {
-	return MagickSampleImage(m, columns, rows)
+
+var SelectiveBlurImage func(m *MagickWand, radius, sigma, threshold float64) bool
+
+func (m *MagickWand) SelectiveBlur(radius, sigma, threshold float64) bool {
+	return SelectiveBlurImage(m, radius, sigma, threshold)
 }
-func (m *MagickWand) ScaleImage(columns, rows size_t) bool { return MagickScaleImage(m, columns, rows) }
-func (m *MagickWand) SegmentImage(colorspace ColorspaceType, verbose bool, cluster_threshold, smooth_threshold float64) bool {
-	return MagickSegmentImage(m, colorspace, verbose, cluster_threshold, smooth_threshold)
+
+var SelectiveBlurImageChannel func(m *MagickWand, channel T.ChannelType, radius, sigma, threshold float64) bool
+
+func (m *MagickWand) SelectiveBlurChannel(channel T.ChannelType, radius, sigma, threshold float64) bool {
+	return SelectiveBlurImageChannel(m, channel, radius, sigma, threshold)
 }
-func (m *MagickWand) SelectiveBlurImage(radius, sigma, threshold float64) bool {
-	return MagickSelectiveBlurImage(m, radius, sigma, threshold)
+
+var SeparateImageChannel func(m *MagickWand, channel T.ChannelType) bool
+
+func (m *MagickWand) SeparateChannel(channel T.ChannelType) bool {
+	return SeparateImageChannel(m, channel)
 }
-func (m *MagickWand) SelectiveBlurImageChannel(channel ChannelType, radius, sigma, threshold float64) bool {
-	return MagickSelectiveBlurImageChannel(m, channel, radius, sigma, threshold)
+
+var SepiaToneImage func(m *MagickWand, threshold float64) bool
+
+func (m *MagickWand) SepiaTone(threshold float64) bool {
+	return SepiaToneImage(m, threshold)
 }
-func (m *MagickWand) SeparateImageChannel(channel ChannelType) bool {
-	return MagickSeparateImageChannel(m, channel)
-}
-func (m *MagickWand) SepiaToneImage(threshold float64) bool {
-	return MagickSepiaToneImage(m, threshold)
-}
-func (m *MagickWand) SetAntialias(antialias bool) bool { return MagickSetAntialias(m, antialias) }
+
+var SetAntialias func(m *MagickWand, antialias bool) bool
+
+func (m *MagickWand) SetAntialias(antialias bool) bool { return SetAntialias(m, antialias) }
+
+var SetBackgroundColor func(m *MagickWand, background *PixelWand) bool
+
 func (m *MagickWand) SetBackgroundColor(background *PixelWand) bool {
-	return MagickSetBackgroundColor(m, background)
+	return SetBackgroundColor(m, background)
 }
-func (m *MagickWand) SetColorspace(colorspace ColorspaceType) bool {
-	return MagickSetColorspace(m, colorspace)
+
+var SetColorspace func(m *MagickWand, colorspace T.ColorspaceType) bool
+
+func (m *MagickWand) SetColorspace(colorspace T.ColorspaceType) bool {
+	return SetColorspace(m, colorspace)
 }
-func (m *MagickWand) SetCompression(compression CompressionType) bool {
-	return MagickSetCompression(m, compression)
+
+var SetCompression func(m *MagickWand, compression T.CompressionType) bool
+
+func (m *MagickWand) SetCompression(compression T.CompressionType) bool {
+	return SetCompression(m, compression)
 }
-func (m *MagickWand) SetCompressionQuality(quality size_t) bool {
-	return MagickSetCompressionQuality(m, quality)
+
+var SetCompressionQuality func(m *MagickWand, quality uint32) bool
+
+func (m *MagickWand) SetCompressionQuality(quality uint32) bool {
+	return SetCompressionQuality(m, quality)
 }
-func (m *MagickWand) SetDepth(depth size_t) bool         { return MagickSetDepth(m, depth) }
-func (m *MagickWand) SetExtract(geometry string) bool    { return MagickSetExtract(m, geometry) }
-func (m *MagickWand) SetFilename(filename string) bool   { return MagickSetFilename(m, filename) }
-func (m *MagickWand) SetFirstIterator()                  { MagickSetFirstIterator(m) }
-func (m *MagickWand) SetFont(font string) bool           { return MagickSetFont(m, font) }
-func (m *MagickWand) SetFormat(format string) bool       { return MagickSetFormat(m, format) }
-func (m *MagickWand) SetGravity(type_ GravityType) bool  { return MagickSetGravity(m, type_) }
-func (m *MagickWand) SetImage(set_wand *MagickWand) bool { return MagickSetImage(m, set_wand) }
-func (m *MagickWand) SetImageAlphaChannel(alpha_type AlphaChannelType) bool {
-	return MagickSetImageAlphaChannel(m, alpha_type)
+
+var SetDepth func(m *MagickWand, depth uint32) bool
+
+func (m *MagickWand) SetDepth(depth uint32) bool { return SetDepth(m, depth) }
+
+var SetExtract func(m *MagickWand, geometry string) bool
+
+func (m *MagickWand) SetExtract(geometry string) bool { return SetExtract(m, geometry) }
+
+var SetFilename func(m *MagickWand, filename string) bool
+
+func (m *MagickWand) SetFilename(filename string) bool { return SetFilename(m, filename) }
+
+var SetFirstIterator func(m *MagickWand)
+
+func (m *MagickWand) SetFirstIterator() { SetFirstIterator(m) }
+
+var SetFont func(m *MagickWand, font string) bool
+
+func (m *MagickWand) SetFont(font string) bool { return SetFont(m, font) }
+
+var SetFormat func(m *MagickWand, format string) bool
+
+func (m *MagickWand) SetFormat(format string) bool { return SetFormat(m, format) }
+
+var SetGravity func(m *MagickWand, type_ T.GravityType) bool
+
+func (m *MagickWand) SetGravity(type_ T.GravityType) bool { return SetGravity(m, type_) }
+
+var SetImage func(m *MagickWand, setWand *MagickWand) bool
+
+func (m *MagickWand) SetImage(setWand *MagickWand) bool { return SetImage(m, setWand) }
+
+var SetImageAlphaChannel func(m *MagickWand, alphaType T.AlphaChannelType) bool
+
+func (m *MagickWand) SetAlphaChannel(alphaType T.AlphaChannelType) bool {
+	return SetImageAlphaChannel(m, alphaType)
 }
-func (m *MagickWand) SetImageArtifact(artifact, value string) bool {
-	return MagickSetImageArtifact(m, artifact, value)
+
+var SetImageArtifact func(m *MagickWand, artifact, value string) bool
+
+func (m *MagickWand) SetArtifact(artifact, value string) bool {
+	return SetImageArtifact(m, artifact, value)
 }
-func (m *MagickWand) SetImageAttribute(property, value string) bool {
-	return MagickSetImageAttribute(m, property, value)
-}
+
+var SetImageBackgroundColor func(m *MagickWand, background *PixelWand) bool
+
 func (m *MagickWand) SetImageBackgroundColor(background *PixelWand) bool {
-	return MagickSetImageBackgroundColor(m, background)
+	return SetImageBackgroundColor(m, background)
 }
-func (m *MagickWand) SetImageBias(bias float64) bool { return MagickSetImageBias(m, bias) }
-func (m *MagickWand) SetImageBluePrimary(x, y float64) bool {
-	return MagickSetImageBluePrimary(m, x, y)
+
+var SetImageBias func(m *MagickWand, bias float64) bool
+
+func (m *MagickWand) SetBias(bias float64) bool { return SetImageBias(m, bias) }
+
+var SetImageBluePrimary func(m *MagickWand, x, y float64) bool
+
+func (m *MagickWand) SetBluePrimary(x, y float64) bool {
+	return SetImageBluePrimary(m, x, y)
 }
-func (m *MagickWand) SetImageBorderColor(border *PixelWand) bool {
-	return MagickSetImageBorderColor(m, border)
+
+var SetImageBorderColor func(m *MagickWand, border *PixelWand) bool
+
+func (m *MagickWand) SetBorderColor(border *PixelWand) bool {
+	return SetImageBorderColor(m, border)
 }
-func (m *MagickWand) SetImageChannelDepth(channel ChannelType, depth size_t) bool {
-	return MagickSetImageChannelDepth(m, channel, depth)
+
+var SetImageChannelDepth func(m *MagickWand, channel T.ChannelType, depth uint32) bool
+
+func (m *MagickWand) SetChannelDepth(channel T.ChannelType, depth uint32) bool {
+	return SetImageChannelDepth(m, channel, depth)
 }
-func (m *MagickWand) SetImageClipMask(clip_mask *MagickWand) bool {
-	return MagickSetImageClipMask(m, clip_mask)
+
+var SetImageClipMask func(m *MagickWand, clipMask *MagickWand) bool
+
+func (m *MagickWand) SetClipMask(clipMask *MagickWand) bool {
+	return SetImageClipMask(m, clipMask)
 }
-func (m *MagickWand) SetImageColor(color *PixelWand) bool { return MagickSetImageColor(m, color) }
-func (m *MagickWand) SetImageColormapColor(index size_t, color *PixelWand) bool {
-	return MagickSetImageColormapColor(m, index, color)
+
+var SetImageColor func(m *MagickWand, color *PixelWand) bool
+
+func (m *MagickWand) SetColor(color *PixelWand) bool { return SetImageColor(m, color) }
+
+var SetImageColormapColor func(m *MagickWand, index uint32, color *PixelWand) bool
+
+func (m *MagickWand) SetColormapColor(index uint32, color *PixelWand) bool {
+	return SetImageColormapColor(m, index, color)
 }
-func (m *MagickWand) SetImageColorspace(colorspace ColorspaceType) bool {
-	return MagickSetImageColorspace(m, colorspace)
+
+var SetImageColorspace func(m *MagickWand, colorspace T.ColorspaceType) bool
+
+func (m *MagickWand) SetImageColorspace(colorspace T.ColorspaceType) bool {
+	return SetImageColorspace(m, colorspace)
 }
-func (m *MagickWand) SetImageCompose(compose CompositeOperator) bool {
-	return MagickSetImageCompose(m, compose)
+
+var SetImageCompose func(m *MagickWand, compose T.CompositeOperator) bool
+
+func (m *MagickWand) SetCompose(compose T.CompositeOperator) bool {
+	return SetImageCompose(m, compose)
 }
-func (m *MagickWand) SetImageCompression(compression CompressionType) bool {
-	return MagickSetImageCompression(m, compression)
+
+var SetImageCompression func(m *MagickWand, compression T.CompressionType) bool
+
+func (m *MagickWand) SetImageCompression(compression T.CompressionType) bool {
+	return SetImageCompression(m, compression)
 }
-func (m *MagickWand) SetImageCompressionQuality(quality size_t) bool {
-	return MagickSetImageCompressionQuality(m, quality)
+
+var SetImageCompressionQuality func(m *MagickWand, quality uint32) bool
+
+func (m *MagickWand) SetImageCompressionQuality(quality uint32) bool {
+	return SetImageCompressionQuality(m, quality)
 }
-func (m *MagickWand) SetImageDelay(delay size_t) bool { return MagickSetImageDelay(m, delay) }
-func (m *MagickWand) SetImageDepth(depth size_t) bool { return MagickSetImageDepth(m, depth) }
-func (m *MagickWand) SetImageDispose(dispose DisposeType) bool {
-	return MagickSetImageDispose(m, dispose)
+
+var SetImageDelay func(m *MagickWand, delay uint32) bool
+
+func (m *MagickWand) SetDelay(delay uint32) bool { return SetImageDelay(m, delay) }
+
+var SetImageDepth func(m *MagickWand, depth uint32) bool
+
+func (m *MagickWand) SetImageDepth(depth uint32) bool { return SetImageDepth(m, depth) }
+
+var SetImageDispose func(m *MagickWand, dispose T.DisposeType) bool
+
+func (m *MagickWand) SetDispose(dispose T.DisposeType) bool {
+	return SetImageDispose(m, dispose)
 }
-func (m *MagickWand) SetImageEndian(endian EndianType) bool { return MagickSetImageEndian(m, endian) }
-func (m *MagickWand) SetImageExtent(columns size_t, rows uint) bool {
-	return MagickSetImageExtent(m, columns, rows)
+
+var SetImageEndian func(m *MagickWand, endian T.EndianType) bool
+
+func (m *MagickWand) SetEndian(endian T.EndianType) bool { return SetImageEndian(m, endian) }
+
+var SetImageExtent func(m *MagickWand, columns uint32, rows uint) bool
+
+func (m *MagickWand) SetExtent(columns uint32, rows uint) bool {
+	return SetImageExtent(m, columns, rows)
 }
+
+var SetImageFilename func(m *MagickWand, filename string) bool
+
 func (m *MagickWand) SetImageFilename(filename string) bool {
-	return MagickSetImageFilename(m, filename)
+	return SetImageFilename(m, filename)
 }
-func (m *MagickWand) SetImageFormat(format string) bool { return MagickSetImageFormat(m, format) }
-func (m *MagickWand) SetImageFuzz(fuzz float64) bool    { return MagickSetImageFuzz(m, fuzz) }
-func (m *MagickWand) SetImageGamma(gamma float64) bool  { return MagickSetImageGamma(m, gamma) }
-func (m *MagickWand) SetImageGravity(gravity GravityType) bool {
-	return MagickSetImageGravity(m, gravity)
+
+var SetImageFormat func(m *MagickWand, format string) bool
+
+func (m *MagickWand) SetImageFormat(format string) bool { return SetImageFormat(m, format) }
+
+var SetImageFuzz func(m *MagickWand, fuzz float64) bool
+
+func (m *MagickWand) SetFuzz(fuzz float64) bool { return SetImageFuzz(m, fuzz) }
+
+var SetImageGamma func(m *MagickWand, gamma float64) bool
+
+func (m *MagickWand) SetGamma(gamma float64) bool { return SetImageGamma(m, gamma) }
+
+var SetImageGravity func(m *MagickWand, gravity T.GravityType) bool
+
+func (m *MagickWand) SetImageGravity(gravity T.GravityType) bool {
+	return SetImageGravity(m, gravity)
 }
-func (m *MagickWand) SetImageGreenPrimary(x, y float64) bool {
-	return MagickSetImageGreenPrimary(m, x, y)
+
+var SetImageGreenPrimary func(m *MagickWand, x, y float64) bool
+
+func (m *MagickWand) SetGreenPrimary(x, y float64) bool {
+	return SetImageGreenPrimary(m, x, y)
 }
-func (m *MagickWand) SetImageIndex(index ssize_t) bool { return MagickSetImageIndex(m, index) }
-func (m *MagickWand) SetImageInterlaceScheme(interlace InterlaceType) bool {
-	return MagickSetImageInterlaceScheme(m, interlace)
+
+var SetImageInterlaceScheme func(m *MagickWand, interlace T.InterlaceType) bool
+
+func (m *MagickWand) SetImageInterlaceScheme(interlace T.InterlaceType) bool {
+	return SetImageInterlaceScheme(m, interlace)
 }
-func (m *MagickWand) SetImageInterpolateMethod(method InterpolatePixelMethod) bool {
-	return MagickSetImageInterpolateMethod(m, method)
+
+var SetImageInterpolateMethod func(m *MagickWand, method T.InterpolatePixelMethod) bool
+
+func (m *MagickWand) SetImageInterpolateMethod(method T.InterpolatePixelMethod) bool {
+	return SetImageInterpolateMethod(m, method)
 }
-func (m *MagickWand) SetImageIterations(iterations size_t) bool {
-	return MagickSetImageIterations(m, iterations)
+
+var SetImageIterations func(m *MagickWand, iterations uint32) bool
+
+func (m *MagickWand) SetIterations(iterations uint32) bool {
+	return SetImageIterations(m, iterations)
 }
-func (m *MagickWand) SetImageMatteColor(matte *bool) bool { return MagickSetImageMatteColor(m, matte) }
-func (m *MagickWand) SetImageMatteColorFIX(matte *PixelWand) bool {
-	return MagickSetImageMatteColorFIX(m, matte)
+
+var SetImageMatte func(m *MagickWand, matte *bool) bool
+
+func (m *MagickWand) SetMatte(matte *bool) bool { return SetImageMatte(m, matte) }
+
+var SetImageMatteColor func(m *MagickWand, matte *PixelWand) bool
+
+func (m *MagickWand) SetMatteColor(matte *PixelWand) bool {
+	return SetImageMatteColor(m, matte)
 }
-func (m *MagickWand) SetImageOpacity(alpha float64) bool { return MagickSetImageOpacity(m, alpha) }
-func (m *MagickWand) SetImageOrientation(orientation OrientationType) bool {
-	return MagickSetImageOrientation(m, orientation)
+
+var SetImageOpacity func(m *MagickWand, alpha float64) bool
+
+func (m *MagickWand) SetOpacity(alpha float64) bool { return SetImageOpacity(m, alpha) }
+
+var SetImageOrientation func(m *MagickWand, orientation T.OrientationType) bool
+
+func (m *MagickWand) SetImageOrientation(orientation T.OrientationType) bool {
+	return SetImageOrientation(m, orientation)
 }
-func (m *MagickWand) SetImagePage(width, height size_t, x, y ssize_t) bool {
-	return MagickSetImagePage(m, width, height, x, y)
+
+var SetImagePage func(m *MagickWand, width, height uint32, x, y int32) bool
+
+func (m *MagickWand) SetImagePage(width, height uint32, x, y int32) bool {
+	return SetImagePage(m, width, height, x, y)
 }
-func (m *MagickWand) SetImagePixels(x, y ssize_t, columns, rows size_t, map_ string, storage StorageType, pixels *Void) bool {
-	return MagickSetImagePixels(m, x, y, columns, rows, map_, storage, pixels)
+
+var SetImageProfile func(m *MagickWand, name string, profile *T.Void, length uint32) bool
+
+func (m *MagickWand) SetImageProfile(name string, profile *T.Void, length uint32) bool {
+	return SetImageProfile(m, name, profile, length)
 }
-func (m *MagickWand) SetImageProfile(name string, profile *Void, length size_t) bool {
-	return MagickSetImageProfile(m, name, profile, length)
+
+var SetImageProgressMonitor func(m *MagickWand, progressMonitor, clientData *T.Void) T.MagickProgressMonitor
+
+func (m *MagickWand) SetImageProgressMonitor(progressMonitor, clientData *T.Void) T.MagickProgressMonitor {
+	return SetImageProgressMonitor(m, progressMonitor, clientData)
 }
-func (m *MagickWand) SetImageProgressMonitor(progress_monitor, client_data *Void) MagickProgressMonitorType {
-	return MagickSetImageProgressMonitor(m, progress_monitor, client_data)
-}
+
+var SetImageProperty func(m *MagickWand, property, value string) bool
+
 func (m *MagickWand) SetImageProperty(property, value string) bool {
-	return MagickSetImageProperty(m, property, value)
+	return SetImageProperty(m, property, value)
 }
-func (m *MagickWand) SetImageRedPrimary(x, y float64) bool { return MagickSetImageRedPrimary(m, x, y) }
-func (m *MagickWand) SetImageRenderingIntent(rendering_intent RenderingIntent) bool {
-	return MagickSetImageRenderingIntent(m, rendering_intent)
+
+var SetImageRedPrimary func(m *MagickWand, x, y float64) bool
+
+func (m *MagickWand) SetRedPrimary(x, y float64) bool { return SetImageRedPrimary(m, x, y) }
+
+var SetImageRenderingIntent func(m *MagickWand, renderingIntent T.RenderingIntent) bool
+
+func (m *MagickWand) SetRenderingIntent(renderingIntent T.RenderingIntent) bool {
+	return SetImageRenderingIntent(m, renderingIntent)
 }
-func (m *MagickWand) SetImageResolution(x_resolution, y_resolution float64) bool {
-	return MagickSetImageResolution(m, x_resolution, y_resolution)
+
+var SetImageResolution func(m *MagickWand, xResolution, yResolution float64) bool
+
+func (m *MagickWand) SetImageResolution(xResolution, yResolution float64) bool {
+	return SetResolution(m, xResolution, yResolution)
 }
-func (m *MagickWand) SetImageScene(scene size_t) bool { return MagickSetImageScene(m, scene) }
-func (m *MagickWand) SetImageTicksPerSecond(ticks_per_second ssize_t) bool {
-	return MagickSetImageTicksPerSecond(m, ticks_per_second)
+
+var SetImageScene func(m *MagickWand, scene uint32) bool
+
+func (m *MagickWand) SetScene(scene uint32) bool { return SetImageScene(m, scene) }
+
+var SetImageTicksPerSecond func(m *MagickWand, ticksPerSecond int32) bool
+
+func (m *MagickWand) SetImageTicksPerSecond(ticksPerSecond int32) bool {
+	return SetImageTicksPerSecond(m, ticksPerSecond)
 }
-func (m *MagickWand) SetImageType(image_type ImageType) bool {
-	return MagickSetImageType(m, image_type)
+
+var SetImageType func(m *MagickWand, imageType T.ImageType) bool
+
+func (m *MagickWand) SetImageType(imageType T.ImageType) bool {
+	return SetImageType(m, imageType)
 }
-func (m *MagickWand) SetImageUnits(units ResolutionType) bool { return MagickSetImageUnits(m, units) }
-func (m *MagickWand) SetImageVirtualPixelMethod(method VirtualPixelMethod) VirtualPixelMethod {
-	return MagickSetImageVirtualPixelMethod(m, method)
+
+var SetImageUnits func(m *MagickWand, units T.ResolutionType) bool
+
+func (m *MagickWand) SetUnits(units T.ResolutionType) bool { return SetImageUnits(m, units) }
+
+var SetImageVirtualPixelMethod func(m *MagickWand, method T.VirtualPixelMethod) T.VirtualPixelMethod
+
+func (m *MagickWand) SetVirtualPixelMethod(method T.VirtualPixelMethod) T.VirtualPixelMethod {
+	return SetImageVirtualPixelMethod(m, method)
 }
-func (m *MagickWand) SetImageWhitePoint(x, y float64) bool { return MagickSetImageWhitePoint(m, x, y) }
-func (m *MagickWand) SetInterlaceScheme(interlace_scheme InterlaceType) bool {
-	return MagickSetInterlaceScheme(m, interlace_scheme)
+
+var SetImageWhitePoint func(m *MagickWand, x, y float64) bool
+
+func (m *MagickWand) SetImageWhitePoint(x, y float64) bool { return SetImageWhitePoint(m, x, y) }
+
+var SetInterlaceScheme func(m *MagickWand, interlaceScheme T.InterlaceType) bool
+
+func (m *MagickWand) SetInterlaceScheme(interlaceScheme T.InterlaceType) bool {
+	return SetInterlaceScheme(m, interlaceScheme)
 }
-func (m *MagickWand) SetInterpolateMethod(method InterpolateMethodPixel) bool {
-	return MagickSetInterpolateMethod(m, method)
+
+var SetInterpolateMethod func(m *MagickWand, method T.InterpolatePixelMethod) bool
+
+func (m *MagickWand) SetInterpolateMethod(method T.InterpolatePixelMethod) bool {
+	return SetInterpolateMethod(m, method)
 }
-func (m *MagickWand) SetIteratorIndex(index ssize_t) bool { return MagickSetIteratorIndex(m, index) }
-func (m *MagickWand) SetLastIterator()                    { MagickSetLastIterator(m) }
-func (m *MagickWand) SetOption(key, value string) bool    { return MagickSetOption(m, key, value) }
-func (m *MagickWand) SetOrientation(orientation OrientationType) bool {
-	return MagickSetOrientation(m, orientation)
+
+var SetIteratorIndex func(m *MagickWand, index int32) bool
+
+func (m *MagickWand) SetIteratorIndex(index int32) bool { return SetIteratorIndex(m, index) }
+
+var SetLastIterator func(m *MagickWand)
+
+func (m *MagickWand) SetLastIterator() { SetLastIterator(m) }
+
+var SetOption func(m *MagickWand, key, value string) bool
+
+func (m *MagickWand) SetOption(key, value string) bool { return SetOption(m, key, value) }
+
+var SetOrientation func(m *MagickWand, orientation T.OrientationType) bool
+
+func (m *MagickWand) SetOrientation(orientation T.OrientationType) bool {
+	return SetOrientation(m, orientation)
 }
-func (m *MagickWand) SetPage(width, height size_t, x, y ssize_t) bool {
-	return MagickSetPage(m, width, height, x, y)
+
+var SetPage func(m *MagickWand, width, height uint32, x, y int32) bool
+
+func (m *MagickWand) SetPage(width, height uint32, x, y int32) bool {
+	return SetPage(m, width, height, x, y)
 }
-func (m *MagickWand) SetPassphrase(passphrase string) bool { return MagickSetPassphrase(m, passphrase) }
-func (m *MagickWand) SetPointsize(pointsize float64) bool  { return MagickSetPointsize(m, pointsize) }
-func (m *MagickWand) SetProgressMonitor(progress_monitor, client_data *Void) MagickProgressMonitorType {
-	return MagickSetProgressMonitor(m, progress_monitor, client_data)
+
+var SetPassphrase func(m *MagickWand, passphrase string) bool
+
+func (m *MagickWand) SetPassphrase(passphrase string) bool { return SetPassphrase(m, passphrase) }
+
+var SetPointsize func(m *MagickWand, pointsize float64) bool
+
+func (m *MagickWand) SetPointsize(pointsize float64) bool { return SetPointsize(m, pointsize) }
+
+var SetProgressMonitor func(m *MagickWand, progressMonitor, clientData *T.Void) T.MagickProgressMonitor
+
+func (m *MagickWand) SetProgressMonitor(progressMonitor, clientData *T.Void) T.MagickProgressMonitor {
+	return SetProgressMonitor(m, progressMonitor, clientData)
 }
-func (m *MagickWand) SetResolution(x_resolution, y_resolution float64) bool {
-	return MagickSetResolution(m, x_resolution, y_resolution)
+
+var SetResolution func(m *MagickWand, xResolution, yResolution float64) bool
+
+func (m *MagickWand) SetResolution(xResolution, yResolution float64) bool {
+	return SetResolution(m, xResolution, yResolution)
 }
-func (m *MagickWand) SetSamplingFactors(number_factors size_t, sampling_factors *float64) bool {
-	return MagickSetSamplingFactors(m, number_factors, sampling_factors)
+
+var SetSamplingFactors func(m *MagickWand, numberFactors uint32, samplingFactors *float64) bool
+
+func (m *MagickWand) SetSamplingFactors(numberFactors uint32, samplingFactors *float64) bool {
+	return SetSamplingFactors(m, numberFactors, samplingFactors)
 }
-func (m *MagickWand) SetSize(columns, rows size_t) bool { return MagickSetSize(m, columns, rows) }
-func (m *MagickWand) SetSizeOffset(columns, rows size_t, offset ssize_t) bool {
-	return MagickSetSizeOffset(m, columns, rows, offset)
+
+var SetSize func(m *MagickWand, columns, rows uint32) bool
+
+func (m *MagickWand) SetSize(columns, rows uint32) bool { return SetSize(m, columns, rows) }
+
+var SetSizeOffset func(m *MagickWand, columns, rows uint32, offset int32) bool
+
+func (m *MagickWand) SetSizeOffset(columns, rows uint32, offset int32) bool {
+	return SetSizeOffset(m, columns, rows, offset)
 }
-func (m *MagickWand) SetType(image_type ImageType) bool { return MagickSetType(m, image_type) }
-func (m *MagickWand) ShadeImage(gray bool, azimuth, elevation float64) bool {
-	return MagickShadeImage(m, gray, azimuth, elevation)
+
+var SetType func(m *MagickWand, imageType T.ImageType) bool
+
+func (m *MagickWand) SetType(imageType T.ImageType) bool { return SetType(m, imageType) }
+
+var ShadeImage func(m *MagickWand, gray bool, azimuth, elevation float64) bool
+
+func (m *MagickWand) Shade(gray bool, azimuth, elevation float64) bool {
+	return ShadeImage(m, gray, azimuth, elevation)
 }
-func (m *MagickWand) ShadowImage(opacity, sigma float64, x, y ssize_t) bool {
-	return MagickShadowImage(m, opacity, sigma, x, y)
+
+var ShadowImage func(m *MagickWand, opacity, sigma float64, x, y int32) bool
+
+func (m *MagickWand) Shadow(opacity, sigma float64, x, y int32) bool {
+	return ShadowImage(m, opacity, sigma, x, y)
 }
-func (m *MagickWand) SharpenImage(radius, sigma float64) bool {
-	return MagickSharpenImage(m, radius, sigma)
+
+var SharpenImage func(m *MagickWand, radius, sigma float64) bool
+
+func (m *MagickWand) Sharpen(radius, sigma float64) bool {
+	return SharpenImage(m, radius, sigma)
 }
-func (m *MagickWand) SharpenImageChannel(channel ChannelType, radius, sigma float64) bool {
-	return MagickSharpenImageChannel(m, channel, radius, sigma)
+
+var SharpenImageChannel func(m *MagickWand, channel T.ChannelType, radius, sigma float64) bool
+
+func (m *MagickWand) SharpenChannel(channel T.ChannelType, radius, sigma float64) bool {
+	return SharpenImageChannel(m, channel, radius, sigma)
 }
-func (m *MagickWand) ShaveImage(columns, rows size_t) bool { return MagickShaveImage(m, columns, rows) }
-func (m *MagickWand) ShearImage(background *PixelWand, x_shear, y_shear float64) bool {
-	return MagickShearImage(m, background, x_shear, y_shear)
+
+var ShaveImage func(m *MagickWand, columns, rows uint32) bool
+
+func (m *MagickWand) Shave(columns, rows uint32) bool { return ShaveImage(m, columns, rows) }
+
+var ShearImage func(m *MagickWand, background *PixelWand, xShear, yShear float64) bool
+
+func (m *MagickWand) Shear(background *PixelWand, xShear, yShear float64) bool {
+	return ShearImage(m, background, xShear, yShear)
 }
+
+var SigmoidalContrastImage func(m *MagickWand, sharpen bool, alpha, beta float64) bool
+
 func (m *MagickWand) SigmoidalContrastImage(sharpen bool, alpha, beta float64) bool {
-	return MagickSigmoidalContrastImage(m, sharpen, alpha, beta)
+	return SigmoidalContrastImage(m, sharpen, alpha, beta)
 }
-func (m *MagickWand) SigmoidalContrastImageChannel(channel ChannelType, sharpen bool, alpha, beta float64) bool {
-	return MagickSigmoidalContrastImageChannel(m, channel, sharpen, alpha, beta)
+
+var SigmoidalContrastImageChannel func(m *MagickWand, channel T.ChannelType, sharpen bool, alpha, beta float64) bool
+
+func (m *MagickWand) SigmoidalContrastImageChannel(channel T.ChannelType, sharpen bool, alpha, beta float64) bool {
+	return SigmoidalContrastImageChannel(m, channel, sharpen, alpha, beta)
 }
-func (m *MagickWand) SimilarityImage(reference *MagickWand, offset *RectangeInfo, similarity *float64) *MagickWand {
-	return MagickSimilarityImage(m, reference, offset, similarity)
+
+var SimilarityImage func(m *MagickWand, reference *MagickWand, offset *T.RectangleInfo, similarity *float64) *MagickWand
+
+func (m *MagickWand) SimilarityImage(reference *MagickWand, offset *T.RectangleInfo, similarity *float64) *MagickWand {
+	return SimilarityImage(m, reference, offset, similarity)
 }
+
+var SketchImage func(m *MagickWand, radius, sigma, angle float64) bool
+
 func (m *MagickWand) SketchImage(radius, sigma, angle float64) bool {
-	return MagickSketchImage(m, radius, sigma, angle)
+	return SketchImage(m, radius, sigma, angle)
 }
-func (m *MagickWand) SmushImages(stack bool, offset ssize_t) *MagickWand {
-	return MagickSmushImages(m, stack, offset)
+
+var SmushImages func(m *MagickWand, stack bool, offset int32) *MagickWand
+
+func (m *MagickWand) SmushImages(stack bool, offset int32) *MagickWand {
+	return SmushImages(m, stack, offset)
 }
-func (m *MagickWand) SolarizeImage(threshold float64) bool { return MagickSolarizeImage(m, threshold) }
-func (m *MagickWand) SparseColorImage(channel ChannelType, method SparseColorMethod, number_arguments size_t, arguments *float64) bool {
-	return MagickSparseColorImage(m, channel, method, number_arguments, arguments)
+
+var SolarizeImage func(m *MagickWand, threshold float64) bool
+
+func (m *MagickWand) Solarize(threshold float64) bool { return SolarizeImage(m, threshold) }
+
+var SparseColorImage func(m *MagickWand, channel T.ChannelType, method T.SparseColorMethod, numberArguments uint32, arguments *float64) bool
+
+func (m *MagickWand) SparseColor(channel T.ChannelType, method T.SparseColorMethod, numberArguments uint32, arguments *float64) bool {
+	return SparseColorImage(m, channel, method, numberArguments, arguments)
 }
-func (m *MagickWand) SpliceImage(width, height size_t, x, y ssize_t) bool {
-	return MagickSpliceImage(m, width, height, x, y)
+
+var SpliceImage func(m *MagickWand, width, height uint32, x, y int32) bool
+
+func (m *MagickWand) Splice(width, height uint32, x, y int32) bool {
+	return SpliceImage(m, width, height, x, y)
 }
-func (m *MagickWand) SpreadImage(radius float64) bool { return MagickSpreadImage(m, radius) }
-func (m *MagickWand) StatisticImage(type_ StatisticType, width float64, height size_t) bool {
-	return MagickStatisticImage(m, type_, width, height)
+
+var SpreadImage func(m *MagickWand, radius float64) bool
+
+func (m *MagickWand) Spread(radius float64) bool { return SpreadImage(m, radius) }
+
+var StatisticImage func(m *MagickWand, type_ T.StatisticType, width float64, height uint32) bool
+
+func (m *MagickWand) StatisticImage(type_ T.StatisticType, width float64, height uint32) bool {
+	return StatisticImage(m, type_, width, height)
 }
-func (m *MagickWand) StatisticImageChannel(channel ChannelType, type_ StatisticType, width float64, height size_t) bool {
-	return MagickStatisticImageChannel(m, channel, type_, width, height)
+
+var SteganoImage func(m *MagickWand, watermarkWand, offset int32) *MagickWand
+
+func (m *MagickWand) Stegano(watermarkWand, offset int32) *MagickWand {
+	return SteganoImage(m, watermarkWand, offset)
 }
-func (m *MagickWand) SteganoImage(watermark_wand, offset ssize_t) *MagickWand {
-	return MagickSteganoImage(m, watermark_wand, offset)
+
+var StereoImage func(m *MagickWand, offsetWand *MagickWand) *MagickWand
+
+func (m *MagickWand) Stereo(offsetWand *MagickWand) *MagickWand {
+	return StereoImage(m, offsetWand)
 }
-func (m *MagickWand) StereoImage(offset_wand *MagickWand) *MagickWand {
-	return MagickStereoImage(m, offset_wand)
+
+var StripImage func(m *MagickWand) bool
+
+func (m *MagickWand) Strip() bool { return StripImage(m) }
+
+var SwirlImage func(m *MagickWand, degrees float64) bool
+
+func (m *MagickWand) Swirl(degrees float64) bool { return SwirlImage(m, degrees) }
+
+var TextureImage func(m *MagickWand, textureWand *MagickWand) *MagickWand
+
+func (m *MagickWand) Texture(textureWand *MagickWand) *MagickWand {
+	return TextureImage(m, textureWand)
 }
-func (m *MagickWand) StripImage() bool                { return MagickStripImage(m) }
-func (m *MagickWand) SwirlImage(degrees float64) bool { return MagickSwirlImage(m, degrees) }
-func (m *MagickWand) TextureImage(texture_wand *MagickWand) *MagickWand {
-	return MagickTextureImage(m, texture_wand)
+
+var ThresholdImage func(m *MagickWand, threshold float64) bool
+
+func (m *MagickWand) Threshold(threshold float64) bool {
+	return ThresholdImage(m, threshold)
 }
-func (m *MagickWand) ThresholdImage(threshold float64) bool {
-	return MagickThresholdImage(m, threshold)
+
+var ThresholdImageChannel func(m *MagickWand, channel T.ChannelType, threshold float64) bool
+
+func (m *MagickWand) ThresholdChannel(channel T.ChannelType, threshold float64) bool {
+	return ThresholdImageChannel(m, channel, threshold)
 }
-func (m *MagickWand) ThresholdImageChannel(channel ChannelType, threshold float64) bool {
-	return MagickThresholdImageChannel(m, channel, threshold)
+
+var ThumbnailImage func(m *MagickWand, columns, rows uint32) bool
+
+func (m *MagickWand) Thumbnail(columns, rows uint32) bool {
+	return ThumbnailImage(m, columns, rows)
 }
-func (m *MagickWand) ThumbnailImage(columns, rows size_t) bool {
-	return MagickThumbnailImage(m, columns, rows)
+
+var TintImage func(m *MagickWand, tint, opacity *PixelWand) bool
+
+func (m *MagickWand) Tint(tint, opacity *PixelWand) bool {
+	return TintImage(m, tint, opacity)
 }
-func (m *MagickWand) TintImage(tint, opacity *PixelWand) bool {
-	return MagickTintImage(m, tint, opacity)
+
+var TransformImage func(m *MagickWand, crop, geometry string) *MagickWand
+
+func (m *MagickWand) Transform(crop, geometry string) *MagickWand {
+	return TransformImage(m, crop, geometry)
 }
-func (m *MagickWand) TransformImage(crop, geometry string) *MagickWand {
-	return MagickTransformImage(m, crop, geometry)
+
+var TransformImageColorspace func(m *MagickWand, colorspace T.ColorspaceType) bool
+
+func (m *MagickWand) TransformColorspace(colorspace T.ColorspaceType) bool {
+	return TransformImageColorspace(m, colorspace)
 }
-func (m *MagickWand) TransformImageColorspace(colorspace ColorspaceType) bool {
-	return MagickTransformImageColorspace(m, colorspace)
+
+var TransparentPaintImage func(m *MagickWand, target *PixelWand, alpha, fuzz float64, invert bool) bool
+
+func (m *MagickWand) TransparentPaint(target *PixelWand, alpha, fuzz float64, invert bool) bool {
+	return TransparentPaintImage(m, target, alpha, fuzz, invert)
 }
-func (m *MagickWand) TransparentImage(target *PixelWand, alpha, fuzz float64) bool {
-	return MagickTransparentImage(m, target, alpha, fuzz)
+
+var TransposeImage func(m *MagickWand) bool
+
+func (m *MagickWand) Transpose() bool { return TransposeImage(m) }
+
+var TransverseImage func(m *MagickWand) bool
+
+var TrimImage func(m *MagickWand, fuzz float64) bool
+
+func (m *MagickWand) Trim(fuzz float64) bool { return TrimImage(m, fuzz) }
+
+var UniqueImageColors func(m *MagickWand) bool
+
+func (m *MagickWand) UniqueColors() bool { return UniqueImageColors(m) }
+
+var UnsharpMaskImage func(m *MagickWand, radius, sigma, amount, threshold float64) bool
+
+func (m *MagickWand) UnsharpMask(radius, sigma, amount, threshold float64) bool {
+	return UnsharpMaskImage(m, radius, sigma, amount, threshold)
 }
-func (m *MagickWand) TransparentPaintImage(target *PixelWand, alpha, fuzz float64, invert bool) bool {
-	return MagickTransparentPaintImage(m, target, alpha, fuzz, invert)
+
+var UnsharpMaskImageChannel func(m *MagickWand, channel T.ChannelType, radius, sigma, amount, threshold float64) bool
+
+func (m *MagickWand) UnsharpMaskChannel(channel T.ChannelType, radius, sigma, amount, threshold float64) bool {
+	return UnsharpMaskImageChannel(m, channel, radius, sigma, amount, threshold)
 }
-func (m *MagickWand) TransposeImage() bool        { return MagickTransposeImage(m) }
-func (m *MagickWand) TransverseImage() bool       { return MagickTransverseImage(m) }
-func (m *MagickWand) TrimImage(fuzz float64) bool { return MagickTrimImage(m, fuzz) }
-func (m *MagickWand) UniqueImageColors() bool     { return MagickUniqueImageColors(m) }
-func (m *MagickWand) UnsharpMaskImage(radius, sigma, amount, threshold float64) bool {
-	return MagickUnsharpMaskImage(m, radius, sigma, amount, threshold)
+
+var VignetteImage func(m *MagickWand, blackPoint, whitePoint float64, x, y int32) bool
+
+func (m *MagickWand) Vignette(blackPoint, whitePoint float64, x, y int32) bool {
+	return VignetteImage(m, blackPoint, whitePoint, x, y)
 }
-func (m *MagickWand) UnsharpMaskImageChannel(channel ChannelType, radius, sigma, amount, threshold float64) bool {
-	return MagickUnsharpMaskImageChannel(m, channel, radius, sigma, amount, threshold)
+
+var WaveImage func(m *MagickWand, amplitude, waveLength float64) bool
+
+func (m *MagickWand) Wave(amplitude, waveLength float64) bool {
+	return WaveImage(m, amplitude, waveLength)
 }
-func (m *MagickWand) VignetteImage(black_point, white_point float64, x, y ssize_t) bool {
-	return MagickVignetteImage(m, black_point, white_point, x, y)
+
+var WhiteThresholdImage func(m *MagickWand, threshold *PixelWand) bool
+
+func (m *MagickWand) WhiteThreshold(threshold *PixelWand) bool {
+	return WhiteThresholdImage(m, threshold)
 }
-func (m *MagickWand) WaveImage(amplitude, wave_length float64) bool {
-	return MagickWaveImage(m, amplitude, wave_length)
-}
-func (m *MagickWand) WhiteThresholdImage(threshold *PixelWand) bool {
-	return MagickWhiteThresholdImage(m, threshold)
-}
-func (m *MagickWand) WriteImage(filename string) bool      { return MagickWriteImage(m, filename) }
-func (m *MagickWand) WriteImageBlob(length *size_t) *uint8 { return MagickWriteImageBlob(m, length) }
-func (m *MagickWand) WriteImageFile(file *FILE) bool       { return MagickWriteImageFile(m, file) }
+
+var WriteImage func(m *MagickWand, filename string) bool
+
+func (m *MagickWand) Write(filename string) bool { return WriteImage(m, filename) }
+
+var WriteImageFile func(m *MagickWand, file *FILE) bool
+
+func (m *MagickWand) WriteFile(file *FILE) bool { return WriteImageFile(m, file) }
+
+var WriteImages func(m *MagickWand, filename string, adjoin bool) bool
+
 func (m *MagickWand) WriteImages(filename string, adjoin bool) bool {
-	return MagickWriteImages(m, filename, adjoin)
+	return WriteImages(m, filename, adjoin)
 }
-func (m *MagickWand) WriteImagesFile(file *FILE) bool { return MagickWriteImagesFile(m, file) }
 
-var (
-	NewDrawingWand func() *DrawingWand
+var WriteImagesFile func(m *MagickWand, file *FILE) bool
 
-	ClearDrawingWand   func(d *DrawingWand)
-	CloneDrawingWand   func(d *DrawingWand) *DrawingWand
-	DestroyDrawingWand func(d *DrawingWand) *DrawingWand
-	IsDrawingWand      func(d *DrawingWand) bool
-	PeekDrawingWand    func(d *DrawingWand) *DrawInfo
-	PopDrawingWand     func(d *DrawingWand) bool
-	PushDrawingWand    func(d *DrawingWand) bool
+func (m *MagickWand) WriteImagesFile(file *FILE) bool { return WriteImagesFile(m, file) }
 
-	DrawAffine                                   func(d *DrawingWand, affine *AffineMatrix)
-	DrawAnnotation                               func(d *DrawingWand, x, y float64, text *uint8)
-	DrawArc                                      func(d *DrawingWand, sx, sy, ex, ey, sd, ed float64)
-	DrawBezier                                   func(d *DrawingWand, number_coordinates size_t, coordinates *PointInfo)
-	DrawCircle                                   func(d *DrawingWand, ox, oy, px, py float64)
-	DrawClearException                           func(d *DrawingWand) bool
-	DrawColor                                    func(d *DrawingWand, x, y float64, paint_method PaintMethod)
-	DrawComment                                  func(d *DrawingWand, comment string)
-	DrawComposite                                func(d *DrawingWand, compose CompositeOperator, x, y, width, height float64, magick_wand *MagickWand) bool
-	DrawEllipse                                  func(d *DrawingWand, ox, oy, rx, ry, start, end float64)
-	DrawGetBorderColor                           func(d *DrawingWand, border_color *PixelWand)
-	DrawGetClipPath                              func(d *DrawingWand) string
-	DrawGetClipUnits                             func(d *DrawingWand) ClipPathUnits
-	DrawGetException                             func(d *DrawingWand, severity *ExceptionType) string
-	DrawGetExceptionType                         func(d *DrawingWand) ExceptionType
-	DrawGetFillAlpha                             func(d *DrawingWand) float64
-	DrawGetFillColor                             func(d *DrawingWand, fill_color *PixelWand)
-	DrawGetFillOpacity                           func(d *DrawingWand) float64
-	DrawGetFillRule                              func(d *DrawingWand) FillRule
-	DrawGetFont                                  func(d *DrawingWand) string
-	DrawGetFontFamily                            func(d *DrawingWand) string
-	DrawGetFontResolution                        func(d *DrawingWand, x, y *float64) DrawBooleanType
-	DrawGetFontSize                              func(d *DrawingWand) float64
-	DrawGetFontStretch                           func(d *DrawingWand) StretchType
-	DrawGetFontStyle                             func(d *DrawingWand) StyleType
-	DrawGetFontWeight                            func(d *DrawingWand) size_t
-	DrawGetGravity                               func(d *DrawingWand) GravityType
-	DrawGetOpacity                               func(d *DrawingWand) float64
-	DrawGetStrokeAlpha                           func(d *DrawingWand) float64
-	DrawGetStrokeAntialias                       func(d *DrawingWand) bool
-	DrawGetStrokeColor                           func(d *DrawingWand, stroke_color *PixelWand)
-	DrawGetStrokeDashArray                       func(d *DrawingWand, number_elements *size_t) *float64
-	DrawGetStrokeDashOffset                      func(d *DrawingWand) float64
-	DrawGetStrokeLineCap                         func(d *DrawingWand) LineCap
-	DrawGetStrokeLineJoin                        func(d *DrawingWand) LineJoin
-	DrawGetStrokeMiterLimit                      func(d *DrawingWand) size_t
-	DrawGetStrokeOpacity                         func(d *DrawingWand) float64
-	DrawGetStrokeWidth                           func(d *DrawingWand) float64
-	DrawGetTextAlignment                         func(d *DrawingWand) AlignType
-	DrawGetTextAntialias                         func(d *DrawingWand) bool
-	DrawGetTextDecoration                        func(d *DrawingWand) DecorationType
-	DrawGetTextEncoding                          func(d *DrawingWand) string
-	DrawGetTextInterwordSpacing                  func(d *DrawingWand) float64
-	DrawGetTextKerning                           func(d *DrawingWand) float64
-	DrawGetTextUnderColor                        func(d *DrawingWand, under_color *PixelWand)
-	DrawGetVectorGraphics                        func(d *DrawingWand) string
-	DrawLine                                     func(d *DrawingWand, sx, sy, ex, ey float64)
-	DrawMatte                                    func(d *DrawingWand, x, y float64, paint_method PaintMethod)
-	DrawPathClose                                func(d *DrawingWand)
-	DrawPathCurveToAbsolute                      func(d *DrawingWand, x1, y1, x2, y2, x, y float64)
-	DrawPathCurveToQuadraticBezierAbsolute       func(d *DrawingWand, x1, y1, x, y float64)
-	DrawPathCurveToQuadraticBezierRelative       func(d *DrawingWand, x1, y1, x, y float64)
-	DrawPathCurveToQuadraticBezierSmoothAbsolute func(d *DrawingWand, x, y float64)
-	DrawPathCurveToQuadraticBezierSmoothRelative func(d *DrawingWand, x, y float64)
-	DrawPathCurveToRelative                      func(d *DrawingWand, x1, y1, x2, y2, x, y float64)
-	DrawPathCurveToSmoothAbsolute                func(d *DrawingWand, x2, y2, x, y float64)
-	DrawPathCurveToSmoothRelative                func(d *DrawingWand, x2, y2, x, y float64)
-	DrawPathEllipticArcAbsolute                  func(d *DrawingWand, rx, ry, x_axis_rotation float64, large_arc_flag, sweep_flag bool, x, y float64)
-	DrawPathEllipticArcRelative                  func(d *DrawingWand, rx, ry, x_axis_rotation float64, large_arc_flag, sweep_flag bool, x, y float64)
-	DrawPathFinish                               func(d *DrawingWand)
-	DrawPathLineToAbsolute                       func(d *DrawingWand, x, y float64)
-	DrawPathLineToHorizontalAbsolute             func(d *DrawingWand, x float64)
-	DrawPathLineToHorizontalRelative             func(d *DrawingWand, x float64)
-	DrawPathLineToRelative                       func(d *DrawingWand, x, y float64)
-	DrawPathLineToVerticalAbsolute               func(d *DrawingWand, y float64)
-	DrawPathLineToVerticalRelative               func(d *DrawingWand, y float64)
-	DrawPathMoveToAbsolute                       func(d *DrawingWand, x, y float64)
-	DrawPathMoveToRelative                       func(d *DrawingWand, x, y float64)
-	DrawPathStart                                func(d *DrawingWand)
-	DrawPeekGraphicWand                          func(d *DrawingWand) *DrawInfo
-	DrawPoint                                    func(d *DrawingWand, x, y float64)
-	DrawPolygon                                  func(d *DrawingWand, number_coordinates size_t, coordinates *PointInfo)
-	DrawPolyline                                 func(d *DrawingWand, number_coordinates size_t, coordinates *PointInfo)
-	DrawPopClipPath                              func(d *DrawingWand)
-	DrawPopDefs                                  func(d *DrawingWand)
-	DrawPopGraphicContext                        func(d *DrawingWand) bool
-	DrawPopPattern                               func(d *DrawingWand) bool
-	DrawPushClipPath                             func(d *DrawingWand, clip_mask_id string)
-	DrawPushDefs                                 func(d *DrawingWand)
-	DrawPushGraphicContext                       func(d *DrawingWand) bool
-	DrawPushPattern                              func(d *DrawingWand, pattern_id string, x, y, width, height float64) bool
-	DrawRectangle                                func(d *DrawingWand, x1, y1, x2, y2 float64)
-	DrawResetVectorGraphics                      func(d *DrawingWand)
-	DrawRotate                                   func(d *DrawingWand, degrees float64)
-	DrawRoundRectangle                           func(d *DrawingWand, x1, y1, x2, y2, rx, ry float64)
-	DrawScale                                    func(d *DrawingWand, x, y float64)
-	DrawSetBorderColor                           func(d *DrawingWand, border_wand *PixelWand)
-	DrawSetClipPath                              func(d *DrawingWand, clip_mask string) bool
-	DrawSetClipRule                              func(d *DrawingWand, fill_rule FillRule)
-	DrawSetClipUnits                             func(d *DrawingWand, clip_units ClipPathUnits)
-	DrawSetFillAlpha                             func(d *DrawingWand, fill_alpha float64)
-	DrawSetFillColor                             func(d *DrawingWand, fill_wand *PixelWand)
-	DrawSetFillOpacity                           func(d *DrawingWand, fill_opacity float64)
-	DrawSetFillPatternURL                        func(d *DrawingWand, fill_url string) bool
-	DrawSetFillRule                              func(d *DrawingWand, fill_rule FillRule)
-	DrawSetFont                                  func(d *DrawingWand, font_name string) bool
-	DrawSetFontFamily                            func(d *DrawingWand, font_family string) bool
-	DrawSetFontResolution                        func(d *DrawingWand, x_resolution, y_resolution float64) bool
-	DrawSetFontSize                              func(d *DrawingWand, pointsize float64)
-	DrawSetFontStretch                           func(d *DrawingWand, font_stretch StretchType)
-	DrawSetFontStyle                             func(d *DrawingWand, style StyleType)
-	DrawSetFontWeight                            func(d *DrawingWand, font_weight size_t)
-	DrawSetGravity                               func(d *DrawingWand, gravity GravityType)
-	DrawSetOpacity                               func(d *DrawingWand, opacity float64)
-	DrawSetStrokeAlpha                           func(d *DrawingWand, stroke_alpha float64)
-	DrawSetStrokeAntialias                       func(d *DrawingWand, stroke_antialias bool)
-	DrawSetStrokeColor                           func(d *DrawingWand, stroke_wand *PixelWand)
-	DrawSetStrokeDashArray                       func(d *DrawingWand, number_elements size_t, dash_array *float64) bool
-	DrawSetStrokeDashOffset                      func(d *DrawingWand, dash_offset float64)
-	DrawSetStrokeLineCap                         func(d *DrawingWand, linecap LineCap)
-	DrawSetStrokeLineJoin                        func(d *DrawingWand, linejoin LineJoin)
-	DrawSetStrokeMiterLimit                      func(d *DrawingWand, miterlimit size_t)
-	DrawSetStrokeOpacity                         func(d *DrawingWand, stroke_opacity float64)
-	DrawSetStrokePatternURL                      func(d *DrawingWand, stroke_url string) bool
-	DrawSetStrokeWidth                           func(d *DrawingWand, stroke_width float64)
-	DrawSetTextAlignment                         func(d *DrawingWand, alignment AlignType)
-	DrawSetTextAntialias                         func(d *DrawingWand, text_antialias bool)
-	DrawSetTextDecoration                        func(d *DrawingWand, decoration DecorationType)
-	DrawSetTextEncoding                          func(d *DrawingWand, encoding string)
-	DrawSetTextInterlineSpacing                  func(d *DrawingWand, interline_spacing float64)
-	DrawSetTextInterwordSpacing                  func(d *DrawingWand, interword_spacing float64)
-	DrawSetTextKerning                           func(d *DrawingWand, kerning float64)
-	DrawSetTextUnderColor                        func(d *DrawingWand, under_wand *PixelWand)
-	DrawSetVectorGraphics                        func(d *DrawingWand, xml string) bool
-	DrawSetViewbox                               func(d *DrawingWand, x1, y1, x2, y2 ssize_t)
-	DrawSkewX                                    func(d *DrawingWand, degrees float64)
-	DrawSkewY                                    func(d *DrawingWand, degrees float64)
-	DrawTranslate                                func(d *DrawingWand, x, y float64)
-)
+var NewDrawingWand func() *DrawingWand
 
-func (d *DrawingWand) Clear()                { ClearDrawingWand(d) }
-func (d *DrawingWand) Clone() *DrawingWand   { return CloneDrawingWand(d) }
+var ClearDrawingWand func(d *DrawingWand)
+
+func (d *DrawingWand) Clear() { ClearDrawingWand(d) }
+
+var CloneDrawingWand func(d *DrawingWand) *DrawingWand
+
+func (d *DrawingWand) Clone() *DrawingWand { return CloneDrawingWand(d) }
+
+var DestroyDrawingWand func(d *DrawingWand) *DrawingWand
+
 func (d *DrawingWand) Destroy() *DrawingWand { return DestroyDrawingWand(d) }
-func (d *DrawingWand) IsDrawingWand() bool   { return IsDrawingWand(d) }
-func (d *DrawingWand) Peek() *DrawInfo       { return PeekDrawingWand(d) }
-func (d *DrawingWand) Pop() bool             { return PopDrawingWand(d) }
-func (d *DrawingWand) Push() bool            { return PushDrawingWand(d) }
 
-func (d *DrawingWand) Affine(affine *AffineMatrix)          { DrawAffine(d, affine) }
+var IsDrawingWand func(d *DrawingWand) bool
+
+func (d *DrawingWand) IsDrawingWand() bool { return IsDrawingWand(d) }
+
+var PeekDrawingWand func(d *DrawingWand) *DrawInfo
+
+func (d *DrawingWand) Peek() *DrawInfo { return PeekDrawingWand(d) }
+
+var PopDrawingWand func(d *DrawingWand) bool
+
+func (d *DrawingWand) Pop() bool { return PopDrawingWand(d) }
+
+var PushDrawingWand func(d *DrawingWand) bool
+
+func (d *DrawingWand) Push() bool { return PushDrawingWand(d) }
+
+var DrawAffine func(d *DrawingWand, affine *T.AffineMatrix)
+
+func (d *DrawingWand) Affine(affine *T.AffineMatrix) { DrawAffine(d, affine) }
+
+var DrawAnnotation func(d *DrawingWand, x, y float64, text *uint8)
+
 func (d *DrawingWand) Annotation(x, y float64, text *uint8) { DrawAnnotation(d, x, y, text) }
-func (d *DrawingWand) Arc(sx, sy, ex, ey, sd, ed float64)   { DrawArc(d, sx, sy, ex, ey, sd, ed) }
-func (d *DrawingWand) Bezier(number_coordinates size_t, coordinates *PointInfo) {
-	DrawBezier(d, number_coordinates, coordinates)
+
+var DrawArc func(d *DrawingWand, sx, sy, ex, ey, sd, ed float64)
+
+func (d *DrawingWand) Arc(sx, sy, ex, ey, sd, ed float64) { DrawArc(d, sx, sy, ex, ey, sd, ed) }
+
+var DrawBezier func(d *DrawingWand, numberCoordinates uint32, coordinates *T.PointInfo)
+
+func (d *DrawingWand) Bezier(numberCoordinates uint32, coordinates *T.PointInfo) {
+	DrawBezier(d, numberCoordinates, coordinates)
 }
+
+var DrawCircle func(d *DrawingWand, ox, oy, px, py float64)
+
 func (d *DrawingWand) Circle(ox, oy, px, py float64) { DrawCircle(d, ox, oy, px, py) }
-func (d *DrawingWand) ClearException() bool          { return DrawClearException(d) }
-func (d *DrawingWand) Color(x, y float64, paint_method PaintMethod) {
-	DrawColor(d, x, y, paint_method)
+
+var DrawClearException func(d *DrawingWand) bool
+
+func (d *DrawingWand) ClearException() bool { return DrawClearException(d) }
+
+var DrawColor func(d *DrawingWand, x, y float64, paintMethod T.PaintMethod)
+
+func (d *DrawingWand) Color(x, y float64, paintMethod T.PaintMethod) {
+	DrawColor(d, x, y, paintMethod)
 }
+
+var DrawComment func(d *DrawingWand, comment string)
+
 func (d *DrawingWand) Comment(comment string) { DrawComment(d, comment) }
-func (d *DrawingWand) Composite(compose CompositeOperator, x, y, width, height float64, magick_wand *MagickWand) bool {
-	return DrawComposite(d, compose, x, y, width, height, magick_wand)
+
+var DrawComposite func(d *DrawingWand, compose T.CompositeOperator, x, y, width, height float64, magickWand *MagickWand) bool
+
+func (d *DrawingWand) Composite(compose T.CompositeOperator, x, y, width, height float64, magickWand *MagickWand) bool {
+	return DrawComposite(d, compose, x, y, width, height, magickWand)
 }
+
+var DrawEllipse func(d *DrawingWand, ox, oy, rx, ry, start, end float64)
+
 func (d *DrawingWand) Ellipse(ox, oy, rx, ry, start, end float64) {
 	DrawEllipse(d, ox, oy, rx, ry, start, end)
 }
-func (d *DrawingWand) BorderColor(border_color *PixelWand) { DrawGetBorderColor(d, border_color) }
-func (d *DrawingWand) ClipPath() string                    { return DrawGetClipPath(d) }
-func (d *DrawingWand) ClipUnits() ClipPathUnits            { return DrawGetClipUnits(d) }
-func (d *DrawingWand) Exception(severity *ExceptionType) string {
+
+var DrawGetBorderColor func(d *DrawingWand, borderColor *PixelWand)
+
+func (d *DrawingWand) BorderColor(borderColor *PixelWand) { DrawGetBorderColor(d, borderColor) }
+
+var DrawGetClipPath func(d *DrawingWand) string
+
+func (d *DrawingWand) ClipPath() string { return DrawGetClipPath(d) }
+
+var DrawGetClipUnits func(d *DrawingWand) T.ClipPathUnits
+
+func (d *DrawingWand) ClipUnits() T.ClipPathUnits { return DrawGetClipUnits(d) }
+
+var DrawGetException func(d *DrawingWand, severity *T.ExceptionType) string
+
+func (d *DrawingWand) Exception(severity *T.ExceptionType) string {
 	return DrawGetException(d, severity)
 }
-func (d *DrawingWand) ExceptionType() ExceptionType    { return DrawGetExceptionType(d) }
-func (d *DrawingWand) FillAlpha() float64              { return DrawGetFillAlpha(d) }
-func (d *DrawingWand) FillColor(fill_color *PixelWand) { DrawGetFillColor(d, fill_color) }
-func (d *DrawingWand) FillOpacity() float64            { return DrawGetFillOpacity(d) }
-func (d *DrawingWand) FillRule() FillRule              { return DrawGetFillRule(d) }
-func (d *DrawingWand) Font() string                    { return DrawGetFont(d) }
-func (d *DrawingWand) FontFamily() string              { return DrawGetFontFamily(d) }
-func (d *DrawingWand) FontResolution(x, y *float64) DrawBooleanType {
+
+var DrawGetExceptionType func(d *DrawingWand) T.ExceptionType
+
+func (d *DrawingWand) ExceptionType() T.ExceptionType { return DrawGetExceptionType(d) }
+
+var DrawGetFillColor func(d *DrawingWand, fillColor *PixelWand)
+
+func (d *DrawingWand) FillColor(fillColor *PixelWand) { DrawGetFillColor(d, fillColor) }
+
+var DrawGetFillOpacity func(d *DrawingWand) float64
+
+func (d *DrawingWand) FillOpacity() float64 { return DrawGetFillOpacity(d) }
+
+var DrawGetFillRule func(d *DrawingWand) T.FillRule
+
+func (d *DrawingWand) FillRule() T.FillRule { return DrawGetFillRule(d) }
+
+var DrawGetFont func(d *DrawingWand) string
+
+func (d *DrawingWand) Font() string { return DrawGetFont(d) }
+
+var DrawGetFontFamily func(d *DrawingWand) string
+
+func (d *DrawingWand) FontFamily() string { return DrawGetFontFamily(d) }
+
+var DrawGetFontResolution func(d *DrawingWand, x, y *float64) bool
+
+func (d *DrawingWand) FontResolution(x, y *float64) bool {
 	return DrawGetFontResolution(d, x, y)
 }
-func (d *DrawingWand) FontSize() float64                   { return DrawGetFontSize(d) }
-func (d *DrawingWand) FontStretch() StretchType            { return DrawGetFontStretch(d) }
-func (d *DrawingWand) FontStyle() StyleType                { return DrawGetFontStyle(d) }
-func (d *DrawingWand) FontWeight() size_t                  { return DrawGetFontWeight(d) }
-func (d *DrawingWand) Gravity() GravityType                { return DrawGetGravity(d) }
-func (d *DrawingWand) Opacity() float64                    { return DrawGetOpacity(d) }
-func (d *DrawingWand) StrokeAlpha() float64                { return DrawGetStrokeAlpha(d) }
-func (d *DrawingWand) StrokeAntialias() bool               { return DrawGetStrokeAntialias(d) }
-func (d *DrawingWand) StrokeColor(stroke_color *PixelWand) { DrawGetStrokeColor(d, stroke_color) }
-func (d *DrawingWand) StrokeDashArray(number_elements *size_t) *float64 {
-	return DrawGetStrokeDashArray(d, number_elements)
+
+var DrawGetFontSize func(d *DrawingWand) float64
+
+func (d *DrawingWand) FontSize() float64 { return DrawGetFontSize(d) }
+
+var DrawGetFontStretch func(d *DrawingWand) T.StretchType
+
+func (d *DrawingWand) FontStretch() T.StretchType { return DrawGetFontStretch(d) }
+
+var DrawGetFontStyle func(d *DrawingWand) T.StyleType
+
+func (d *DrawingWand) FontStyle() T.StyleType { return DrawGetFontStyle(d) }
+
+var DrawGetFontWeight func(d *DrawingWand) uint32
+
+func (d *DrawingWand) FontWeight() uint32 { return DrawGetFontWeight(d) }
+
+var DrawGetGravity func(d *DrawingWand) T.GravityType
+
+func (d *DrawingWand) Gravity() T.GravityType { return DrawGetGravity(d) }
+
+var DrawGetOpacity func(d *DrawingWand) float64
+
+func (d *DrawingWand) Opacity() float64 { return DrawGetOpacity(d) }
+
+var DrawGetStrokeAntialias func(d *DrawingWand) bool
+
+func (d *DrawingWand) StrokeAntialias() bool { return DrawGetStrokeAntialias(d) }
+
+var DrawGetStrokeColor func(d *DrawingWand, strokeColor *PixelWand)
+
+func (d *DrawingWand) StrokeColor(strokeColor *PixelWand) { DrawGetStrokeColor(d, strokeColor) }
+
+var DrawGetStrokeDashArray func(d *DrawingWand, numberElements *uint32) *float64
+
+func (d *DrawingWand) StrokeDashArray(numberElements *uint32) *float64 {
+	return DrawGetStrokeDashArray(d, numberElements)
 }
-func (d *DrawingWand) StrokeDashOffset() float64             { return DrawGetStrokeDashOffset(d) }
-func (d *DrawingWand) StrokeLineCap() LineCap                { return DrawGetStrokeLineCap(d) }
-func (d *DrawingWand) StrokeLineJoin() LineJoin              { return DrawGetStrokeLineJoin(d) }
-func (d *DrawingWand) StrokeMiterLimit() size_t              { return DrawGetStrokeMiterLimit(d) }
-func (d *DrawingWand) StrokeOpacity() float64                { return DrawGetStrokeOpacity(d) }
-func (d *DrawingWand) StrokeWidth() float64                  { return DrawGetStrokeWidth(d) }
-func (d *DrawingWand) TextAlignment() AlignType              { return DrawGetTextAlignment(d) }
-func (d *DrawingWand) TextAntialias() bool                   { return DrawGetTextAntialias(d) }
-func (d *DrawingWand) TextDecoration() DecorationType        { return DrawGetTextDecoration(d) }
-func (d *DrawingWand) TextEncoding() string                  { return DrawGetTextEncoding(d) }
-func (d *DrawingWand) TextInterwordSpacing() float64         { return DrawGetTextInterwordSpacing(d) }
-func (d *DrawingWand) TextKerning() float64                  { return DrawGetTextKerning(d) }
-func (d *DrawingWand) TextUnderColor(under_color *PixelWand) { DrawGetTextUnderColor(d, under_color) }
-func (d *DrawingWand) VectorGraphics() string                { return DrawGetVectorGraphics(d) }
-func (d *DrawingWand) Line(sx, sy, ex, ey float64)           { DrawLine(d, sx, sy, ex, ey) }
-func (d *DrawingWand) Matte(x, y float64, paint_method PaintMethod) {
-	DrawMatte(d, x, y, paint_method)
+
+var DrawGetStrokeDashOffset func(d *DrawingWand) float64
+
+func (d *DrawingWand) StrokeDashOffset() float64 { return DrawGetStrokeDashOffset(d) }
+
+var DrawGetStrokeLineCap func(d *DrawingWand) T.LineCap
+
+func (d *DrawingWand) StrokeLineCap() T.LineCap { return DrawGetStrokeLineCap(d) }
+
+var DrawGetStrokeLineJoin func(d *DrawingWand) T.LineJoin
+
+func (d *DrawingWand) StrokeLineJoin() T.LineJoin { return DrawGetStrokeLineJoin(d) }
+
+var DrawGetStrokeMiterLimit func(d *DrawingWand) uint32
+
+func (d *DrawingWand) StrokeMiterLimit() uint32 { return DrawGetStrokeMiterLimit(d) }
+
+var DrawGetStrokeOpacity func(d *DrawingWand) float64
+
+func (d *DrawingWand) StrokeOpacity() float64 { return DrawGetStrokeOpacity(d) }
+
+var DrawGetStrokeWidth func(d *DrawingWand) float64
+
+func (d *DrawingWand) StrokeWidth() float64 { return DrawGetStrokeWidth(d) }
+
+var DrawGetTextAlignment func(d *DrawingWand) T.AlignType
+
+func (d *DrawingWand) TextAlignment() T.AlignType { return DrawGetTextAlignment(d) }
+
+var DrawGetTextAntialias func(d *DrawingWand) bool
+
+func (d *DrawingWand) TextAntialias() bool { return DrawGetTextAntialias(d) }
+
+var DrawGetTextDecoration func(d *DrawingWand) T.DecorationType
+
+func (d *DrawingWand) TextDecoration() T.DecorationType { return DrawGetTextDecoration(d) }
+
+var DrawGetTextEncoding func(d *DrawingWand) string
+
+func (d *DrawingWand) TextEncoding() string { return DrawGetTextEncoding(d) }
+
+var DrawGetTextInterwordSpacing func(d *DrawingWand) float64
+
+func (d *DrawingWand) TextInterwordSpacing() float64 { return DrawGetTextInterwordSpacing(d) }
+
+var DrawGetTextKerning func(d *DrawingWand) float64
+
+func (d *DrawingWand) TextKerning() float64 { return DrawGetTextKerning(d) }
+
+var DrawGetTextUnderColor func(d *DrawingWand, underColor *PixelWand)
+
+func (d *DrawingWand) TextUnderColor(underColor *PixelWand) { DrawGetTextUnderColor(d, underColor) }
+
+var DrawGetVectorGraphics func(d *DrawingWand) string
+
+func (d *DrawingWand) VectorGraphics() string { return DrawGetVectorGraphics(d) }
+
+var DrawLine func(d *DrawingWand, sx, sy, ex, ey float64)
+
+func (d *DrawingWand) Line(sx, sy, ex, ey float64) { DrawLine(d, sx, sy, ex, ey) }
+
+var DrawMatte func(d *DrawingWand, x, y float64, paintMethod T.PaintMethod)
+
+func (d *DrawingWand) Matte(x, y float64, paintMethod T.PaintMethod) {
+	DrawMatte(d, x, y, paintMethod)
 }
+
+var DrawPathClose func(d *DrawingWand)
+
 func (d *DrawingWand) PathClose() { DrawPathClose(d) }
+
+var DrawPathCurveToAbsolute func(d *DrawingWand, x1, y1, x2, y2, x, y float64)
+
 func (d *DrawingWand) PathCurveToAbsolute(x1, y1, x2, y2, x, y float64) {
 	DrawPathCurveToAbsolute(d, x1, y1, x2, y2, x, y)
 }
+
+var DrawPathCurveToQuadraticBezierAbsolute func(d *DrawingWand, x1, y1, x, y float64)
+
 func (d *DrawingWand) PathCurveToQuadraticBezierAbsolute(x1, y1, x, y float64) {
 	DrawPathCurveToQuadraticBezierAbsolute(d, x1, y1, x, y)
 }
+
+var DrawPathCurveToQuadraticBezierRelative func(d *DrawingWand, x1, y1, x, y float64)
+
 func (d *DrawingWand) PathCurveToQuadraticBezierRelative(x1, y1, x, y float64) {
 	DrawPathCurveToQuadraticBezierRelative(d, x1, y1, x, y)
 }
+
+var DrawPathCurveToQuadraticBezierSmoothAbsolute func(d *DrawingWand, x, y float64)
+
 func (d *DrawingWand) PathCurveToQuadraticBezierSmoothAbsolute(x, y float64) {
 	DrawPathCurveToQuadraticBezierSmoothAbsolute(d, x, y)
 }
+
+var DrawPathCurveToQuadraticBezierSmoothRelative func(d *DrawingWand, x, y float64)
+
 func (d *DrawingWand) PathCurveToQuadraticBezierSmoothRelative(x, y float64) {
 	DrawPathCurveToQuadraticBezierSmoothRelative(d, x, y)
 }
+
+var DrawPathCurveToRelative func(d *DrawingWand, x1, y1, x2, y2, x, y float64)
+
 func (d *DrawingWand) PathCurveToRelative(x1, y1, x2, y2, x, y float64) {
 	DrawPathCurveToRelative(d, x1, y1, x2, y2, x, y)
 }
+
+var DrawPathCurveToSmoothAbsolute func(d *DrawingWand, x2, y2, x, y float64)
+
 func (d *DrawingWand) PathCurveToSmoothAbsolute(x2, y2, x, y float64) {
 	DrawPathCurveToSmoothAbsolute(d, x2, y2, x, y)
 }
+
+var DrawPathCurveToSmoothRelative func(d *DrawingWand, x2, y2, x, y float64)
+
 func (d *DrawingWand) PathCurveToSmoothRelative(x2, y2, x, y float64) {
 	DrawPathCurveToSmoothRelative(d, x2, y2, x, y)
 }
-func (d *DrawingWand) PathEllipticArcAbsolute(rx, ry, x_axis_rotation float64, large_arc_flag, sweep_flag bool, x, y float64) {
-	DrawPathEllipticArcAbsolute(d, rx, ry, x_axis_rotation, large_arc_flag, sweep_flag, x, y)
+
+var DrawPathEllipticArcAbsolute func(d *DrawingWand, rx, ry, xAxisRotation float64, largeArcFlag, sweepFlag bool, x, y float64)
+
+func (d *DrawingWand) PathEllipticArcAbsolute(rx, ry, xAxisRotation float64, largeArcFlag, sweepFlag bool, x, y float64) {
+	DrawPathEllipticArcAbsolute(d, rx, ry, xAxisRotation, largeArcFlag, sweepFlag, x, y)
 }
-func (d *DrawingWand) PathEllipticArcRelative(rx, ry, x_axis_rotation float64, large_arc_flag, sweep_flag bool, x, y float64) {
-	DrawPathEllipticArcRelative(d, rx, ry, x_axis_rotation, large_arc_flag, sweep_flag, x, y)
+
+var DrawPathEllipticArcRelative func(d *DrawingWand, rx, ry, xAxisRotation float64, largeArcFlag, sweepFlag bool, x, y float64)
+
+func (d *DrawingWand) PathEllipticArcRelative(rx, ry, xAxisRotation float64, largeArcFlag, sweepFlag bool, x, y float64) {
+	DrawPathEllipticArcRelative(d, rx, ry, xAxisRotation, largeArcFlag, sweepFlag, x, y)
 }
-func (d *DrawingWand) PathFinish()                     { DrawPathFinish(d) }
+
+var DrawPathFinish func(d *DrawingWand)
+
+func (d *DrawingWand) PathFinish() { DrawPathFinish(d) }
+
+var DrawPathLineToAbsolute func(d *DrawingWand, x, y float64)
+
 func (d *DrawingWand) PathLineToAbsolute(x, y float64) { DrawPathLineToAbsolute(d, x, y) }
+
+var DrawPathLineToHorizontalAbsolute func(d *DrawingWand, x float64)
+
 func (d *DrawingWand) PathLineToHorizontalAbsolute(x float64) {
 	DrawPathLineToHorizontalAbsolute(d, x)
 }
+
+var DrawPathLineToHorizontalRelative func(d *DrawingWand, x float64)
+
 func (d *DrawingWand) PathLineToHorizontalRelative(x float64) {
 	DrawPathLineToHorizontalRelative(d, x)
 }
-func (d *DrawingWand) PathLineToRelative(x, y float64)      { DrawPathLineToRelative(d, x, y) }
+
+var DrawPathLineToRelative func(d *DrawingWand, x, y float64)
+
+func (d *DrawingWand) PathLineToRelative(x, y float64) { DrawPathLineToRelative(d, x, y) }
+
+var DrawPathLineToVerticalAbsolute func(d *DrawingWand, y float64)
+
 func (d *DrawingWand) PathLineToVerticalAbsolute(y float64) { DrawPathLineToVerticalAbsolute(d, y) }
+
+var DrawPathLineToVerticalRelative func(d *DrawingWand, y float64)
+
 func (d *DrawingWand) PathLineToVerticalRelative(y float64) { DrawPathLineToVerticalRelative(d, y) }
-func (d *DrawingWand) PathMoveToAbsolute(x, y float64)      { DrawPathMoveToAbsolute(d, x, y) }
-func (d *DrawingWand) PathMoveToRelative(x, y float64)      { DrawPathMoveToRelative(d, x, y) }
-func (d *DrawingWand) PathStart()                           { DrawPathStart(d) }
-func (d *DrawingWand) PeekGraphicWand() *DrawInfo           { return DrawPeekGraphicWand(d) }
-func (d *DrawingWand) Point(x, y float64)                   { DrawPoint(d, x, y) }
-func (d *DrawingWand) Polygon(number_coordinates size_t, coordinates *PointInfo) {
-	DrawPolygon(d, number_coordinates, coordinates)
+
+var DrawPathMoveToAbsolute func(d *DrawingWand, x, y float64)
+
+func (d *DrawingWand) PathMoveToAbsolute(x, y float64) { DrawPathMoveToAbsolute(d, x, y) }
+
+var DrawPathMoveToRelative func(d *DrawingWand, x, y float64)
+
+func (d *DrawingWand) PathMoveToRelative(x, y float64) { DrawPathMoveToRelative(d, x, y) }
+
+var DrawPathStart func(d *DrawingWand)
+
+func (d *DrawingWand) PathStart() { DrawPathStart(d) }
+
+var DrawPoint func(d *DrawingWand, x, y float64)
+
+func (d *DrawingWand) Point(x, y float64) { DrawPoint(d, x, y) }
+
+var DrawPolygon func(d *DrawingWand, numberCoordinates uint32, coordinates *T.PointInfo)
+
+func (d *DrawingWand) Polygon(numberCoordinates uint32, coordinates *T.PointInfo) {
+	DrawPolygon(d, numberCoordinates, coordinates)
 }
-func (d *DrawingWand) Polyline(number_coordinates size_t, coordinates *PointInfo) {
-	DrawPolyline(d, number_coordinates, coordinates)
+
+var DrawPolyline func(d *DrawingWand, numberCoordinates uint32, coordinates *T.PointInfo)
+
+func (d *DrawingWand) Polyline(numberCoordinates uint32, coordinates *T.PointInfo) {
+	DrawPolyline(d, numberCoordinates, coordinates)
 }
-func (d *DrawingWand) PopClipPath()                     { DrawPopClipPath(d) }
-func (d *DrawingWand) PopDefs()                         { DrawPopDefs(d) }
-func (d *DrawingWand) PopGraphicContext() bool          { return DrawPopGraphicContext(d) }
-func (d *DrawingWand) PopPattern() bool                 { return DrawPopPattern(d) }
-func (d *DrawingWand) PushClipPath(clip_mask_id string) { DrawPushClipPath(d, clip_mask_id) }
-func (d *DrawingWand) PushDefs()                        { DrawPushDefs(d) }
-func (d *DrawingWand) PushGraphicContext() bool         { return DrawPushGraphicContext(d) }
-func (d *DrawingWand) PushPattern(pattern_id string, x, y, width, height float64) bool {
-	return DrawPushPattern(d, pattern_id, x, y, width, height)
+
+var DrawPopClipPath func(d *DrawingWand)
+
+func (d *DrawingWand) PopClipPath() { DrawPopClipPath(d) }
+
+var DrawPopDefs func(d *DrawingWand)
+
+func (d *DrawingWand) PopDefs() { DrawPopDefs(d) }
+
+var DrawPopPattern func(d *DrawingWand) bool
+
+func (d *DrawingWand) PopPattern() bool { return DrawPopPattern(d) }
+
+var DrawPushClipPath func(d *DrawingWand, clipMaskId string)
+
+func (d *DrawingWand) PushClipPath(clipMaskId string) { DrawPushClipPath(d, clipMaskId) }
+
+var DrawPushDefs func(d *DrawingWand)
+
+func (d *DrawingWand) PushDefs() { DrawPushDefs(d) }
+
+var DrawPushPattern func(d *DrawingWand, patternId string, x, y, width, height float64) bool
+
+func (d *DrawingWand) PushPattern(patternId string, x, y, width, height float64) bool {
+	return DrawPushPattern(d, patternId, x, y, width, height)
 }
+
+var DrawRectangle func(d *DrawingWand, x1, y1, x2, y2 float64)
+
 func (d *DrawingWand) Rectangle(x1, y1, x2, y2 float64) { DrawRectangle(d, x1, y1, x2, y2) }
-func (d *DrawingWand) ResetVectorGraphics()             { DrawResetVectorGraphics(d) }
-func (d *DrawingWand) Rotate(degrees float64)           { DrawRotate(d, degrees) }
+
+var DrawResetVectorGraphics func(d *DrawingWand)
+
+func (d *DrawingWand) ResetVectorGraphics() { DrawResetVectorGraphics(d) }
+
+var DrawRotate func(d *DrawingWand, degrees float64)
+
+func (d *DrawingWand) Rotate(degrees float64) { DrawRotate(d, degrees) }
+
+var DrawRoundRectangle func(d *DrawingWand, x1, y1, x2, y2, rx, ry float64)
+
 func (d *DrawingWand) RoundRectangle(x1, y1, x2, y2, rx, ry float64) {
 	DrawRoundRectangle(d, x1, y1, x2, y2, rx, ry)
 }
-func (d *DrawingWand) Scale(x, y float64)                    { DrawScale(d, x, y) }
-func (d *DrawingWand) SetBorderColor(border_wand *PixelWand) { DrawSetBorderColor(d, border_wand) }
-func (d *DrawingWand) SetClipPath(clip_mask string) bool     { return DrawSetClipPath(d, clip_mask) }
-func (d *DrawingWand) SetClipRule(fill_rule FillRule)        { DrawSetClipRule(d, fill_rule) }
-func (d *DrawingWand) SetClipUnits(clip_units ClipPathUnits) { DrawSetClipUnits(d, clip_units) }
-func (d *DrawingWand) SetFillAlpha(fill_alpha float64)       { DrawSetFillAlpha(d, fill_alpha) }
-func (d *DrawingWand) SetFillColor(fill_wand *PixelWand)     { DrawSetFillColor(d, fill_wand) }
-func (d *DrawingWand) SetFillOpacity(fill_opacity float64)   { DrawSetFillOpacity(d, fill_opacity) }
-func (d *DrawingWand) SetFillPatternURL(fill_url string) bool {
-	return DrawSetFillPatternURL(d, fill_url)
+
+var DrawScale func(d *DrawingWand, x, y float64)
+
+func (d *DrawingWand) Scale(x, y float64) { DrawScale(d, x, y) }
+
+var DrawSetBorderColor func(d *DrawingWand, borderWand *PixelWand)
+
+func (d *DrawingWand) SetBorderColor(borderWand *PixelWand) { DrawSetBorderColor(d, borderWand) }
+
+var DrawSetClipPath func(d *DrawingWand, clipMask string) bool
+
+func (d *DrawingWand) SetClipPath(clipMask string) bool { return DrawSetClipPath(d, clipMask) }
+
+var DrawSetClipRule func(d *DrawingWand, fillRule T.FillRule)
+
+func (d *DrawingWand) SetClipRule(fillRule T.FillRule) { DrawSetClipRule(d, fillRule) }
+
+var DrawSetClipUnits func(d *DrawingWand, clipUnits T.ClipPathUnits)
+
+func (d *DrawingWand) SetClipUnits(clipUnits T.ClipPathUnits) { DrawSetClipUnits(d, clipUnits) }
+
+var DrawSetFillColor func(d *DrawingWand, fillWand *PixelWand)
+
+func (d *DrawingWand) SetFillColor(fillWand *PixelWand) { DrawSetFillColor(d, fillWand) }
+
+var DrawSetFillOpacity func(d *DrawingWand, fillOpacity float64)
+
+func (d *DrawingWand) SetFillOpacity(fillOpacity float64) { DrawSetFillOpacity(d, fillOpacity) }
+
+var DrawSetFillPatternURL func(d *DrawingWand, fillUrl string) bool
+
+func (d *DrawingWand) SetFillPatternURL(fillUrl string) bool {
+	return DrawSetFillPatternURL(d, fillUrl)
 }
-func (d *DrawingWand) SetFillRule(fill_rule FillRule) { DrawSetFillRule(d, fill_rule) }
-func (d *DrawingWand) SetFont(font_name string) bool  { return DrawSetFont(d, font_name) }
-func (d *DrawingWand) SetFontFamily(font_family string) bool {
-	return DrawSetFontFamily(d, font_family)
+
+var DrawSetFillRule func(d *DrawingWand, fillRule T.FillRule)
+
+func (d *DrawingWand) SetFillRule(fillRule T.FillRule) { DrawSetFillRule(d, fillRule) }
+
+var DrawSetFont func(d *DrawingWand, fontName string) bool
+
+func (d *DrawingWand) SetFont(fontName string) bool { return DrawSetFont(d, fontName) }
+
+var DrawSetFontFamily func(d *DrawingWand, fontFamily string) bool
+
+func (d *DrawingWand) SetFontFamily(fontFamily string) bool {
+	return DrawSetFontFamily(d, fontFamily)
 }
-func (d *DrawingWand) SetFontResolution(x_resolution, y_resolution float64) bool {
-	return DrawSetFontResolution(d, x_resolution, y_resolution)
+
+var DrawSetFontResolution func(d *DrawingWand, xResolution, yResolution float64) bool
+
+func (d *DrawingWand) SetFontResolution(xResolution, yResolution float64) bool {
+	return DrawSetFontResolution(d, xResolution, yResolution)
 }
-func (d *DrawingWand) SetFontSize(pointsize float64)           { DrawSetFontSize(d, pointsize) }
-func (d *DrawingWand) SetFontStretch(font_stretch StretchType) { DrawSetFontStretch(d, font_stretch) }
-func (d *DrawingWand) SetFontStyle(style StyleType)            { DrawSetFontStyle(d, style) }
-func (d *DrawingWand) SetFontWeight(font_weight size_t)        { DrawSetFontWeight(d, font_weight) }
-func (d *DrawingWand) SetGravity(gravity GravityType)          { DrawSetGravity(d, gravity) }
-func (d *DrawingWand) SetOpacity(opacity float64)              { DrawSetOpacity(d, opacity) }
-func (d *DrawingWand) SetStrokeAlpha(stroke_alpha float64)     { DrawSetStrokeAlpha(d, stroke_alpha) }
-func (d *DrawingWand) SetStrokeAntialias(stroke_antialias bool) {
-	DrawSetStrokeAntialias(d, stroke_antialias)
+
+var DrawSetFontSize func(d *DrawingWand, pointsize float64)
+
+func (d *DrawingWand) SetFontSize(pointsize float64) { DrawSetFontSize(d, pointsize) }
+
+var DrawSetFontStretch func(d *DrawingWand, fontStretch T.StretchType)
+
+func (d *DrawingWand) SetFontStretch(fontStretch T.StretchType) { DrawSetFontStretch(d, fontStretch) }
+
+var DrawSetFontStyle func(d *DrawingWand, style T.StyleType)
+
+func (d *DrawingWand) SetFontStyle(style T.StyleType) { DrawSetFontStyle(d, style) }
+
+var DrawSetFontWeight func(d *DrawingWand, fontWeight uint32)
+
+func (d *DrawingWand) SetFontWeight(fontWeight uint32) { DrawSetFontWeight(d, fontWeight) }
+
+var DrawSetGravity func(d *DrawingWand, gravity T.GravityType)
+
+func (d *DrawingWand) SetGravity(gravity T.GravityType) { DrawSetGravity(d, gravity) }
+
+var DrawSetOpacity func(d *DrawingWand, opacity float64)
+
+func (d *DrawingWand) SetOpacity(opacity float64) { DrawSetOpacity(d, opacity) }
+
+var DrawSetStrokeAntialias func(d *DrawingWand, strokeAntialias bool)
+
+func (d *DrawingWand) SetStrokeAntialias(strokeAntialias bool) {
+	DrawSetStrokeAntialias(d, strokeAntialias)
 }
-func (d *DrawingWand) SetStrokeColor(stroke_wand *PixelWand) { DrawSetStrokeColor(d, stroke_wand) }
-func (d *DrawingWand) SetStrokeDashArray(number_elements size_t, dash_array *float64) bool {
-	return DrawSetStrokeDashArray(d, number_elements, dash_array)
+
+var DrawSetStrokeColor func(d *DrawingWand, strokeWand *PixelWand)
+
+func (d *DrawingWand) SetStrokeColor(strokeWand *PixelWand) { DrawSetStrokeColor(d, strokeWand) }
+
+var DrawSetStrokeDashArray func(d *DrawingWand, numberElements uint32, dashArray *float64) bool
+
+func (d *DrawingWand) SetStrokeDashArray(numberElements uint32, dashArray *float64) bool {
+	return DrawSetStrokeDashArray(d, numberElements, dashArray)
 }
-func (d *DrawingWand) SetStrokeDashOffset(dash_offset float64) {
-	DrawSetStrokeDashOffset(d, dash_offset)
+
+var DrawSetStrokeDashOffset func(d *DrawingWand, dashOffset float64)
+
+func (d *DrawingWand) SetStrokeDashOffset(dashOffset float64) {
+	DrawSetStrokeDashOffset(d, dashOffset)
 }
-func (d *DrawingWand) SetStrokeLineCap(linecap LineCap)      { DrawSetStrokeLineCap(d, linecap) }
-func (d *DrawingWand) SetStrokeLineJoin(linejoin LineJoin)   { DrawSetStrokeLineJoin(d, linejoin) }
-func (d *DrawingWand) SetStrokeMiterLimit(miterlimit size_t) { DrawSetStrokeMiterLimit(d, miterlimit) }
-func (d *DrawingWand) SetStrokeOpacity(stroke_opacity float64) {
-	DrawSetStrokeOpacity(d, stroke_opacity)
+
+var DrawSetStrokeLineCap func(d *DrawingWand, linecap T.LineCap)
+
+func (d *DrawingWand) SetStrokeLineCap(linecap T.LineCap) { DrawSetStrokeLineCap(d, linecap) }
+
+var DrawSetStrokeLineJoin func(d *DrawingWand, linejoin T.LineJoin)
+
+func (d *DrawingWand) SetStrokeLineJoin(linejoin T.LineJoin) { DrawSetStrokeLineJoin(d, linejoin) }
+
+var DrawSetStrokeMiterLimit func(d *DrawingWand, miterlimit uint32)
+
+func (d *DrawingWand) SetStrokeMiterLimit(miterlimit uint32) { DrawSetStrokeMiterLimit(d, miterlimit) }
+
+var DrawSetStrokeOpacity func(d *DrawingWand, strokeOpacity float64)
+
+func (d *DrawingWand) SetStrokeOpacity(strokeOpacity float64) {
+	DrawSetStrokeOpacity(d, strokeOpacity)
 }
-func (d *DrawingWand) SetStrokePatternURL(stroke_url string) bool {
-	return DrawSetStrokePatternURL(d, stroke_url)
+
+var DrawSetStrokePatternURL func(d *DrawingWand, strokeUrl string) bool
+
+func (d *DrawingWand) SetStrokePatternURL(strokeUrl string) bool {
+	return DrawSetStrokePatternURL(d, strokeUrl)
 }
-func (d *DrawingWand) SetStrokeWidth(stroke_width float64)  { DrawSetStrokeWidth(d, stroke_width) }
-func (d *DrawingWand) SetTextAlignment(alignment AlignType) { DrawSetTextAlignment(d, alignment) }
-func (d *DrawingWand) SetTextAntialias(text_antialias bool) { DrawSetTextAntialias(d, text_antialias) }
-func (d *DrawingWand) SetTextDecoration(decoration DecorationType) {
+
+var DrawSetStrokeWidth func(d *DrawingWand, strokeWidth float64)
+
+func (d *DrawingWand) SetStrokeWidth(strokeWidth float64) { DrawSetStrokeWidth(d, strokeWidth) }
+
+var DrawSetTextAlignment func(d *DrawingWand, alignment T.AlignType)
+
+func (d *DrawingWand) SetTextAlignment(alignment T.AlignType) { DrawSetTextAlignment(d, alignment) }
+
+var DrawSetTextAntialias func(d *DrawingWand, textAntialias bool)
+
+func (d *DrawingWand) SetTextAntialias(textAntialias bool) { DrawSetTextAntialias(d, textAntialias) }
+
+var DrawSetTextDecoration func(d *DrawingWand, decoration T.DecorationType)
+
+func (d *DrawingWand) SetTextDecoration(decoration T.DecorationType) {
 	DrawSetTextDecoration(d, decoration)
 }
+
+var DrawSetTextEncoding func(d *DrawingWand, encoding string)
+
 func (d *DrawingWand) SetTextEncoding(encoding string) { DrawSetTextEncoding(d, encoding) }
-func (d *DrawingWand) SetTextInterlineSpacing(interline_spacing float64) {
-	DrawSetTextInterlineSpacing(d, interline_spacing)
+
+var DrawSetTextInterlineSpacing func(d *DrawingWand, interlineSpacing float64)
+
+func (d *DrawingWand) SetTextInterlineSpacing(interlineSpacing float64) {
+	DrawSetTextInterlineSpacing(d, interlineSpacing)
 }
-func (d *DrawingWand) SetTextInterwordSpacing(interword_spacing float64) {
-	DrawSetTextInterwordSpacing(d, interword_spacing)
+
+var DrawSetTextInterwordSpacing func(d *DrawingWand, interwordSpacing float64)
+
+func (d *DrawingWand) SetTextInterwordSpacing(interwordSpacing float64) {
+	DrawSetTextInterwordSpacing(d, interwordSpacing)
 }
-func (d *DrawingWand) SetTextKerning(kerning float64)          { DrawSetTextKerning(d, kerning) }
-func (d *DrawingWand) SetTextUnderColor(under_wand *PixelWand) { DrawSetTextUnderColor(d, under_wand) }
-func (d *DrawingWand) SetVectorGraphics(xml string) bool       { return DrawSetVectorGraphics(d, xml) }
-func (d *DrawingWand) SetViewbox(x1, y1, x2, y2 ssize_t)       { DrawSetViewbox(d, x1, y1, x2, y2) }
-func (d *DrawingWand) SkewX(degrees float64)                   { DrawSkewX(d, degrees) }
-func (d *DrawingWand) SkewY(degrees float64)                   { DrawSkewY(d, degrees) }
-func (d *DrawingWand) Translate(x, y float64)                  { DrawTranslate(d, x, y) }
 
-var (
-	NewPixelWand  func() *PixelWand
-	NewPixelWands func(number_wands size_t) **PixelWand
+var DrawSetTextKerning func(d *DrawingWand, kerning float64)
 
-	ClonePixelWands   func(wands **PixelWand, number_wands size_t) **PixelWand
-	DestroyPixelWands func(wand, number_wands size_t) **PixelWand
+func (d *DrawingWand) SetTextKerning(kerning float64) { DrawSetTextKerning(d, kerning) }
 
-	ClearPixelWand        func(p *PixelWand)
-	ClonePixelWand        func(p *PixelWand) *PixelWand
-	DestroyPixelWand      func(p *PixelWand) *PixelWand
-	GetPixelViewException func(p *PixelWand, severity *ExceptionType) string
-	IsPixelWand           func(p *PixelWand) bool
-	IsPixelWandSimilar    func(p *PixelWand, q *PixelWand, fuzz float64) bool
+var DrawSetTextUnderColor func(d *DrawingWand, underWand *PixelWand)
 
-	PixelClearException             func(p *PixelWand) bool
-	PixelGetAlpha                   func(p *PixelWand) float64
-	PixelGetAlphaQuantum            func(p *PixelWand) Quantum
-	PixelGetBlack                   func(p *PixelWand) float64
-	PixelGetBlackQuantum            func(p *PixelWand) Quantum
-	PixelGetBlue                    func(p *PixelWand) float64
-	PixelGetBlueQuantum             func(p *PixelWand) Quantum
-	PixelGetColorAsNormalizedString func(p *PixelWand) string
-	PixelGetColorAsString           func(p *PixelWand) string
-	PixelGetColorCount              func(p *PixelWand) size_t
-	PixelGetCyan                    func(p *PixelWand) float64
-	PixelGetCyanQuantum             func(p *PixelWand) Quantum
-	PixelGetException               func(p *PixelWand, severity *ExceptionType) string
-	PixelGetExceptionType           func(p *PixelWand) ExceptionType
-	PixelGetFuzz                    func(p *PixelWand) float64
-	PixelGetGreen                   func(p *PixelWand) float64
-	PixelGetGreenQuantum            func(p *PixelWand) Quantum
-	PixelGetHSL                     func(p *PixelWand, hue, saturation, lightness *float64)
-	PixelGetIndex                   func(p *PixelWand) IndexPacket
-	PixelGetMagenta                 func(p *PixelWand) float64
-	PixelGetMagentaQuantum          func(p *PixelWand) Quantum
-	PixelGetMagickColor             func(p *PixelWand, color *MagickPixelPacket)
-	PixelGetOpacity                 func(p *PixelWand) float64
-	PixelGetOpacityQuantum          func(p *PixelWand) Quantum
-	PixelGetQuantumColor            func(p *PixelWand, color *PixelPacket)
-	PixelGetRed                     func(p *PixelWand) float64
-	PixelGetRedQuantum              func(p *PixelWand) Quantum
-	PixelGetYellow                  func(p *PixelWand) float64
-	PixelGetYellowQuantum           func(p *PixelWand) Quantum
-	PixelSetAlpha                   func(p *PixelWand, alpha float64)
-	PixelSetAlphaQuantum            func(p *PixelWand, opacity Quantum)
-	PixelSetBlack                   func(p *PixelWand, black float64)
-	PixelSetBlackQuantum            func(p *PixelWand, black Quantum)
-	PixelSetBlue                    func(p *PixelWand, blue float64)
-	PixelSetBlueQuantum             func(p *PixelWand, blue Quantum)
-	PixelSetColor                   func(p *PixelWand, color string) bool
-	PixelSetColorCount              func(p *PixelWand, count size_t)
-	PixelSetColorFromWand           func(p *PixelWand, color *PixelWand)
-	PixelSetCyan                    func(p *PixelWand, cyan float64)
-	PixelSetCyanQuantum             func(p *PixelWand, cyan Quantum)
-	PixelSetFuzz                    func(p *PixelWand, fuzz float64)
-	PixelSetGreen                   func(p *PixelWand, green float64)
-	PixelSetGreenQuantum            func(p *PixelWand, green Quantum)
-	PixelSetHSL                     func(p *PixelWand, hue, saturation, lightness float64)
-	PixelSetIndex                   func(p *PixelWand, index IndexPacket)
-	PixelSetMagenta                 func(p *PixelWand, magenta float64)
-	PixelSetMagentaQuantum          func(p *PixelWand, magenta Quantum)
-	PixelSetMagickColor             func(p *PixelWand, color *MagickPixelPacket)
-	PixelSetOpacity                 func(p *PixelWand, opacity float64)
-	PixelSetOpacityQuantum          func(p *PixelWand, opacity Quantum)
-	PixelSetQuantumColor            func(p *PixelWand, color *PixelPacket)
-	PixelSetRed                     func(p *PixelWand, red float64)
-	PixelSetRedQuantum              func(p *PixelWand, red Quantum)
-	PixelSetYellow                  func(p *PixelWand, yellow float64)
-	PixelSetYellowQuantum           func(p *PixelWand, yellow Quantum)
-)
+func (d *DrawingWand) SetTextUnderColor(underWand *PixelWand) { DrawSetTextUnderColor(d, underWand) }
 
-func (p  *PixelWand) Clear() {	return ClearPixelWand(p)}
-func (p  *PixelWand) Clone() *PixelWand {	return ClonePixelWand(p)}
-func (p  *PixelWand) Destroy() *PixelWand {	return DestroyPixelWand(p)}
-func (p  *PixelWand) PixelViewException( severity *ExceptionType) string {	return GetPixelViewException(p, severity)}
-func (p  *PixelWand) IsPixelWand() bool {	return IsPixelWand(p)}
-func (p  *PixelWand) IsSimilar( q *PixelWand, fuzz float64) bool {	return IsPixelWandSimilar(p, q, fuzz)}
+var DrawSetVectorGraphics func(d *DrawingWand, xml string) bool
 
-func (p *PixelWand) ClearException() bool                     { return PixelClearException(p) }
-func (p *PixelWand) Alpha() float64                           { return PixelGetAlpha(p) }
-func (p *PixelWand) AlphaQuantum() Quantum                    { return PixelGetAlphaQuantum(p) }
-func (p *PixelWand) Black() float64                           { return PixelGetBlack(p) }
-func (p *PixelWand) BlackQuantum() Quantum                    { return PixelGetBlackQuantum(p) }
-func (p *PixelWand) Blue() float64                            { return PixelGetBlue(p) }
-func (p *PixelWand) BlueQuantum() Quantum                     { return PixelGetBlueQuantum(p) }
-func (p *PixelWand) ColorAsNormalizedString() string          { return PixelGetColorAsNormalizedString(p) }
-func (p *PixelWand) ColorAsString() string                    { return PixelGetColorAsString(p) }
-func (p *PixelWand) ColorCount() size_t                       { return PixelGetColorCount(p) }
-func (p *PixelWand) Cyan() float64                            { return PixelGetCyan(p) }
-func (p *PixelWand) CyanQuantum() Quantum                     { return PixelGetCyanQuantum(p) }
-func (p *PixelWand) Exception(severity *ExceptionType) string { return PixelGetException(p, severity) }
-func (p *PixelWand) ExceptionType() ExceptionType             { return PixelGetExceptionType(p) }
-func (p *PixelWand) Fuzz() float64                            { return PixelGetFuzz(p) }
-func (p *PixelWand) Green() float64                           { return PixelGetGreen(p) }
-func (p *PixelWand) GreenQuantum() Quantum                    { return PixelGetGreenQuantum(p) }
+func (d *DrawingWand) SetVectorGraphics(xml string) bool { return DrawSetVectorGraphics(d, xml) }
+
+var DrawSetViewbox func(d *DrawingWand, x1, y1, x2, y2 int32)
+
+func (d *DrawingWand) SetViewbox(x1, y1, x2, y2 int32) { DrawSetViewbox(d, x1, y1, x2, y2) }
+
+var DrawSkewX func(d *DrawingWand, degrees float64)
+
+func (d *DrawingWand) SkewX(degrees float64) { DrawSkewX(d, degrees) }
+
+var DrawSkewY func(d *DrawingWand, degrees float64)
+
+func (d *DrawingWand) SkewY(degrees float64) { DrawSkewY(d, degrees) }
+
+var DrawTranslate func(d *DrawingWand, x, y float64)
+
+func (d *DrawingWand) Translate(x, y float64) { DrawTranslate(d, x, y) }
+
+var NewPixelWand func() *PixelWand
+
+var NewPixelWands func(numberWands uint32) **PixelWand
+
+var ClonePixelWands func(wands **PixelWand, numberWands uint32) **PixelWand
+
+var DestroyPixelWands func(wand, numberWands uint32) **PixelWand
+
+var ClearPixelWand func(p *PixelWand)
+
+func (p *PixelWand) Clear() { ClearPixelWand(p) }
+
+var ClonePixelWand func(p *PixelWand) *PixelWand
+
+func (p *PixelWand) Clone() *PixelWand { return ClonePixelWand(p) }
+
+var DestroyPixelWand func(p *PixelWand) *PixelWand
+
+func (p *PixelWand) Destroy() *PixelWand { return DestroyPixelWand(p) }
+
+var IsPixelWand func(p *PixelWand) bool
+
+func (p *PixelWand) IsPixelWand() bool { return IsPixelWand(p) }
+
+var IsPixelWandSimilar func(p *PixelWand, q *PixelWand, fuzz float64) bool
+
+func (p *PixelWand) IsSimilar(q *PixelWand, fuzz float64) bool {
+	return IsPixelWandSimilar(p, q, fuzz)
+}
+
+var PixelClearException func(p *PixelWand) bool
+
+func (p *PixelWand) ClearException() bool { return PixelClearException(p) }
+
+var PixelGetAlpha func(p *PixelWand) float64
+
+func (p *PixelWand) Alpha() float64 { return PixelGetAlpha(p) }
+
+var PixelGetAlphaQuantum func(p *PixelWand) T.Quantum
+
+func (p *PixelWand) AlphaQuantum() T.Quantum { return PixelGetAlphaQuantum(p) }
+
+var PixelGetBlack func(p *PixelWand) float64
+
+func (p *PixelWand) Black() float64 { return PixelGetBlack(p) }
+
+var PixelGetBlackQuantum func(p *PixelWand) T.Quantum
+
+func (p *PixelWand) BlackQuantum() T.Quantum { return PixelGetBlackQuantum(p) }
+
+var PixelGetBlue func(p *PixelWand) float64
+
+func (p *PixelWand) Blue() float64 { return PixelGetBlue(p) }
+
+var PixelGetBlueQuantum func(p *PixelWand) T.Quantum
+
+func (p *PixelWand) BlueQuantum() T.Quantum { return PixelGetBlueQuantum(p) }
+
+var PixelGetColorAsNormalizedString func(p *PixelWand) string
+
+func (p *PixelWand) ColorAsNormalizedString() string { return PixelGetColorAsNormalizedString(p) }
+
+var PixelGetColorAsString func(p *PixelWand) string
+
+func (p *PixelWand) ColorAsString() string { return PixelGetColorAsString(p) }
+
+var PixelGetColorCount func(p *PixelWand) uint32
+
+func (p *PixelWand) ColorCount() uint32 { return PixelGetColorCount(p) }
+
+var PixelGetCyan func(p *PixelWand) float64
+
+func (p *PixelWand) Cyan() float64 { return PixelGetCyan(p) }
+
+var PixelGetCyanQuantum func(p *PixelWand) T.Quantum
+
+func (p *PixelWand) CyanQuantum() T.Quantum { return PixelGetCyanQuantum(p) }
+
+var PixelGetException func(p *PixelWand, severity *T.ExceptionType) string
+
+func (p *PixelWand) Exception(severity *T.ExceptionType) string { return PixelGetException(p, severity) }
+
+var PixelGetExceptionType func(p *PixelWand) T.ExceptionType
+
+func (p *PixelWand) ExceptionType() T.ExceptionType { return PixelGetExceptionType(p) }
+
+var PixelGetFuzz func(p *PixelWand) float64
+
+func (p *PixelWand) Fuzz() float64 { return PixelGetFuzz(p) }
+
+var PixelGetGreen func(p *PixelWand) float64
+
+func (p *PixelWand) Green() float64 { return PixelGetGreen(p) }
+
+var PixelGetGreenQuantum func(p *PixelWand) T.Quantum
+
+func (p *PixelWand) GreenQuantum() T.Quantum { return PixelGetGreenQuantum(p) }
+
+var PixelGetHSL func(p *PixelWand, hue, saturation, lightness *float64)
+
 func (p *PixelWand) HSL(hue, saturation, lightness *float64) {
-	return PixelGetHSL(p, hue, saturation, lightness)
+	PixelGetHSL(p, hue, saturation, lightness)
 }
-func (p *PixelWand) Index() IndexPacket                   { return PixelGetIndex(p) }
-func (p *PixelWand) Magenta() float64                     { return PixelGetMagenta(p) }
-func (p *PixelWand) MagentaQuantum() Quantum              { return PixelGetMagentaQuantum(p) }
-func (p *PixelWand) MagickColor(color *MagickPixelPacket) { return PixelGetMagickColor(p, color) }
-func (p *PixelWand) Opacity() float64                     { return PixelGetOpacity(p) }
-func (p *PixelWand) OpacityQuantum() Quantum              { return PixelGetOpacityQuantum(p) }
-func (p *PixelWand) QuantumColor(color *PixelPacket)      { return PixelGetQuantumColor(p, color) }
-func (p *PixelWand) Red() float64                         { return PixelGetRed(p) }
-func (p *PixelWand) RedQuantum() Quantum                  { return PixelGetRedQuantum(p) }
-func (p *PixelWand) Yellow() float64                      { return PixelGetYellow(p) }
-func (p *PixelWand) YellowQuantum() Quantum               { return PixelGetYellowQuantum(p) }
-func (p *PixelWand) SetAlpha(alpha float64)               { return PixelSetAlpha(p, alpha) }
-func (p *PixelWand) SetAlphaQuantum(opacity Quantum)      { return PixelSetAlphaQuantum(p, opacity) }
-func (p *PixelWand) SetBlack(black float64)               { return PixelSetBlack(p, black) }
-func (p *PixelWand) SetBlackQuantum(black Quantum)        { return PixelSetBlackQuantum(p, black) }
-func (p *PixelWand) SetBlue(blue float64)                 { return PixelSetBlue(p, blue) }
-func (p *PixelWand) SetBlueQuantum(blue Quantum)          { return PixelSetBlueQuantum(p, blue) }
-func (p *PixelWand) SetColor(color string) bool           { return PixelSetColor(p, color) }
-func (p *PixelWand) SetColorCount(count size_t)           { return PixelSetColorCount(p, count) }
-func (p *PixelWand) SetColorFromWand(color *PixelWand)    { return PixelSetColorFromWand(p, color) }
-func (p *PixelWand) SetCyan(cyan float64)                 { return PixelSetCyan(p, cyan) }
-func (p *PixelWand) SetCyanQuantum(cyan Quantum)          { return PixelSetCyanQuantum(p, cyan) }
-func (p *PixelWand) SetFuzz(fuzz float64)                 { return PixelSetFuzz(p, fuzz) }
-func (p *PixelWand) SetGreen(green float64)               { return PixelSetGreen(p, green) }
-func (p *PixelWand) SetGreenQuantum(green Quantum)        { return PixelSetGreenQuantum(p, green) }
+
+var PixelGetIndex func(p *PixelWand) T.IndexPacket
+
+func (p *PixelWand) Index() T.IndexPacket { return PixelGetIndex(p) }
+
+var PixelGetMagenta func(p *PixelWand) float64
+
+func (p *PixelWand) Magenta() float64 { return PixelGetMagenta(p) }
+
+var PixelGetMagentaQuantum func(p *PixelWand) T.Quantum
+
+func (p *PixelWand) MagentaQuantum() T.Quantum { return PixelGetMagentaQuantum(p) }
+
+var PixelGetMagickColor func(p *PixelWand, color *MagickPixelPacket)
+
+func (p *PixelWand) MagickColor(color *MagickPixelPacket) { PixelGetMagickColor(p, color) }
+
+var PixelGetOpacity func(p *PixelWand) float64
+
+func (p *PixelWand) Opacity() float64 { return PixelGetOpacity(p) }
+
+var PixelGetOpacityQuantum func(p *PixelWand) T.Quantum
+
+func (p *PixelWand) OpacityQuantum() T.Quantum { return PixelGetOpacityQuantum(p) }
+
+var PixelGetQuantumColor func(p *PixelWand, color *T.PixelPacket)
+
+func (p *PixelWand) QuantumColor(color *T.PixelPacket) { PixelGetQuantumColor(p, color) }
+
+var PixelGetRed func(p *PixelWand) float64
+
+func (p *PixelWand) Red() float64 { return PixelGetRed(p) }
+
+var PixelGetRedQuantum func(p *PixelWand) T.Quantum
+
+func (p *PixelWand) RedQuantum() T.Quantum { return PixelGetRedQuantum(p) }
+
+var PixelGetYellow func(p *PixelWand) float64
+
+func (p *PixelWand) Yellow() float64 { return PixelGetYellow(p) }
+
+var PixelGetYellowQuantum func(p *PixelWand) T.Quantum
+
+func (p *PixelWand) YellowQuantum() T.Quantum { return PixelGetYellowQuantum(p) }
+
+var PixelSetAlpha func(p *PixelWand, alpha float64)
+
+func (p *PixelWand) SetAlpha(alpha float64) { PixelSetAlpha(p, alpha) }
+
+var PixelSetAlphaQuantum func(p *PixelWand, opacity T.Quantum)
+
+func (p *PixelWand) SetAlphaQuantum(opacity T.Quantum) { PixelSetAlphaQuantum(p, opacity) }
+
+var PixelSetBlack func(p *PixelWand, black float64)
+
+func (p *PixelWand) SetBlack(black float64) { PixelSetBlack(p, black) }
+
+var PixelSetBlackQuantum func(p *PixelWand, black T.Quantum)
+
+func (p *PixelWand) SetBlackQuantum(black T.Quantum) { PixelSetBlackQuantum(p, black) }
+
+var PixelSetBlue func(p *PixelWand, blue float64)
+
+func (p *PixelWand) SetBlue(blue float64) { PixelSetBlue(p, blue) }
+
+var PixelSetBlueQuantum func(p *PixelWand, blue T.Quantum)
+
+func (p *PixelWand) SetBlueQuantum(blue T.Quantum) { PixelSetBlueQuantum(p, blue) }
+
+var PixelSetColor func(p *PixelWand, color string) bool
+
+func (p *PixelWand) SetColor(color string) bool { return PixelSetColor(p, color) }
+
+var PixelSetColorCount func(p *PixelWand, count uint32)
+
+func (p *PixelWand) SetColorCount(count uint32) { PixelSetColorCount(p, count) }
+
+var PixelSetColorFromWand func(p *PixelWand, color *PixelWand)
+
+func (p *PixelWand) SetColorFromWand(color *PixelWand) { PixelSetColorFromWand(p, color) }
+
+var PixelSetCyan func(p *PixelWand, cyan float64)
+
+func (p *PixelWand) SetCyan(cyan float64) { PixelSetCyan(p, cyan) }
+
+var PixelSetCyanQuantum func(p *PixelWand, cyan T.Quantum)
+
+func (p *PixelWand) SetCyanQuantum(cyan T.Quantum) { PixelSetCyanQuantum(p, cyan) }
+
+var PixelSetFuzz func(p *PixelWand, fuzz float64)
+
+func (p *PixelWand) SetFuzz(fuzz float64) { PixelSetFuzz(p, fuzz) }
+
+var PixelSetGreen func(p *PixelWand, green float64)
+
+func (p *PixelWand) SetGreen(green float64) { PixelSetGreen(p, green) }
+
+var PixelSetGreenQuantum func(p *PixelWand, green T.Quantum)
+
+func (p *PixelWand) SetGreenQuantum(green T.Quantum) { PixelSetGreenQuantum(p, green) }
+
+var PixelSetHSL func(p *PixelWand, hue, saturation, lightness float64)
+
 func (p *PixelWand) SetHSL(hue, saturation, lightness float64) {
-	return PixelSetHSL(p, hue, saturation, lightness)
+	PixelSetHSL(p, hue, saturation, lightness)
 }
-func (p *PixelWand) SetIndex(index IndexPacket)              { return PixelSetIndex(p, index) }
-func (p *PixelWand) SetMagenta(magenta float64)              { return PixelSetMagenta(p, magenta) }
-func (p *PixelWand) SetMagentaQuantum(magenta Quantum)       { return PixelSetMagentaQuantum(p, magenta) }
-func (p *PixelWand) SetMagickColor(color *MagickPixelPacket) { return PixelSetMagickColor(p, color) }
-func (p *PixelWand) SetOpacity(opacity float64)              { return PixelSetOpacity(p, opacity) }
-func (p *PixelWand) SetOpacityQuantum(opacity Quantum)       { return PixelSetOpacityQuantum(p, opacity) }
-func (p *PixelWand) SetQuantumColor(color *PixelPacket)      { return PixelSetQuantumColor(p, color) }
-func (p *PixelWand) SetRed(red float64)                      { return PixelSetRed(p, red) }
-func (p *PixelWand) SetRedQuantum(red Quantum)               { return PixelSetRedQuantum(p, red) }
-func (p *PixelWand) SetYellow(yellow float64)                { return PixelSetYellow(p, yellow) }
-func (p *PixelWand) SetYellowQuantum(yellow Quantum)         { return PixelSetYellowQuantum(p, yellow) }
-var (
-	ClonePixelView                  func(pixel_view *PixelView) *PixelView
-	DestroyPixelView                func(pixel_view *PixelView, number_wands, number_threads size_t) *PixelView
 
-	DuplexTransferPixelViewIterator func(source, duplex, destination *PixelView, transfer DuplexTransferPixelViewMethod, context *Void) bool
-	GetPixelViewHeight              func(pixel_view *PixelView) size_t
-	GetPixelViewIterator            func(source *PixelView, get GetPixelViewMethod, context *Void) bool
-	GetPixelViewPixels              func(pixel_view *PixelView) *PixelWand
-	GetPixelViewWand                func(pixel_view *PixelView) *MagickWand
-	GetPixelViewWidth               func(pixel_view *PixelView) size_t
-	GetPixelViewX                   func(pixel_view *PixelView) ssize_t
-	GetPixelViewY                   func(pixel_view *PixelView) ssize_t
-	IsPixelView                     func(pixel_view *PixelView) bool
-	SetPixelViewIterator            func(destination *PixelView, set SetPixelViewMethod, context *Void) bool
-	TransferPixelViewIterator       func(source, destination *PixelView, transfer TransferPixelViewMethod, context *Void) bool
-	UpdatePixelViewIterator         func(source *PixelView, update UpdatePixelViewMethod, context *Void) bool
-)
+var PixelSetIndex func(p *PixelWand, index T.IndexPacket)
 
-var (
-	ClearPixelIterator              func(p *PixelIterator)
-	ClonePixelIterator              func(p *PixelIterator) *PixelIterator
-	DestroyPixelIterator            func(p *PixelIterator) *PixelIterator
-	IsPixelIterator                 func(p *PixelIterator) bool
+func (p *PixelWand) SetIndex(index T.IndexPacket) { PixelSetIndex(p, index) }
 
-	PixelClearIteratorException     func(p *PixelIterator) bool
-	PixelGetCurrentIteratorRow      func(p *PixelIterator, number_wands *size_t) **PixelWand
-	PixelGetIteratorException       func(p *PixelIterator, severity *ExceptionType) string
-	PixelGetIteratorExceptionType   func(p *PixelIterator) ExceptionType
-	PixelGetIteratorRow             func(p *PixelIterator) bool
-	PixelGetNextIteratorRow         func(p *PixelIterator, number_wands *size_t) **PixelWand
-	PixelGetNextRow                 func(p *PixelIterator, number_wands *size_t) **PixelWand
-	PixelGetPreviousIteratorRow     func(p *PixelIterator, number_wands *size_t) **PixelWand
-	PixelIteratorGetException       func(p *Pixeliterator, severity *ExceptionType) string
-	PixelResetIterator              func(p *PixelIterator)
-	PixelSetFirstIteratorRow        func(p *PixelIterator)
-	PixelSetIteratorRow             func(p *PixelIterator, row ssize_t) bool
-	PixelSetLastIteratorRow         func(p *PixelIterator)
-	PixelSyncIterator               func(p *PixelIterator) bool
-)
-func (p  *PixelIterator) Clear() {	return ClearPixelIterator(p)}
-func (p  *PixelIterator) Clone() *PixelIterator {	return ClonePixelIterator(p)}
-func (p  *PixelIterator) Destroy() *PixelIterator {	return DestroyPixelIterator(p)}
-func (p  *PixelIterator) IsPixelIterator() bool {	return IsPixelIterator(p)}
+var PixelSetMagenta func(p *PixelWand, magenta float64)
 
-//TODO(t): w w/o Iterator in name
-func (p  *PixelIterator) CurrentIteratorRow( number_wands *size_t) **PixelWand {	return PixelGetCurrentIteratorRow(p, number_wands *size_t)}
-func (p  *PixelIterator) IteratorException( severity *ExceptionType) string {	return PixelGetIteratorException(p, severity *ExceptionType)}
-func (p  *PixelIterator) IteratorExceptionType() ExceptionType {	return PixelGetIteratorExceptionType(p)}
-func (p  *PixelIterator) IteratorRow() bool {	return PixelGetIteratorRow(p)}
-func (p  *PixelIterator) NextIteratorRow( number_wands *size_t) **PixelWand {	return PixelGetNextIteratorRow(p, number_wands *size_t)}
-func (p  *PixelIterator) NextRow( number_wands *size_t) **PixelWand {	return PixelGetNextRow(p, number_wands *size_t)}
-func (p  *PixelIterator) PreviousIteratorRow( number_wands *size_t) **PixelWand {	return PixelGetPreviousIteratorRow(p, number_wands *size_t)}
-func (p  *PixelIterator) Exception( severity *ExceptionType) string {	return PixelIteratorGetException(p, severity *ExceptionType)}
+func (p *PixelWand) SetMagenta(magenta float64) { PixelSetMagenta(p, magenta) }
 
-func (p  *PixelIterator) ClearException() bool {	return PixelClearIteratorException(p)}
-func (p  *PixelIterator) Reset() {	return PixelResetIterator(p)}
-func (p  *PixelIterator) SetFirstIteratorRow() {	return PixelSetFirstIteratorRow(p)}
-func (p  *PixelIterator) SetIteratorRow( row ssize_t) bool {	return PixelSetIteratorRow(p, row ssize_t)}
-func (p  *PixelIterator) SetLastIteratorRow() {	return PixelSetLastIteratorRow(p)}
-func (p  *PixelIterator) Sync() bool {	return PixelSyncIterator(p)}
+var PixelSetMagentaQuantum func(p *PixelWand, magenta T.Quantum)
 
-var(
-	CloneWandView                   func(wand_view *WandView) *WandView
-	DestroyWandView                 func(wand_view *WandView) *WandView
-	DuplexTransferImageViewMethod   func(source, duplex, destination *WandView, y ssize_t, thread_id int, context *Void) bool
-	DuplexTransferWandViewIterator  func(source, duplex, destination *WandView, transfer DuplexTransferWandViewMethod, context *Void) bool
-	GetImageViewMethod              func(source *WandView, y ssize_t, thread_id int, context *Void) bool
-	GetWandViewException            func(wand_view *WandView, severity *ExceptionType) string
-	GetWandViewExtent               func(wand_view *WandView) RectangleInfo
-	GetWandViewIterator             func(source *WandView, get GetWandViewMethod, context *Void) bool
-	GetWandViewPixels               func(wand_view *WandView) *PixelWand
-	GetWandViewWand                 func(wand_view *WandView) *MagickWand
-	IsWandView                      func(wand_view *WandView) bool
-	SetWandViewDescription          func(image_view *WandView, description string)
-	SetWandViewIterator             func(destination *WandView, set SetWandViewMethod, context *Void) bool
-	SetWandViewThreads              func(image_view *WandView, number_threads size_t)
-	TransferImageViewMethod         func(source, destination *WandView, y ssize_t, thread_id int, context *Void) bool
-	TransferWandViewIterator        func(source, destination *WandView, transfer TransferWandViewMethod, context *Void) bool
-	UpdateImageViewMethod           func(source *WandView, y ssize_t, thread_id int, context *Void) bool
-	UpdateWandViewIterator          func(source *WandView, update UpdateWandViewMethod, context *Void) bool
-)
+func (p *PixelWand) SetMagentaQuantum(magenta T.Quantum) { PixelSetMagentaQuantum(p, magenta) }
 
-var (
-	MagickCommandGenesis            func(image_info *ImageInfo, command MagickCommand, argc int, argv, metadata []string, exception *ExceptionInfo) bool
-	MagickDestroyImage              func(image *Image) *Image
-	MagickGetCopyright              func() string
-	MagickGetHomeURL                func() string
-	MagickGetPackageName            func() string
-	MagickGetQuantumDepth           func(depth *size_t) string
-	MagickGetQuantumRange           func(range_ *size_t) string
-	MagickGetReleaseDate            func() string
-	MagickGetResource               func(type_ ResourceType) MagickSizeType
-	MagickGetResourceLimit          func(type_ ResourceType) MagickSizeType
-	MagickGetVersion                func(version *size_t) string
-	MagickProgressMonitor           func(text string, offset MagickOffsetType, span MagickSizeType, client_data *Void) bool
-	MagickProgressMonitorFIX        func(text string, offset MagickOffsetType, span MagickSizeType, client_data *Void) bool
-	MagickQueryConfigureOption      func(option string) string
-	MagickQueryConfigureOptions     func(pattern string, numberOptions *size_t) []string
-	MagickQueryFonts                func(pattern string, numberFonts *size_t) []string
-	MagickQueryFormats              func(pattern string, numberFormats *size_t) []string
-	MagickRelinquishMemory          func(resource *Void) *Void
-	MagickSetResourceLimit          func(type_ ResourceType, limit MagickSizeType) bool
-	MagickWandGenesis               func()
-	MagickWandTerminus              func()
-	NewMagickWandFromImage          func(image *Image) *MagickWand
-	SetImageViewMethod              func(destination *ImageView, y ssize_t, thread_id int, context *Void) bool
-)
+var PixelSetMagickColor func(p *PixelWand, color *MagickPixelPacket)
+
+func (p *PixelWand) SetMagickColor(color *MagickPixelPacket) { PixelSetMagickColor(p, color) }
+
+var PixelSetOpacity func(p *PixelWand, opacity float64)
+
+func (p *PixelWand) SetOpacity(opacity float64) { PixelSetOpacity(p, opacity) }
+
+var PixelSetOpacityQuantum func(p *PixelWand, opacity T.Quantum)
+
+func (p *PixelWand) SetOpacityQuantum(opacity T.Quantum) { PixelSetOpacityQuantum(p, opacity) }
+
+var PixelSetQuantumColor func(p *PixelWand, color *T.PixelPacket)
+
+func (p *PixelWand) SetQuantumColor(color *T.PixelPacket) { PixelSetQuantumColor(p, color) }
+
+var PixelSetRed func(p *PixelWand, red float64)
+
+func (p *PixelWand) SetRed(red float64) { PixelSetRed(p, red) }
+
+var PixelSetRedQuantum func(p *PixelWand, red T.Quantum)
+
+func (p *PixelWand) SetRedQuantum(red T.Quantum) { PixelSetRedQuantum(p, red) }
+
+var PixelSetYellow func(p *PixelWand, yellow float64)
+
+func (p *PixelWand) SetYellow(yellow float64) { PixelSetYellow(p, yellow) }
+
+var PixelSetYellowQuantum func(p *PixelWand, yellow T.Quantum)
+
+func (p *PixelWand) SetYellowQuantum(yellow T.Quantum) { PixelSetYellowQuantum(p, yellow) }
+
+var ClearPixelIterator func(p *PixelIterator)
+
+func (p *PixelIterator) Clear() { ClearPixelIterator(p) }
+
+var ClonePixelIterator func(p *PixelIterator) *PixelIterator
+
+func (p *PixelIterator) Clone() *PixelIterator { return ClonePixelIterator(p) }
+
+var DestroyPixelIterator func(p *PixelIterator) *PixelIterator
+
+func (p *PixelIterator) Destroy() *PixelIterator { return DestroyPixelIterator(p) }
+
+var IsPixelIterator func(p *PixelIterator) bool
+
+func (p *PixelIterator) IsPixelIterator() bool { return IsPixelIterator(p) }
+
+var PixelGetCurrentIteratorRow func(p *PixelIterator, numberWands *uint32) **PixelWand
+
+func (p *PixelIterator) CurrentIteratorRow(numberWands *uint32) **PixelWand {
+	return PixelGetCurrentIteratorRow(p, numberWands)
+}
+
+var PixelGetIteratorException func(p *PixelIterator, severity *T.ExceptionType) string
+
+func (p *PixelIterator) IteratorException(severity *T.ExceptionType) string {
+	return PixelGetIteratorException(p, severity)
+}
+
+var PixelGetIteratorExceptionType func(p *PixelIterator) T.ExceptionType
+
+func (p *PixelIterator) IteratorExceptionType() T.ExceptionType {
+	return PixelGetIteratorExceptionType(p)
+}
+
+var PixelGetIteratorRow func(p *PixelIterator) bool
+
+func (p *PixelIterator) IteratorRow() bool { return PixelGetIteratorRow(p) }
+
+var PixelGetNextIteratorRow func(p *PixelIterator, numberWands *uint32) []*PixelWand
+
+func (p *PixelIterator) NextIteratorRow(numberWands *uint32) []*PixelWand {
+	return PixelGetNextIteratorRow(p, numberWands)
+}
+
+var PixelGetPreviousIteratorRow func(p *PixelIterator, numberWands *uint32) **PixelWand
+
+func (p *PixelIterator) PreviousIteratorRow(numberWands *uint32) **PixelWand {
+	return PixelGetPreviousIteratorRow(p, numberWands)
+}
+
+var PixelClearIteratorException func(p *PixelIterator) bool
+
+func (p *PixelIterator) ClearException() bool { return PixelClearIteratorException(p) }
+
+var PixelResetIterator func(p *PixelIterator)
+
+func (p *PixelIterator) Reset() { PixelResetIterator(p) }
+
+var PixelSetFirstIteratorRow func(p *PixelIterator)
+
+func (p *PixelIterator) SetFirstIteratorRow() { PixelSetFirstIteratorRow(p) }
+
+var PixelSetIteratorRow func(p *PixelIterator, row int32) bool
+
+func (p *PixelIterator) SetIteratorRow(row int32) bool { return PixelSetIteratorRow(p, row) }
+
+var PixelSetLastIteratorRow func(p *PixelIterator)
+
+func (p *PixelIterator) SetLastIteratorRow() { PixelSetLastIteratorRow(p) }
+
+var PixelSyncIterator func(p *PixelIterator) bool
+
+func (p *PixelIterator) Sync() bool { return PixelSyncIterator(p) }
+
+var CloneWandView func(w *WandView) *WandView
+
+func (w *WandView) Clone() *WandView { return CloneWandView(w) }
+
+var DestroyWandView func(w *WandView) *WandView
+
+func (w *WandView) Destroy() *WandView { return DestroyWandView(w) }
+
+var DuplexTransferWandViewIterator func(w *WandView, duplex, destination *WandView, transfer T.DuplexTransferWandViewMethod, context *T.Void) bool
+
+func (w *WandView) DuplexTransferIterator(duplex, destination *WandView, transfer T.DuplexTransferWandViewMethod, context *T.Void) bool {
+	return DuplexTransferWandViewIterator(w, duplex, destination, transfer, context)
+}
+
+var GetWandViewException func(w *WandView, severity *T.ExceptionType) string
+
+func (w *WandView) Exception(severity *T.ExceptionType) string {
+	return GetWandViewException(w, severity)
+}
+
+var GetWandViewExtent func(w *WandView) T.RectangleInfo
+
+func (w *WandView) Extent() T.RectangleInfo { return GetWandViewExtent(w) }
+
+var GetWandViewIterator func(w *WandView, get T.GetWandViewMethod, context *T.Void) bool
+
+func (w *WandView) Iterator(get T.GetWandViewMethod, context *T.Void) bool {
+	return GetWandViewIterator(w, get, context)
+}
+
+var GetWandViewPixels func(w *WandView) *PixelWand
+
+func (w *WandView) Pixels() *PixelWand { return GetWandViewPixels(w) }
+
+var GetWandViewWand func(w *WandView) *MagickWand
+
+func (w *WandView) Wand() *MagickWand { return GetWandViewWand(w) }
+
+var IsWandView func(w *WandView) bool
+
+func (w *WandView) IsWandView() bool { return IsWandView(w) }
+
+var SetWandViewDescription func(w *WandView, description string)
+
+func (w *WandView) SetDescription(description string) { SetWandViewDescription(w, description) }
+
+var SetWandViewIterator func(w *WandView, set T.SetWandViewMethod, context *T.Void) bool
+
+func (w *WandView) SetIterator(set T.SetWandViewMethod, context *T.Void) bool {
+	return SetWandViewIterator(w, set, context)
+}
+
+var SetWandViewThreads func(w *WandView, numberThreads uint32)
+
+func (w *WandView) SetThreads(numberThreads uint32) { SetWandViewThreads(w, numberThreads) }
+
+var TransferWandViewIterator func(w *WandView, destination *WandView, transfer T.TransferWandViewMethod, context *T.Void) bool
+
+func (w *WandView) TransferIterator(destination *WandView, transfer T.TransferWandViewMethod, context *T.Void) bool {
+	return TransferWandViewIterator(w, destination, transfer, context)
+}
+
+var UpdateWandViewIterator func(w *WandView, update T.UpdateWandViewMethod, context *T.Void) bool
+
+func (w *WandView) UpdateIterator(update T.UpdateWandViewMethod, context *T.Void) bool {
+	return UpdateWandViewIterator(w, update, context)
+}
+
+var Resource func(r T.ResourceType) T.MagickSizeType
+
+var ResourceLimit func(r T.ResourceType) T.MagickSizeType
+
+var SetResourceLimit func(r T.ResourceType, limit T.MagickSizeType) bool
+
+var CommandGenesis func(imageInfo *ImageInfo, command T.MagickCommand, argc int, argv, metadata []string, exception *ExceptionInfo) bool
+
+var DestroyImage func(image *Image) *Image
+
+var GetCopyright func() string
+
+var GetHomeURL func() string
+
+var GetPackageName func() string
+
+var GetQuantumDepth func(depth *uint32) string
+
+var GetQuantumRange func(range_ *uint32) string
+
+var GetReleaseDate func() string
+
+var GetVersion func(version *uint32) string
+
+var QueryConfigureOption func(option string) string
+
+var QueryConfigureOptions func(pattern string, numberOptions *uint32) []string
+
+var QueryFonts func(pattern string, numberFonts *uint32) []string
+
+var QueryFormats func(pattern string, numberFormats *uint32) []string
+
+var RelinquishMemory func(resource *T.Void) *T.Void
+
+var WandGenesis func()
+
+var WandTerminus func()
+
+var NewMagickWandFromImage func(image *Image) *MagickWand
+
+var AcquireWandId func() uint32
+
+var AnimateImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
+
+var CompareImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
+
+var CompositeImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
+
+var ConjureImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
+
+var ConvertImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
+
+var DestroyWandIds func()
+
+var DisplayImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
+
+var DrawAllocateWand func(*DrawInfo, *Image) *DrawingWand
+
+var DrawGetClipRule func(*DrawingWand) T.FillRule
+
+var DrawGetTextInterlineSpacing func(*DrawingWand) float64
+
+var DrawRender func(*DrawingWand) bool
+
+var IdentifyImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
+
+var ImportImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
+
+var GetImageChannelExtrema func(m *MagickWand, c T.ChannelType, minima, maxima *uint32) bool
+
+func (m *MagickWand) GetImageChannelExtrema(c T.ChannelType, minima, maxima *uint32) bool {
+	return GetImageChannelExtrema(m, c, minima, maxima)
+}
+
+var GetImageEndian func(*MagickWand) T.EndianType
+
+var GetImageExtrema func(m *MagickWand, min, max *uint32) bool
+
+func (m *MagickWand) Extrema(min, max *uint32) bool { return GetImageExtrema(m, min, max) }
+
+var GetImageIndex func(m *MagickWand) int32
+
+func (m *MagickWand) GetImageIndex() int32 { return GetImageIndex(m) }
+
+var GetImageRange func(*MagickWand, *float64, *float64) bool
+
+var LiquidRescaleImage func(m *MagickWand, columns, rows uint32, deltaX, rigidity float64) bool
+
+func (m *MagickWand) LiquidRescaleImage(columns, rows uint32, deltaX, rigidity float64) bool {
+	return LiquidRescaleImage(m, columns, rows, deltaX, rigidity)
+}
+
+var OptimizeImageTransparency func(*MagickWand) bool
+
+var SolarizeImageChannel func(*MagickWand, T.ChannelType, float64) bool
+
+var MogrifyImage func(*ImageInfo, int, []string, **Image, *ExceptionInfo) bool
+
+var MogrifyImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
+
+var MogrifyImageInfo func(*ImageInfo, int, []string, *ExceptionInfo) bool
+
+var MogrifyImageList func(*ImageInfo, int, []string, **Image, *ExceptionInfo) bool
+
+var MogrifyImages func(*ImageInfo, bool, int, []string, **Image, *ExceptionInfo) bool
+
+var MontageImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
+
+var RelinquishWandId func(uint32)
+
+var StreamImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
+
+var DLL = "CORE_RL_wand_.dll"
 
 func init() {
-	AddDllApis("CORE_RL_wand_.dll", false, Apis{
-		// {"AcquireWandId", &AcquireWandId},
-		// {"AnimateImageCommand", &AnimateImageCommand},
-		{"ClearDrawingWand", &ClearDrawingWand},
-		{"ClearMagickWand", &ClearMagickWand},
-		{"ClearPixelIterator", &ClearPixelIterator},
-		{"ClearPixelWand", &ClearPixelWand},
-		{"CloneDrawingWand", &CloneDrawingWand},
-		{"CloneMagickWand", &CloneMagickWand},
-		{"ClonePixelIterator", &ClonePixelIterator},
-		{"ClonePixelView", &ClonePixelView},
-		{"ClonePixelWand", &ClonePixelWand},
-		{"ClonePixelWands", &ClonePixelWands},
-		{"CloneWandView", &CloneWandView},
-		// {"CompareImageCommand", &CompareImageCommand},
-		// {"CompositeImageCommand", &CompositeImageCommand},
-		// {"ConjureImageCommand", &ConjureImageCommand},
-		// {"ConvertImageCommand", &ConvertImageCommand},
-		{"DestroyDrawingWand", &DestroyDrawingWand},
-		{"DestroyMagickWand", &DestroyMagickWand},
-		{"DestroyPixelIterator", &DestroyPixelIterator},
-		{"DestroyPixelView", &DestroyPixelView},
-		{"DestroyPixelWand", &DestroyPixelWand},
-		{"DestroyPixelWands", &DestroyPixelWands},
-		// {"DestroyWandIds", &DestroyWandIds},
-		{"DestroyWandView", &DestroyWandView},
-		// {"DisplayImageCommand", &DisplayImageCommand},
-		{"DrawAffine", &DrawAffine},
-		// {"DrawAllocateWand", &DrawAllocateWand},
-		{"DrawAnnotation", &DrawAnnotation},
-		{"DrawArc", &DrawArc},
-		{"DrawBezier", &DrawBezier},
-		{"DrawCircle", &DrawCircle},
-		{"DrawClearException", &DrawClearException},
-		{"DrawColor", &DrawColor},
-		{"DrawComment", &DrawComment},
-		{"DrawComposite", &DrawComposite},
-		{"DrawEllipse", &DrawEllipse},
-		{"DrawGetBorderColor", &DrawGetBorderColor},
-		{"DrawGetClipPath", &DrawGetClipPath},
-		// {"DrawGetClipRule", &DrawGetClipRule},
-		{"DrawGetClipUnits", &DrawGetClipUnits},
-		{"DrawGetException", &DrawGetException},
-		{"DrawGetExceptionType", &DrawGetExceptionType},
-		{"DrawGetFillAlpha", &DrawGetFillAlpha},
-		{"DrawGetFillColor", &DrawGetFillColor},
-		{"DrawGetFillOpacity", &DrawGetFillOpacity},
-		{"DrawGetFillRule", &DrawGetFillRule},
-		{"DrawGetFont", &DrawGetFont},
-		{"DrawGetFontFamily", &DrawGetFontFamily},
-		{"DrawGetFontResolution", &DrawGetFontResolution},
-		{"DrawGetFontSize", &DrawGetFontSize},
-		{"DrawGetFontStretch", &DrawGetFontStretch},
-		{"DrawGetFontStyle", &DrawGetFontStyle},
-		{"DrawGetFontWeight", &DrawGetFontWeight},
-		{"DrawGetGravity", &DrawGetGravity},
-		{"DrawGetOpacity", &DrawGetOpacity},
-		{"DrawGetStrokeAlpha", &DrawGetStrokeAlpha},
-		{"DrawGetStrokeAntialias", &DrawGetStrokeAntialias},
-		{"DrawGetStrokeColor", &DrawGetStrokeColor},
-		{"DrawGetStrokeDashArray", &DrawGetStrokeDashArray},
-		{"DrawGetStrokeDashOffset", &DrawGetStrokeDashOffset},
-		{"DrawGetStrokeLineCap", &DrawGetStrokeLineCap},
-		{"DrawGetStrokeLineJoin", &DrawGetStrokeLineJoin},
-		{"DrawGetStrokeMiterLimit", &DrawGetStrokeMiterLimit},
-		{"DrawGetStrokeOpacity", &DrawGetStrokeOpacity},
-		{"DrawGetStrokeWidth", &DrawGetStrokeWidth},
-		{"DrawGetTextAlignment", &DrawGetTextAlignment},
-		{"DrawGetTextAntialias", &DrawGetTextAntialias},
-		{"DrawGetTextDecoration", &DrawGetTextDecoration},
-		{"DrawGetTextEncoding", &DrawGetTextEncoding},
-		// {"DrawGetTextInterlineSpacing", &DrawGetTextInterlineSpacing},
-		{"DrawGetTextInterwordSpacing", &DrawGetTextInterwordSpacing},
-		{"DrawGetTextKerning", &DrawGetTextKerning},
-		{"DrawGetTextUnderColor", &DrawGetTextUnderColor},
-		{"DrawGetVectorGraphics", &DrawGetVectorGraphics},
-		{"DrawLine", &DrawLine},
-		{"DrawMatte", &DrawMatte},
-		{"DrawPathClose", &DrawPathClose},
-		{"DrawPathCurveToAbsolute", &DrawPathCurveToAbsolute},
-		{"DrawPathCurveToQuadraticBezierAbsolute", &DrawPathCurveToQuadraticBezierAbsolute},
-		{"DrawPathCurveToQuadraticBezierRelative", &DrawPathCurveToQuadraticBezierRelative},
-		{"DrawPathCurveToQuadraticBezierSmoothAbsolute", &DrawPathCurveToQuadraticBezierSmoothAbsolute},
-		{"DrawPathCurveToQuadraticBezierSmoothRelative", &DrawPathCurveToQuadraticBezierSmoothRelative},
-		{"DrawPathCurveToRelative", &DrawPathCurveToRelative},
-		{"DrawPathCurveToSmoothAbsolute", &DrawPathCurveToSmoothAbsolute},
-		{"DrawPathCurveToSmoothRelative", &DrawPathCurveToSmoothRelative},
-		{"DrawPathEllipticArcAbsolute", &DrawPathEllipticArcAbsolute},
-		{"DrawPathEllipticArcRelative", &DrawPathEllipticArcRelative},
-		{"DrawPathFinish", &DrawPathFinish},
-		{"DrawPathLineToAbsolute", &DrawPathLineToAbsolute},
-		{"DrawPathLineToHorizontalAbsolute", &DrawPathLineToHorizontalAbsolute},
-		{"DrawPathLineToHorizontalRelative", &DrawPathLineToHorizontalRelative},
-		{"DrawPathLineToRelative", &DrawPathLineToRelative},
-		{"DrawPathLineToVerticalAbsolute", &DrawPathLineToVerticalAbsolute},
-		{"DrawPathLineToVerticalRelative", &DrawPathLineToVerticalRelative},
-		{"DrawPathMoveToAbsolute", &DrawPathMoveToAbsolute},
-		{"DrawPathMoveToRelative", &DrawPathMoveToRelative},
-		{"DrawPathStart", &DrawPathStart},
-		{"DrawPeekGraphicWand", &DrawPeekGraphicWand},
-		{"DrawPoint", &DrawPoint},
-		{"DrawPolygon", &DrawPolygon},
-		{"DrawPolyline", &DrawPolyline},
-		{"DrawPopClipPath", &DrawPopClipPath},
-		{"DrawPopDefs", &DrawPopDefs},
-		{"DrawPopGraphicContext", &DrawPopGraphicContext},
-		{"DrawPopPattern", &DrawPopPattern},
-		{"DrawPushClipPath", &DrawPushClipPath},
-		{"DrawPushDefs", &DrawPushDefs},
-		{"DrawPushGraphicContext", &DrawPushGraphicContext},
-		{"DrawPushPattern", &DrawPushPattern},
-		{"DrawRectangle", &DrawRectangle},
-		// {"DrawRender", &DrawRender},
-		{"DrawResetVectorGraphics", &DrawResetVectorGraphics},
-		{"DrawRotate", &DrawRotate},
-		{"DrawRoundRectangle", &DrawRoundRectangle},
-		{"DrawScale", &DrawScale},
-		{"DrawSetBorderColor", &DrawSetBorderColor},
-		{"DrawSetClipPath", &DrawSetClipPath},
-		{"DrawSetClipRule", &DrawSetClipRule},
-		{"DrawSetClipUnits", &DrawSetClipUnits},
-		{"DrawSetFillAlpha", &DrawSetFillAlpha},
-		{"DrawSetFillColor", &DrawSetFillColor},
-		{"DrawSetFillOpacity", &DrawSetFillOpacity},
-		{"DrawSetFillPatternURL", &DrawSetFillPatternURL},
-		{"DrawSetFillRule", &DrawSetFillRule},
-		{"DrawSetFont", &DrawSetFont},
-		{"DrawSetFontFamily", &DrawSetFontFamily},
-		{"DrawSetFontResolution", &DrawSetFontResolution},
-		{"DrawSetFontSize", &DrawSetFontSize},
-		{"DrawSetFontStretch", &DrawSetFontStretch},
-		{"DrawSetFontStyle", &DrawSetFontStyle},
-		{"DrawSetFontWeight", &DrawSetFontWeight},
-		{"DrawSetGravity", &DrawSetGravity},
-		{"DrawSetOpacity", &DrawSetOpacity},
-		{"DrawSetStrokeAlpha", &DrawSetStrokeAlpha},
-		{"DrawSetStrokeAntialias", &DrawSetStrokeAntialias},
-		{"DrawSetStrokeColor", &DrawSetStrokeColor},
-		{"DrawSetStrokeDashArray", &DrawSetStrokeDashArray},
-		{"DrawSetStrokeDashOffset", &DrawSetStrokeDashOffset},
-		{"DrawSetStrokeLineCap", &DrawSetStrokeLineCap},
-		{"DrawSetStrokeLineJoin", &DrawSetStrokeLineJoin},
-		{"DrawSetStrokeMiterLimit", &DrawSetStrokeMiterLimit},
-		{"DrawSetStrokeOpacity", &DrawSetStrokeOpacity},
-		{"DrawSetStrokePatternURL", &DrawSetStrokePatternURL},
-		{"DrawSetStrokeWidth", &DrawSetStrokeWidth},
-		{"DrawSetTextAlignment", &DrawSetTextAlignment},
-		{"DrawSetTextAntialias", &DrawSetTextAntialias},
-		{"DrawSetTextDecoration", &DrawSetTextDecoration},
-		{"DrawSetTextEncoding", &DrawSetTextEncoding},
-		{"DrawSetTextInterlineSpacing", &DrawSetTextInterlineSpacing},
-		{"DrawSetTextInterwordSpacing", &DrawSetTextInterwordSpacing},
-		{"DrawSetTextKerning", &DrawSetTextKerning},
-		{"DrawSetTextUnderColor", &DrawSetTextUnderColor},
-		{"DrawSetVectorGraphics", &DrawSetVectorGraphics},
-		{"DrawSetViewbox", &DrawSetViewbox},
-		{"DrawSkewX", &DrawSkewX},
-		{"DrawSkewY", &DrawSkewY},
-		{"DrawTranslate", &DrawTranslate},
-		{"DuplexTransferPixelViewIterator", &DuplexTransferPixelViewIterator},
-		{"DuplexTransferWandViewIterator", &DuplexTransferWandViewIterator},
-		{"GetImageFromMagickWand", &GetImageFromMagickWand},
-		{"GetPixelViewException", &GetPixelViewException},
-		{"GetPixelViewHeight", &GetPixelViewHeight},
-		{"GetPixelViewIterator", &GetPixelViewIterator},
-		{"GetPixelViewPixels", &GetPixelViewPixels},
-		{"GetPixelViewWand", &GetPixelViewWand},
-		{"GetPixelViewWidth", &GetPixelViewWidth},
-		{"GetPixelViewX", &GetPixelViewX},
-		{"GetPixelViewY", &GetPixelViewY},
-		{"GetWandViewException", &GetWandViewException},
-		{"GetWandViewExtent", &GetWandViewExtent},
-		{"GetWandViewIterator", &GetWandViewIterator},
-		{"GetWandViewPixels", &GetWandViewPixels},
-		{"GetWandViewWand", &GetWandViewWand},
-		// {"IdentifyImageCommand", &IdentifyImageCommand},
-		// {"ImportImageCommand", &ImportImageCommand},
-		{"IsDrawingWand", &IsDrawingWand},
-		{"IsMagickWand", &IsMagickWand},
-		{"IsPixelIterator", &IsPixelIterator},
-		{"IsPixelView", &IsPixelView},
-		{"IsPixelWand", &IsPixelWand},
-		{"IsPixelWandSimilar", &IsPixelWandSimilar},
-		{"IsWandView", &IsWandView},
-		{"MagickAdaptiveBlurImage", &MagickAdaptiveBlurImage},
-		{"MagickAdaptiveBlurImageChannel", &MagickAdaptiveBlurImageChannel},
-		{"MagickAdaptiveResizeImage", &MagickAdaptiveResizeImage},
-		{"MagickAdaptiveSharpenImage", &MagickAdaptiveSharpenImage},
-		{"MagickAdaptiveSharpenImageChannel", &MagickAdaptiveSharpenImageChannel},
-		{"MagickAdaptiveThresholdImage", &MagickAdaptiveThresholdImage},
-		{"MagickAddImage", &MagickAddImage},
-		{"MagickAddNoiseImage", &MagickAddNoiseImage},
-		{"MagickAddNoiseImageChannel", &MagickAddNoiseImageChannel},
-		{"MagickAffineTransformImage", &MagickAffineTransformImage},
-		{"MagickAnimateImages", &MagickAnimateImages},
-		{"MagickAnnotateImage", &MagickAnnotateImage},
-		{"MagickAppendImages", &MagickAppendImages},
-		{"MagickAutoGammaImage", &MagickAutoGammaImage},
-		{"MagickAutoGammaImageChannel", &MagickAutoGammaImageChannel},
-		{"MagickAutoLevelImage", &MagickAutoLevelImage},
-		{"MagickAutoLevelImageChannel", &MagickAutoLevelImageChannel},
-		{"MagickAverageImages", &MagickAverageImages},
-		{"MagickBlackThresholdImage", &MagickBlackThresholdImage},
-		{"MagickBlueShiftImage", &MagickBlueShiftImage},
-		{"MagickBlurImage", &MagickBlurImage},
-		{"MagickBlurImageChannel", &MagickBlurImageChannel},
-		{"MagickBorderImage", &MagickBorderImage},
-		{"MagickBrightnessContrastImage", &MagickBrightnessContrastImage},
-		{"MagickBrightnessContrastImageChannel", &MagickBrightnessContrastImageChannel},
-		{"MagickCharcoalImage", &MagickCharcoalImage},
-		{"MagickChopImage", &MagickChopImage},
-		{"MagickClampImage", &MagickClampImage},
-		{"MagickClampImageChannel", &MagickClampImageChannel},
-		{"MagickClearException", &MagickClearException},
-		{"MagickClipImage", &MagickClipImage},
-		{"MagickClipImagePath", &MagickClipImagePath},
-		{"MagickClipPathImage", &MagickClipPathImage},
-		{"MagickClutImage", &MagickClutImage},
-		{"MagickClutImageChannel", &MagickClutImageChannel},
-		{"MagickCoalesceImages", &MagickCoalesceImages},
-		{"MagickColorDecisionListImage", &MagickColorDecisionListImage},
-		{"MagickColorFloodfillImage", &MagickColorFloodfillImage},
-		{"MagickColorMatrixImage", &MagickColorMatrixImage},
-		{"MagickColorizeImage", &MagickColorizeImage},
-		{"MagickCombineImages", &MagickCombineImages},
-		{"MagickCommandGenesis", &MagickCommandGenesis},
-		{"MagickCommentImage", &MagickCommentImage},
-		{"MagickCompareImageChannels", &MagickCompareImageChannels},
-		{"MagickCompareImageLayers", &MagickCompareImageLayers},
-		{"MagickCompareImages", &MagickCompareImages},
-		{"MagickCompositeImage", &MagickCompositeImage},
-		{"MagickCompositeImageChannel", &MagickCompositeImageChannel},
-		{"MagickCompositeLayers", &MagickCompositeLayers},
-		{"MagickConstituteImage", &MagickConstituteImage},
-		{"MagickContrastImage", &MagickContrastImage},
-		{"MagickContrastStretchImage", &MagickContrastStretchImage},
-		{"MagickContrastStretchImageChannel", &MagickContrastStretchImageChannel},
-		{"MagickConvolveImage", &MagickConvolveImage},
-		{"MagickConvolveImageChannel", &MagickConvolveImageChannel},
-		{"MagickCropImage", &MagickCropImage},
-		{"MagickCycleColormapImage", &MagickCycleColormapImage},
-		{"MagickDecipherImage", &MagickDecipherImage},
-		{"MagickDeconstructImages", &MagickDeconstructImages},
-		{"MagickDeleteImageArtifact", &MagickDeleteImageArtifact},
-		{"MagickDeleteImageProperty", &MagickDeleteImageProperty},
-		{"MagickDeleteOption", &MagickDeleteOption},
-		{"MagickDescribeImage", &MagickDescribeImage},
-		{"MagickDeskewImage", &MagickDeskewImage},
-		{"MagickDespeckleImage", &MagickDespeckleImage},
-		{"MagickDestroyImage", &MagickDestroyImage},
-		{"MagickDisplayImage", &MagickDisplayImage},
-		{"MagickDisplayImages", &MagickDisplayImages},
-		{"MagickDistortImage", &MagickDistortImage},
-		{"MagickDrawImage", &MagickDrawImage},
-		{"MagickEdgeImage", &MagickEdgeImage},
-		{"MagickEmbossImage", &MagickEmbossImage},
-		{"MagickEncipherImage", &MagickEncipherImage},
-		{"MagickEnhanceImage", &MagickEnhanceImage},
-		{"MagickEqualizeImage", &MagickEqualizeImage},
-		{"MagickEqualizeImageChannel", &MagickEqualizeImageChannel},
-		{"MagickEvaluateImage", &MagickEvaluateImage},
-		{"MagickEvaluateImageChannel", &MagickEvaluateImageChannel},
-		{"MagickEvaluateImages", &MagickEvaluateImages},
-		{"MagickExportImagePixels", &MagickExportImagePixels},
-		{"MagickExtentImage", &MagickExtentImage},
-		{"MagickFilterImage", &MagickFilterImage},
-		{"MagickFilterImageChannel", &MagickFilterImageChannel},
-		{"MagickFlattenImages", &MagickFlattenImages},
-		{"MagickFlipImage", &MagickFlipImage},
-		{"MagickFloodfillPaintImage", &MagickFloodfillPaintImage},
-		{"MagickFlopImage", &MagickFlopImage},
-		{"MagickForwardFourierTransformImage", &MagickForwardFourierTransformImage},
-		{"MagickFrameImage", &MagickFrameImage},
-		{"MagickFunctionImage", &MagickFunctionImage},
-		{"MagickFunctionImageChannel", &MagickFunctionImageChannel},
-		{"MagickFxImage", &MagickFxImage},
-		{"MagickFxImageChannel", &MagickFxImageChannel},
-		{"MagickGammaImage", &MagickGammaImage},
-		{"MagickGammaImageChannel", &MagickGammaImageChannel},
-		{"MagickGaussianBlurImage", &MagickGaussianBlurImage},
-		{"MagickGaussianBlurImageChannel", &MagickGaussianBlurImageChannel},
-		{"MagickGetAntialias", &MagickGetAntialias},
-		{"MagickGetBackgroundColor", &MagickGetBackgroundColor},
-		{"MagickGetColorspace", &MagickGetColorspace},
-		{"MagickGetCompression", &MagickGetCompression},
-		{"MagickGetCompressionQuality", &MagickGetCompressionQuality},
-		{"MagickGetCopyright", &MagickGetCopyright},
-		{"MagickGetException", &MagickGetException},
-		{"MagickGetExceptionType", &MagickGetExceptionType},
-		{"MagickGetFilename", &MagickGetFilename},
-		{"MagickGetFont", &MagickGetFont},
-		{"MagickGetFormat", &MagickGetFormat},
-		{"MagickGetGravity", &MagickGetGravity},
-		{"MagickGetHomeURL", &MagickGetHomeURL},
-		{"MagickGetImage", &MagickGetImage},
-		{"MagickGetImageAlphaChannel", &MagickGetImageAlphaChannel},
-		{"MagickGetImageArtifact", &MagickGetImageArtifact},
-		{"MagickGetImageArtifacts", &MagickGetImageArtifacts},
-		{"MagickGetImageAttribute", &MagickGetImageAttribute},
-		{"MagickGetImageBackgroundColor", &MagickGetImageBackgroundColor},
-		{"MagickGetImageBlob", &MagickGetImageBlob},
-		{"MagickGetImageBluePrimary", &MagickGetImageBluePrimary},
-		{"MagickGetImageBorderColor", &MagickGetImageBorderColor},
-		{"MagickGetImageChannelDepth", &MagickGetImageChannelDepth},
-		{"MagickGetImageChannelDistortion", &MagickGetImageChannelDistortion},
-		// {"MagickGetImageChannelDistortions", &MagickGetImageChannelDistortions},
-		// {"MagickGetImageChannelExtrema", &MagickGetImageChannelExtrema},
-		{"MagickGetImageChannelFeatures", &MagickGetImageChannelFeatures},
-		{"MagickGetImageChannelKurtosis", &MagickGetImageChannelKurtosis},
-		{"MagickGetImageChannelMean", &MagickGetImageChannelMean},
-		{"MagickGetImageChannelRange", &MagickGetImageChannelRange},
-		{"MagickGetImageChannelStatistics", &MagickGetImageChannelStatistics},
-		{"MagickGetImageClipMask", &MagickGetImageClipMask},
-		{"MagickGetImageColormapColor", &MagickGetImageColormapColor},
-		{"MagickGetImageColors", &MagickGetImageColors},
-		{"MagickGetImageColorspace", &MagickGetImageColorspace},
-		{"MagickGetImageCompose", &MagickGetImageCompose},
-		{"MagickGetImageCompression", &MagickGetImageCompression},
-		{"MagickGetImageCompressionQuality", &MagickGetImageCompressionQuality},
-		{"MagickGetImageDelay", &MagickGetImageDelay},
-		{"MagickGetImageDepth", &MagickGetImageDepth},
-		{"MagickGetImageDispose", &MagickGetImageDispose},
-		{"MagickGetImageDistortion", &MagickGetImageDistortion},
-		// {"MagickGetImageEndian", &MagickGetImageEndian},
-		// {"MagickGetImageExtrema", &MagickGetImageExtrema},
-		{"MagickGetImageFilename", &MagickGetImageFilename},
-		{"MagickGetImageFormat", &MagickGetImageFormat},
-		{"MagickGetImageFuzz", &MagickGetImageFuzz},
-		{"MagickGetImageGamma", &MagickGetImageGamma},
-		{"MagickGetImageGravity", &MagickGetImageGravity},
-		{"MagickGetImageGreenPrimary", &MagickGetImageGreenPrimary},
-		{"MagickGetImageHeight", &MagickGetImageHeight},
-		{"MagickGetImageHistogram", &MagickGetImageHistogram},
-		// {"MagickGetImageIndex", &MagickGetImageIndex},
-		{"MagickGetImageInterlaceScheme", &MagickGetImageInterlaceScheme},
-		{"MagickGetImageInterpolateMethod", &MagickGetImageInterpolateMethod},
-		{"MagickGetImageIterations", &MagickGetImageIterations},
-		{"MagickGetImageLength", &MagickGetImageLength},
-		{"MagickGetImageMatte", &MagickGetImageMatte},
-		{"MagickGetImageMatteColor", &MagickGetImageMatteColor},
-		{"MagickGetImageOrientation", &MagickGetImageOrientation},
-		{"MagickGetImagePage", &MagickGetImagePage},
-		{"MagickGetImagePixelColor", &MagickGetImagePixelColor},
-		{"MagickGetImagePixels", &MagickGetImagePixels},
-		{"MagickGetImageProfile", &MagickGetImageProfile},
-		{"MagickGetImageProfiles", &MagickGetImageProfiles},
-		{"MagickGetImageProperties", &MagickGetImageProperties},
-		{"MagickGetImageProperty", &MagickGetImageProperty},
-		// {"MagickGetImageRange", &MagickGetImageRange},
-		{"MagickGetImageRedPrimary", &MagickGetImageRedPrimary},
-		{"MagickGetImageRegion", &MagickGetImageRegion},
-		{"MagickGetImageRenderingIntent", &MagickGetImageRenderingIntent},
-		{"MagickGetImageResolution", &MagickGetImageResolution},
-		{"MagickGetImageScene", &MagickGetImageScene},
-		{"MagickGetImageSignature", &MagickGetImageSignature},
-		{"MagickGetImageSize", &MagickGetImageSize},
-		{"MagickGetImageTicksPerSecond", &MagickGetImageTicksPerSecond},
-		{"MagickGetImageTotalInkDensity", &MagickGetImageTotalInkDensity},
-		{"MagickGetImageType", &MagickGetImageType},
-		{"MagickGetImageUnits", &MagickGetImageUnits},
-		{"MagickGetImageVirtualPixelMethod", &MagickGetImageVirtualPixelMethod},
-		{"MagickGetImageWhitePoint", &MagickGetImageWhitePoint},
-		{"MagickGetImageWidth", &MagickGetImageWidth},
-		{"MagickGetImagesBlob", &MagickGetImagesBlob},
-		{"MagickGetInterlaceScheme", &MagickGetInterlaceScheme},
-		{"MagickGetInterpolateMethod", &MagickGetInterpolateMethod},
-		{"MagickGetIteratorIndex", &MagickGetIteratorIndex},
-		{"MagickGetNumberImages", &MagickGetNumberImages},
-		{"MagickGetOption", &MagickGetOption},
-		{"MagickGetOptions", &MagickGetOptions},
-		{"MagickGetOrientation", &MagickGetOrientation},
-		{"MagickGetPackageName", &MagickGetPackageName},
-		{"MagickGetPage", &MagickGetPage},
-		{"MagickGetPointsize", &MagickGetPointsize},
-		{"MagickGetQuantumDepth", &MagickGetQuantumDepth},
-		{"MagickGetQuantumRange", &MagickGetQuantumRange},
-		{"MagickGetReleaseDate", &MagickGetReleaseDate},
-		{"MagickGetResolution", &MagickGetResolution},
-		{"MagickGetResource", &MagickGetResource},
-		{"MagickGetResourceLimit", &MagickGetResourceLimit},
-		// {"MagickGetSamplingFactors", &MagickGetSamplingFactors},
-		{"MagickGetSize", &MagickGetSize},
-		{"MagickGetSizeOffset", &MagickGetSizeOffset},
-		{"MagickGetType", &MagickGetType},
-		{"MagickGetVersion", &MagickGetVersion},
-		{"MagickHaldClutImage", &MagickHaldClutImage},
-		{"MagickHaldClutImageChannel", &MagickHaldClutImageChannel},
-		{"MagickHasNextImage", &MagickHasNextImage},
-		{"MagickHasPreviousImage", &MagickHasPreviousImage},
-		{"MagickIdentifyImage", &MagickIdentifyImage},
-		{"MagickImplodeImage", &MagickImplodeImage},
-		{"MagickImportImagePixels", &MagickImportImagePixels},
-		{"MagickInverseFourierTransformImage", &MagickInverseFourierTransformImage},
-		{"MagickLabelImage", &MagickLabelImage},
-		{"MagickLevelImage", &MagickLevelImage},
-		{"MagickLevelImageChannel", &MagickLevelImageChannel},
-		{"MagickLinearStretchImage", &MagickLinearStretchImage},
-		// {"MagickLiquidRescaleImage", &MagickLiquidRescaleImage},
-		{"MagickMagnifyImage", &MagickMagnifyImage},
-		{"MagickMapImage", &MagickMapImage},
-		{"MagickMatteFloodfillImage", &MagickMatteFloodfillImage},
-		{"MagickMaximumImages", &MagickMaximumImages},
-		{"MagickMedianFilterImage", &MagickMedianFilterImage},
-		{"MagickMergeImageLayers", &MagickMergeImageLayers},
-		{"MagickMinifyImage", &MagickMinifyImage},
-		{"MagickMinimumImages", &MagickMinimumImages},
-		{"MagickModeImage", &MagickModeImage},
-		{"MagickModulateImage", &MagickModulateImage},
-		{"MagickMontageImage", &MagickMontageImage},
-		{"MagickMorphImages", &MagickMorphImages},
-		{"MagickMorphologyImage", &MagickMorphologyImage},
-		{"MagickMorphologyImageChannel", &MagickMorphologyImageChannel},
-		{"MagickMosaicImages", &MagickMosaicImages},
-		{"MagickMotionBlurImage", &MagickMotionBlurImage},
-		{"MagickMotionBlurImageChannel", &MagickMotionBlurImageChannel},
-		{"MagickNegateImage", &MagickNegateImage},
-		{"MagickNegateImageChannel", &MagickNegateImageChannel},
-		{"MagickNewImage", &MagickNewImage},
-		{"MagickNextImage", &MagickNextImage},
-		{"MagickNormalizeImage", &MagickNormalizeImage},
-		{"MagickNormalizeImageChannel", &MagickNormalizeImageChannel},
-		{"MagickOilPaintImage", &MagickOilPaintImage},
-		{"MagickOpaqueImage", &MagickOpaqueImage},
-		{"MagickOpaquePaintImage", &MagickOpaquePaintImage},
-		{"MagickOpaquePaintImageChannel", &MagickOpaquePaintImageChannel},
-		{"MagickOptimizeImageLayers", &MagickOptimizeImageLayers},
-		// {"MagickOptimizeImageTransparency", &MagickOptimizeImageTransparency},
-		{"MagickOrderedPosterizeImage", &MagickOrderedPosterizeImage},
-		{"MagickOrderedPosterizeImageChannel", &MagickOrderedPosterizeImageChannel},
-		{"MagickPaintFloodfillImage", &MagickPaintFloodfillImage},
-		{"MagickPaintOpaqueImage", &MagickPaintOpaqueImage},
-		{"MagickPaintOpaqueImageChannel", &MagickPaintOpaqueImageChannel},
-		{"MagickPaintTransparentImage", &MagickPaintTransparentImage},
-		{"MagickPingImage", &MagickPingImage},
-		{"MagickPingImageBlob", &MagickPingImageBlob},
-		{"MagickPingImageFile", &MagickPingImageFile},
-		{"MagickPolaroidImage", &MagickPolaroidImage},
-		{"MagickPosterizeImage", &MagickPosterizeImage},
-		{"MagickPreviewImages", &MagickPreviewImages},
-		{"MagickPreviousImage", &MagickPreviousImage},
-		{"MagickProfileImage", &MagickProfileImage},
-		{"MagickQuantizeImage", &MagickQuantizeImage},
-		{"MagickQuantizeImages", &MagickQuantizeImages},
-		{"MagickQueryConfigureOption", &MagickQueryConfigureOption},
-		{"MagickQueryConfigureOptions", &MagickQueryConfigureOptions},
-		{"MagickQueryFontMetrics", &MagickQueryFontMetrics},
-		{"MagickQueryFonts", &MagickQueryFonts},
-		{"MagickQueryFormats", &MagickQueryFormats},
-		{"MagickQueryMultilineFontMetrics", &MagickQueryMultilineFontMetrics},
-		{"MagickRadialBlurImage", &MagickRadialBlurImage},
-		{"MagickRadialBlurImageChannel", &MagickRadialBlurImageChannel},
-		{"MagickRaiseImage", &MagickRaiseImage},
-		{"MagickRandomThresholdImage", &MagickRandomThresholdImage},
-		{"MagickRandomThresholdImageChannel", &MagickRandomThresholdImageChannel},
-		{"MagickReadImage", &MagickReadImage},
-		{"MagickReadImageBlob", &MagickReadImageBlob},
-		{"MagickReadImageFile", &MagickReadImageFile},
-		{"MagickRecolorImage", &MagickRecolorImage},
-		{"MagickReduceNoiseImage", &MagickReduceNoiseImage},
-		{"MagickRegionOfInterestImage", &MagickRegionOfInterestImage},
-		{"MagickRelinquishMemory", &MagickRelinquishMemory},
-		{"MagickRemapImage", &MagickRemapImage},
-		{"MagickRemoveImage", &MagickRemoveImage},
-		{"MagickRemoveImageProfile", &MagickRemoveImageProfile},
-		{"MagickResampleImage", &MagickResampleImage},
-		{"MagickResetImagePage", &MagickResetImagePage},
-		{"MagickResetIterator", &MagickResetIterator},
-		{"MagickResizeImage", &MagickResizeImage},
-		{"MagickRollImage", &MagickRollImage},
-		{"MagickRotateImage", &MagickRotateImage},
-		{"MagickSampleImage", &MagickSampleImage},
-		{"MagickScaleImage", &MagickScaleImage},
-		{"MagickSegmentImage", &MagickSegmentImage},
-		{"MagickSelectiveBlurImage", &MagickSelectiveBlurImage},
-		{"MagickSelectiveBlurImageChannel", &MagickSelectiveBlurImageChannel},
-		{"MagickSeparateImageChannel", &MagickSeparateImageChannel},
-		{"MagickSepiaToneImage", &MagickSepiaToneImage},
-		{"MagickSetAntialias", &MagickSetAntialias},
-		{"MagickSetBackgroundColor", &MagickSetBackgroundColor},
-		{"MagickSetColorspace", &MagickSetColorspace},
-		{"MagickSetCompression", &MagickSetCompression},
-		{"MagickSetCompressionQuality", &MagickSetCompressionQuality},
-		{"MagickSetDepth", &MagickSetDepth},
-		{"MagickSetExtract", &MagickSetExtract},
-		{"MagickSetFilename", &MagickSetFilename},
-		{"MagickSetFirstIterator", &MagickSetFirstIterator},
-		{"MagickSetFont", &MagickSetFont},
-		{"MagickSetFormat", &MagickSetFormat},
-		{"MagickSetGravity", &MagickSetGravity},
-		{"MagickSetImage", &MagickSetImage},
-		{"MagickSetImageAlphaChannel", &MagickSetImageAlphaChannel},
-		{"MagickSetImageArtifact", &MagickSetImageArtifact},
-		{"MagickSetImageAttribute", &MagickSetImageAttribute},
-		{"MagickSetImageBackgroundColor", &MagickSetImageBackgroundColor},
-		{"MagickSetImageBias", &MagickSetImageBias},
-		{"MagickSetImageBluePrimary", &MagickSetImageBluePrimary},
-		{"MagickSetImageBorderColor", &MagickSetImageBorderColor},
-		{"MagickSetImageChannelDepth", &MagickSetImageChannelDepth},
-		{"MagickSetImageClipMask", &MagickSetImageClipMask},
-		{"MagickSetImageColor", &MagickSetImageColor},
-		{"MagickSetImageColormapColor", &MagickSetImageColormapColor},
-		{"MagickSetImageColorspace", &MagickSetImageColorspace},
-		{"MagickSetImageCompose", &MagickSetImageCompose},
-		{"MagickSetImageCompression", &MagickSetImageCompression},
-		{"MagickSetImageCompressionQuality", &MagickSetImageCompressionQuality},
-		{"MagickSetImageDelay", &MagickSetImageDelay},
-		{"MagickSetImageDepth", &MagickSetImageDepth},
-		{"MagickSetImageDispose", &MagickSetImageDispose},
-		{"MagickSetImageEndian", &MagickSetImageEndian},
-		{"MagickSetImageExtent", &MagickSetImageExtent},
-		{"MagickSetImageFilename", &MagickSetImageFilename},
-		{"MagickSetImageFormat", &MagickSetImageFormat},
-		{"MagickSetImageFuzz", &MagickSetImageFuzz},
-		{"MagickSetImageGamma", &MagickSetImageGamma},
-		{"MagickSetImageGravity", &MagickSetImageGravity},
-		{"MagickSetImageGreenPrimary", &MagickSetImageGreenPrimary},
-		{"MagickSetImageIndex", &MagickSetImageIndex},
-		{"MagickSetImageInterlaceScheme", &MagickSetImageInterlaceScheme},
-		{"MagickSetImageInterpolateMethod", &MagickSetImageInterpolateMethod},
-		{"MagickSetImageIterations", &MagickSetImageIterations},
-		// {"MagickSetImageMatte", &MagickSetImageMatte},
-		{"MagickSetImageMatteColor", &MagickSetImageMatteColor},
-		{"MagickSetImageOpacity", &MagickSetImageOpacity},
-		// {"MagickSetImageOption", &MagickSetImageOption},
-		{"MagickSetImageOrientation", &MagickSetImageOrientation},
-		{"MagickSetImagePage", &MagickSetImagePage},
-		{"MagickSetImagePixels", &MagickSetImagePixels},
-		{"MagickSetImageProfile", &MagickSetImageProfile},
-		{"MagickSetImageProgressMonitor", &MagickSetImageProgressMonitor},
-		{"MagickSetImageProperty", &MagickSetImageProperty},
-		{"MagickSetImageRedPrimary", &MagickSetImageRedPrimary},
-		{"MagickSetImageRenderingIntent", &MagickSetImageRenderingIntent},
-		{"MagickSetImageResolution", &MagickSetImageResolution},
-		{"MagickSetImageScene", &MagickSetImageScene},
-		{"MagickSetImageTicksPerSecond", &MagickSetImageTicksPerSecond},
-		{"MagickSetImageType", &MagickSetImageType},
-		{"MagickSetImageUnits", &MagickSetImageUnits},
-		{"MagickSetImageVirtualPixelMethod", &MagickSetImageVirtualPixelMethod},
-		{"MagickSetImageWhitePoint", &MagickSetImageWhitePoint},
-		{"MagickSetInterlaceScheme", &MagickSetInterlaceScheme},
-		{"MagickSetInterpolateMethod", &MagickSetInterpolateMethod},
-		{"MagickSetIteratorIndex", &MagickSetIteratorIndex},
-		{"MagickSetLastIterator", &MagickSetLastIterator},
-		{"MagickSetOption", &MagickSetOption},
-		{"MagickSetOrientation", &MagickSetOrientation},
-		{"MagickSetPage", &MagickSetPage},
-		{"MagickSetPassphrase", &MagickSetPassphrase},
-		{"MagickSetPointsize", &MagickSetPointsize},
-		{"MagickSetProgressMonitor", &MagickSetProgressMonitor},
-		{"MagickSetResolution", &MagickSetResolution},
-		{"MagickSetResourceLimit", &MagickSetResourceLimit},
-		{"MagickSetSamplingFactors", &MagickSetSamplingFactors},
-		{"MagickSetSize", &MagickSetSize},
-		{"MagickSetSizeOffset", &MagickSetSizeOffset},
-		{"MagickSetType", &MagickSetType},
-		{"MagickShadeImage", &MagickShadeImage},
-		{"MagickShadowImage", &MagickShadowImage},
-		{"MagickSharpenImage", &MagickSharpenImage},
-		{"MagickSharpenImageChannel", &MagickSharpenImageChannel},
-		{"MagickShaveImage", &MagickShaveImage},
-		{"MagickShearImage", &MagickShearImage},
-		{"MagickSigmoidalContrastImage", &MagickSigmoidalContrastImage},
-		{"MagickSigmoidalContrastImageChannel", &MagickSigmoidalContrastImageChannel},
-		{"MagickSimilarityImage", &MagickSimilarityImage},
-		{"MagickSketchImage", &MagickSketchImage},
-		{"MagickSmushImages", &MagickSmushImages},
-		{"MagickSolarizeImage", &MagickSolarizeImage},
-		// {"MagickSolarizeImageChannel", &MagickSolarizeImageChannel},
-		{"MagickSparseColorImage", &MagickSparseColorImage},
-		{"MagickSpliceImage", &MagickSpliceImage},
-		{"MagickSpreadImage", &MagickSpreadImage},
-		{"MagickStatisticImage", &MagickStatisticImage},
-		{"MagickSteganoImage", &MagickSteganoImage},
-		{"MagickStereoImage", &MagickStereoImage},
-		{"MagickStripImage", &MagickStripImage},
-		{"MagickSwirlImage", &MagickSwirlImage},
-		{"MagickTextureImage", &MagickTextureImage},
-		{"MagickThresholdImage", &MagickThresholdImage},
-		{"MagickThresholdImageChannel", &MagickThresholdImageChannel},
-		{"MagickThumbnailImage", &MagickThumbnailImage},
-		{"MagickTintImage", &MagickTintImage},
-		{"MagickTransformImage", &MagickTransformImage},
-		{"MagickTransformImageColorspace", &MagickTransformImageColorspace},
-		{"MagickTransparentImage", &MagickTransparentImage},
-		{"MagickTransparentPaintImage", &MagickTransparentPaintImage},
-		{"MagickTransposeImage", &MagickTransposeImage},
-		{"MagickTransverseImage", &MagickTransverseImage},
-		{"MagickTrimImage", &MagickTrimImage},
-		{"MagickUniqueImageColors", &MagickUniqueImageColors},
-		{"MagickUnsharpMaskImage", &MagickUnsharpMaskImage},
-		{"MagickUnsharpMaskImageChannel", &MagickUnsharpMaskImageChannel},
-		{"MagickVignetteImage", &MagickVignetteImage},
-		{"MagickWandGenesis", &MagickWandGenesis},
-		{"MagickWandTerminus", &MagickWandTerminus},
-		{"MagickWaveImage", &MagickWaveImage},
-		{"MagickWhiteThresholdImage", &MagickWhiteThresholdImage},
-		{"MagickWriteImage", &MagickWriteImage},
-		{"MagickWriteImageBlob", &MagickWriteImageBlob},
-		{"MagickWriteImageFile", &MagickWriteImageFile},
-		{"MagickWriteImages", &MagickWriteImages},
-		{"MagickWriteImagesFile", &MagickWriteImagesFile},
-		// {"MogrifyImage", &MogrifyImage},
-		// {"MogrifyImageCommand", &MogrifyImageCommand},
-		// {"MogrifyImageInfo", &MogrifyImageInfo},
-		// {"MogrifyImageList", &MogrifyImageList},
-		// {"MogrifyImages", &MogrifyImages},
-		// {"MontageImageCommand", &MontageImageCommand},
-		{"NewDrawingWand", &NewDrawingWand},
-		{"NewMagickWand", &NewMagickWand},
-		{"NewMagickWandFromImage", &NewMagickWandFromImage},
-		{"NewPixelIterator", &NewPixelIterator},
-		{"NewPixelRegionIterator", &NewPixelRegionIterator},
-		{"NewPixelView", &NewPixelView},
-		{"NewPixelViewRegion", &NewPixelViewRegion},
-		{"NewPixelWand", &NewPixelWand},
-		{"NewPixelWands", &NewPixelWands},
-		{"NewWandView", &NewWandView},
-		{"NewWandViewExtent", &NewWandViewExtent},
-		{"PeekDrawingWand", &PeekDrawingWand},
-		{"PixelClearException", &PixelClearException},
-		{"PixelClearIteratorException", &PixelClearIteratorException},
-		{"PixelGetAlpha", &PixelGetAlpha},
-		{"PixelGetAlphaQuantum", &PixelGetAlphaQuantum},
-		{"PixelGetBlack", &PixelGetBlack},
-		{"PixelGetBlackQuantum", &PixelGetBlackQuantum},
-		{"PixelGetBlue", &PixelGetBlue},
-		{"PixelGetBlueQuantum", &PixelGetBlueQuantum},
-		{"PixelGetColorAsNormalizedString", &PixelGetColorAsNormalizedString},
-		{"PixelGetColorAsString", &PixelGetColorAsString},
-		{"PixelGetColorCount", &PixelGetColorCount},
-		{"PixelGetCurrentIteratorRow", &PixelGetCurrentIteratorRow},
-		{"PixelGetCyan", &PixelGetCyan},
-		{"PixelGetCyanQuantum", &PixelGetCyanQuantum},
-		{"PixelGetException", &PixelGetException},
-		{"PixelGetExceptionType", &PixelGetExceptionType},
-		{"PixelGetFuzz", &PixelGetFuzz},
-		{"PixelGetGreen", &PixelGetGreen},
-		{"PixelGetGreenQuantum", &PixelGetGreenQuantum},
-		{"PixelGetHSL", &PixelGetHSL},
-		{"PixelGetIndex", &PixelGetIndex},
-		{"PixelGetIteratorException", &PixelGetIteratorException},
-		{"PixelGetIteratorExceptionType", &PixelGetIteratorExceptionType},
-		{"PixelGetIteratorRow", &PixelGetIteratorRow},
-		{"PixelGetMagenta", &PixelGetMagenta},
-		{"PixelGetMagentaQuantum", &PixelGetMagentaQuantum},
-		{"PixelGetMagickColor", &PixelGetMagickColor},
-		{"PixelGetNextIteratorRow", &PixelGetNextIteratorRow},
-		{"PixelGetNextRow", &PixelGetNextRow},
-		{"PixelGetOpacity", &PixelGetOpacity},
-		{"PixelGetOpacityQuantum", &PixelGetOpacityQuantum},
-		{"PixelGetPreviousIteratorRow", &PixelGetPreviousIteratorRow},
-		// {"PixelGetPreviousRow", &PixelGetPreviousRow},
-		{"PixelGetQuantumColor", &PixelGetQuantumColor},
-		{"PixelGetRed", &PixelGetRed},
-		{"PixelGetRedQuantum", &PixelGetRedQuantum},
-		{"PixelGetYellow", &PixelGetYellow},
-		{"PixelGetYellowQuantum", &PixelGetYellowQuantum},
-		{"PixelIteratorGetException", &PixelIteratorGetException},
-		{"PixelResetIterator", &PixelResetIterator},
-		{"PixelSetAlpha", &PixelSetAlpha},
-		{"PixelSetAlphaQuantum", &PixelSetAlphaQuantum},
-		{"PixelSetBlack", &PixelSetBlack},
-		{"PixelSetBlackQuantum", &PixelSetBlackQuantum},
-		{"PixelSetBlue", &PixelSetBlue},
-		{"PixelSetBlueQuantum", &PixelSetBlueQuantum},
-		{"PixelSetColor", &PixelSetColor},
-		{"PixelSetColorCount", &PixelSetColorCount},
-		{"PixelSetColorFromWand", &PixelSetColorFromWand},
-		{"PixelSetCyan", &PixelSetCyan},
-		{"PixelSetCyanQuantum", &PixelSetCyanQuantum},
-		{"PixelSetFirstIteratorRow", &PixelSetFirstIteratorRow},
-		{"PixelSetFuzz", &PixelSetFuzz},
-		{"PixelSetGreen", &PixelSetGreen},
-		{"PixelSetGreenQuantum", &PixelSetGreenQuantum},
-		{"PixelSetHSL", &PixelSetHSL},
-		{"PixelSetIndex", &PixelSetIndex},
-		{"PixelSetIteratorRow", &PixelSetIteratorRow},
-		{"PixelSetLastIteratorRow", &PixelSetLastIteratorRow},
-		{"PixelSetMagenta", &PixelSetMagenta},
-		{"PixelSetMagentaQuantum", &PixelSetMagentaQuantum},
-		{"PixelSetMagickColor", &PixelSetMagickColor},
-		{"PixelSetOpacity", &PixelSetOpacity},
-		{"PixelSetOpacityQuantum", &PixelSetOpacityQuantum},
-		{"PixelSetQuantumColor", &PixelSetQuantumColor},
-		{"PixelSetRed", &PixelSetRed},
-		{"PixelSetRedQuantum", &PixelSetRedQuantum},
-		{"PixelSetYellow", &PixelSetYellow},
-		{"PixelSetYellowQuantum", &PixelSetYellowQuantum},
-		{"PixelSyncIterator", &PixelSyncIterator},
-		{"PopDrawingWand", &PopDrawingWand},
-		{"PushDrawingWand", &PushDrawingWand},
-		// {"RelinquishWandId", &RelinquishWandId},
-		{"SetPixelViewIterator", &SetPixelViewIterator},
-		{"SetWandViewDescription", &SetWandViewDescription},
-		{"SetWandViewIterator", &SetWandViewIterator},
-		{"SetWandViewThreads", &SetWandViewThreads},
-		// {"StreamImageCommand", &StreamImageCommand},
-		{"TransferPixelViewIterator", &TransferPixelViewIterator},
-		{"TransferWandViewIterator", &TransferWandViewIterator},
-		{"UpdatePixelViewIterator", &UpdatePixelViewIterator},
-		{"UpdateWandViewIterator", &UpdateWandViewIterator},
-	})
+	AddDllApis(DLL, false, allApis)
+	allApis = nil
+}
+
+var allApis = Apis{
+	{"AcquireWandId", &AcquireWandId},
+	{"AnimateImageCommand", &AnimateImageCommand},
+	{"ClearDrawingWand", &ClearDrawingWand},
+	{"ClearMagickWand", &ClearMagickWand},
+	{"ClearPixelIterator", &ClearPixelIterator},
+	{"ClearPixelWand", &ClearPixelWand},
+	{"CloneDrawingWand", &CloneDrawingWand},
+	{"CloneMagickWand", &CloneMagickWand},
+	{"ClonePixelIterator", &ClonePixelIterator},
+	{"ClonePixelView", &ClonePixelView},
+	{"ClonePixelWand", &ClonePixelWand},
+	{"ClonePixelWands", &ClonePixelWands},
+	{"CloneWandView", &CloneWandView},
+	{"CompareImageCommand", &CompareImageCommand},
+	{"CompositeImageCommand", &CompositeImageCommand},
+	{"ConjureImageCommand", &ConjureImageCommand},
+	{"ConvertImageCommand", &ConvertImageCommand},
+	{"DestroyDrawingWand", &DestroyDrawingWand},
+	{"DestroyMagickWand", &DestroyMagickWand},
+	{"DestroyPixelIterator", &DestroyPixelIterator},
+	{"DestroyPixelView", &DestroyPixelView},
+	{"DestroyPixelWand", &DestroyPixelWand},
+	{"DestroyPixelWands", &DestroyPixelWands},
+	{"DestroyWandIds", &DestroyWandIds},
+	{"DestroyWandView", &DestroyWandView},
+	{"DisplayImageCommand", &DisplayImageCommand},
+	{"DrawAffine", &DrawAffine},
+	{"DrawAllocateWand", &DrawAllocateWand},
+	{"DrawAnnotation", &DrawAnnotation},
+	{"DrawArc", &DrawArc},
+	{"DrawBezier", &DrawBezier},
+	{"DrawCircle", &DrawCircle},
+	{"DrawClearException", &DrawClearException},
+	{"DrawColor", &DrawColor},
+	{"DrawComment", &DrawComment},
+	{"DrawComposite", &DrawComposite},
+	{"DrawEllipse", &DrawEllipse},
+	{"DrawGetBorderColor", &DrawGetBorderColor},
+	{"DrawGetClipPath", &DrawGetClipPath},
+	{"DrawGetClipRule", &DrawGetClipRule},
+	{"DrawGetClipUnits", &DrawGetClipUnits},
+	{"DrawGetException", &DrawGetException},
+	{"DrawGetExceptionType", &DrawGetExceptionType},
+	{"DrawGetFillAlpha", &DrawGetFillAlpha},
+	{"DrawGetFillColor", &DrawGetFillColor},
+	{"DrawGetFillOpacity", &DrawGetFillOpacity},
+	{"DrawGetFillRule", &DrawGetFillRule},
+	{"DrawGetFont", &DrawGetFont},
+	{"DrawGetFontFamily", &DrawGetFontFamily},
+	{"DrawGetFontResolution", &DrawGetFontResolution},
+	{"DrawGetFontSize", &DrawGetFontSize},
+	{"DrawGetFontStretch", &DrawGetFontStretch},
+	{"DrawGetFontStyle", &DrawGetFontStyle},
+	{"DrawGetFontWeight", &DrawGetFontWeight},
+	{"DrawGetGravity", &DrawGetGravity},
+	{"DrawGetOpacity", &DrawGetOpacity},
+	{"DrawGetStrokeAlpha", &DrawGetStrokeAlpha},
+	{"DrawGetStrokeAntialias", &DrawGetStrokeAntialias},
+	{"DrawGetStrokeColor", &DrawGetStrokeColor},
+	{"DrawGetStrokeDashArray", &DrawGetStrokeDashArray},
+	{"DrawGetStrokeDashOffset", &DrawGetStrokeDashOffset},
+	{"DrawGetStrokeLineCap", &DrawGetStrokeLineCap},
+	{"DrawGetStrokeLineJoin", &DrawGetStrokeLineJoin},
+	{"DrawGetStrokeMiterLimit", &DrawGetStrokeMiterLimit},
+	{"DrawGetStrokeOpacity", &DrawGetStrokeOpacity},
+	{"DrawGetStrokeWidth", &DrawGetStrokeWidth},
+	{"DrawGetTextAlignment", &DrawGetTextAlignment},
+	{"DrawGetTextAntialias", &DrawGetTextAntialias},
+	{"DrawGetTextDecoration", &DrawGetTextDecoration},
+	{"DrawGetTextEncoding", &DrawGetTextEncoding},
+	{"DrawGetTextInterlineSpacing", &DrawGetTextInterlineSpacing},
+	{"DrawGetTextInterwordSpacing", &DrawGetTextInterwordSpacing},
+	{"DrawGetTextKerning", &DrawGetTextKerning},
+	{"DrawGetTextUnderColor", &DrawGetTextUnderColor},
+	{"DrawGetVectorGraphics", &DrawGetVectorGraphics},
+	{"DrawLine", &DrawLine},
+	{"DrawMatte", &DrawMatte},
+	{"DrawPathClose", &DrawPathClose},
+	{"DrawPathCurveToAbsolute", &DrawPathCurveToAbsolute},
+	{"DrawPathCurveToQuadraticBezierAbsolute", &DrawPathCurveToQuadraticBezierAbsolute},
+	{"DrawPathCurveToQuadraticBezierRelative", &DrawPathCurveToQuadraticBezierRelative},
+	{"DrawPathCurveToQuadraticBezierSmoothAbsolute", &DrawPathCurveToQuadraticBezierSmoothAbsolute},
+	{"DrawPathCurveToQuadraticBezierSmoothRelative", &DrawPathCurveToQuadraticBezierSmoothRelative},
+	{"DrawPathCurveToRelative", &DrawPathCurveToRelative},
+	{"DrawPathCurveToSmoothAbsolute", &DrawPathCurveToSmoothAbsolute},
+	{"DrawPathCurveToSmoothRelative", &DrawPathCurveToSmoothRelative},
+	{"DrawPathEllipticArcAbsolute", &DrawPathEllipticArcAbsolute},
+	{"DrawPathEllipticArcRelative", &DrawPathEllipticArcRelative},
+	{"DrawPathFinish", &DrawPathFinish},
+	{"DrawPathLineToAbsolute", &DrawPathLineToAbsolute},
+	{"DrawPathLineToHorizontalAbsolute", &DrawPathLineToHorizontalAbsolute},
+	{"DrawPathLineToHorizontalRelative", &DrawPathLineToHorizontalRelative},
+	{"DrawPathLineToRelative", &DrawPathLineToRelative},
+	{"DrawPathLineToVerticalAbsolute", &DrawPathLineToVerticalAbsolute},
+	{"DrawPathLineToVerticalRelative", &DrawPathLineToVerticalRelative},
+	{"DrawPathMoveToAbsolute", &DrawPathMoveToAbsolute},
+	{"DrawPathMoveToRelative", &DrawPathMoveToRelative},
+	{"DrawPathStart", &DrawPathStart},
+	{"DrawPeekGraphicWand", &DrawPeekGraphicWand},
+	{"DrawPoint", &DrawPoint},
+	{"DrawPolygon", &DrawPolygon},
+	{"DrawPolyline", &DrawPolyline},
+	{"DrawPopClipPath", &DrawPopClipPath},
+	{"DrawPopDefs", &DrawPopDefs},
+	{"DrawPopGraphicContext", &DrawPopGraphicContext},
+	{"DrawPopPattern", &DrawPopPattern},
+	{"DrawPushClipPath", &DrawPushClipPath},
+	{"DrawPushDefs", &DrawPushDefs},
+	{"DrawPushGraphicContext", &DrawPushGraphicContext},
+	{"DrawPushPattern", &DrawPushPattern},
+	{"DrawRectangle", &DrawRectangle},
+	{"DrawRender", &DrawRender},
+	{"DrawResetVectorGraphics", &DrawResetVectorGraphics},
+	{"DrawRotate", &DrawRotate},
+	{"DrawRoundRectangle", &DrawRoundRectangle},
+	{"DrawScale", &DrawScale},
+	{"DrawSetBorderColor", &DrawSetBorderColor},
+	{"DrawSetClipPath", &DrawSetClipPath},
+	{"DrawSetClipRule", &DrawSetClipRule},
+	{"DrawSetClipUnits", &DrawSetClipUnits},
+	{"DrawSetFillAlpha", &DrawSetFillAlpha},
+	{"DrawSetFillColor", &DrawSetFillColor},
+	{"DrawSetFillOpacity", &DrawSetFillOpacity},
+	{"DrawSetFillPatternURL", &DrawSetFillPatternURL},
+	{"DrawSetFillRule", &DrawSetFillRule},
+	{"DrawSetFont", &DrawSetFont},
+	{"DrawSetFontFamily", &DrawSetFontFamily},
+	{"DrawSetFontResolution", &DrawSetFontResolution},
+	{"DrawSetFontSize", &DrawSetFontSize},
+	{"DrawSetFontStretch", &DrawSetFontStretch},
+	{"DrawSetFontStyle", &DrawSetFontStyle},
+	{"DrawSetFontWeight", &DrawSetFontWeight},
+	{"DrawSetGravity", &DrawSetGravity},
+	{"DrawSetOpacity", &DrawSetOpacity},
+	{"DrawSetStrokeAlpha", &DrawSetStrokeAlpha},
+	{"DrawSetStrokeAntialias", &DrawSetStrokeAntialias},
+	{"DrawSetStrokeColor", &DrawSetStrokeColor},
+	{"DrawSetStrokeDashArray", &DrawSetStrokeDashArray},
+	{"DrawSetStrokeDashOffset", &DrawSetStrokeDashOffset},
+	{"DrawSetStrokeLineCap", &DrawSetStrokeLineCap},
+	{"DrawSetStrokeLineJoin", &DrawSetStrokeLineJoin},
+	{"DrawSetStrokeMiterLimit", &DrawSetStrokeMiterLimit},
+	{"DrawSetStrokeOpacity", &DrawSetStrokeOpacity},
+	{"DrawSetStrokePatternURL", &DrawSetStrokePatternURL},
+	{"DrawSetStrokeWidth", &DrawSetStrokeWidth},
+	{"DrawSetTextAlignment", &DrawSetTextAlignment},
+	{"DrawSetTextAntialias", &DrawSetTextAntialias},
+	{"DrawSetTextDecoration", &DrawSetTextDecoration},
+	{"DrawSetTextEncoding", &DrawSetTextEncoding},
+	{"DrawSetTextInterlineSpacing", &DrawSetTextInterlineSpacing},
+	{"DrawSetTextInterwordSpacing", &DrawSetTextInterwordSpacing},
+	{"DrawSetTextKerning", &DrawSetTextKerning},
+	{"DrawSetTextUnderColor", &DrawSetTextUnderColor},
+	{"DrawSetVectorGraphics", &DrawSetVectorGraphics},
+	{"DrawSetViewbox", &DrawSetViewbox},
+	{"DrawSkewX", &DrawSkewX},
+	{"DrawSkewY", &DrawSkewY},
+	{"DrawTranslate", &DrawTranslate},
+	{"DuplexTransferPixelViewIterator", &DuplexTransferPixelViewIterator},
+	{"DuplexTransferWandViewIterator", &DuplexTransferWandViewIterator},
+	{"GetImageFromMagickWand", &GetImageFromMagickWand},
+	{"GetPixelViewException", &GetPixelViewException},
+	{"GetPixelViewHeight", &GetPixelViewHeight},
+	{"GetPixelViewIterator", &GetPixelViewIterator},
+	{"GetPixelViewPixels", &GetPixelViewPixels},
+	{"GetPixelViewWand", &GetPixelViewWand},
+	{"GetPixelViewWidth", &GetPixelViewWidth},
+	{"GetPixelViewX", &GetPixelViewX},
+	{"GetPixelViewY", &GetPixelViewY},
+	{"GetWandViewException", &GetWandViewException},
+	{"GetWandViewExtent", &GetWandViewExtent},
+	{"GetWandViewIterator", &GetWandViewIterator},
+	{"GetWandViewPixels", &GetWandViewPixels},
+	{"GetWandViewWand", &GetWandViewWand},
+	{"IdentifyImageCommand", &IdentifyImageCommand},
+	{"ImportImageCommand", &ImportImageCommand},
+	{"IsDrawingWand", &IsDrawingWand},
+	{"IsMagickWand", &IsMagickWand},
+	{"IsPixelIterator", &IsPixelIterator},
+	{"IsPixelView", &IsPixelView},
+	{"IsPixelWand", &IsPixelWand},
+	{"IsPixelWandSimilar", &IsPixelWandSimilar},
+	{"IsWandView", &IsWandView},
+	{"MagickAdaptiveBlurImage", &AdaptiveBlurImage},
+	{"MagickAdaptiveBlurImageChannel", &AdaptiveBlurImageChannel},
+	{"MagickAdaptiveResizeImage", &AdaptiveResizeImage},
+	{"MagickAdaptiveSharpenImage", &AdaptiveSharpenImage},
+	{"MagickAdaptiveSharpenImageChannel", &AdaptiveSharpenImageChannel},
+	{"MagickAdaptiveThresholdImage", &AdaptiveThresholdImage},
+	{"MagickAddImage", &AddImage},
+	{"MagickAddNoiseImage", &AddNoiseImage},
+	{"MagickAddNoiseImageChannel", &AddNoiseImageChannel},
+	{"MagickAffineTransformImage", &AffineTransformImage},
+	{"MagickAnimateImages", &AnimateImages},
+	{"MagickAnnotateImage", &AnnotateImage},
+	{"MagickAppendImages", &AppendImages},
+	{"MagickAutoGammaImage", &AutoGammaImage},
+	{"MagickAutoGammaImageChannel", &AutoGammaImageChannel},
+	{"MagickAutoLevelImage", &AutoLevelImage},
+	{"MagickAutoLevelImageChannel", &AutoLevelImageChannel},
+	{"MagickAverageImages", &AverageImages},
+	{"MagickBlackThresholdImage", &BlackThresholdImage},
+	{"MagickBlueShiftImage", &BlueShiftImage},
+	{"MagickBlurImage", &BlurImage},
+	{"MagickBlurImageChannel", &BlurImageChannel},
+	{"MagickBorderImage", &BorderImage},
+	{"MagickBrightnessContrastImage", &BrightnessContrastImage},
+	{"MagickBrightnessContrastImageChannel", &BrightnessContrastImageChannel},
+	{"MagickCharcoalImage", &CharcoalImage},
+	{"MagickChopImage", &ChopImage},
+	{"MagickClampImage", &ClampImage},
+	{"MagickClampImageChannel", &ClampImageChannel},
+	{"MagickClearException", &ClearException},
+	{"MagickClipImage", &ClipImage},
+	{"MagickClipImagePath", &ClipImagePath},
+	// Deprecated {"MagickClipPathImage", &MagickClipPathImage},
+	{"MagickClutImage", &ClutImage},
+	{"MagickClutImageChannel", &ClutImageChannel},
+	{"MagickCoalesceImages", &CoalesceImages},
+	{"MagickColorDecisionListImage", &ColorDecisionListImage},
+	{"MagickColorFloodfillImage", &ColorFloodfillImage},
+	{"MagickColorMatrixImage", &ColorMatrixImage},
+	{"MagickColorizeImage", &ColorizeImage},
+	{"MagickCombineImages", &CombineImages},
+	{"MagickCommandGenesis", &CommandGenesis},
+	{"MagickCommentImage", &CommentImage},
+	{"MagickCompareImageChannels", &CompareImageChannels},
+	{"MagickCompareImageLayers", &CompareImageLayers},
+	{"MagickCompareImages", &CompareImages},
+	{"MagickCompositeImage", &CompositeImage},
+	{"MagickCompositeImageChannel", &CompositeImageChannel},
+	{"MagickCompositeLayers", &CompositeLayers},
+	{"MagickConstituteImage", &ConstituteImage},
+	{"MagickContrastImage", &ContrastImage},
+	{"MagickContrastStretchImage", &ContrastStretchImage},
+	{"MagickContrastStretchImageChannel", &ContrastStretchImageChannel},
+	{"MagickConvolveImage", &ConvolveImage},
+	{"MagickConvolveImageChannel", &ConvolveImageChannel},
+	{"MagickCropImage", &CropImage},
+	{"MagickCycleColormapImage", &CycleColormapImage},
+	{"MagickDecipherImage", &DecipherImage},
+	{"MagickDeconstructImages", &DeconstructImages},
+	{"MagickDeleteImageArtifact", &DeleteImageArtifact},
+	{"MagickDeleteImageProperty", &DeleteImageProperty},
+	{"MagickDeleteOption", &DeleteOption},
+	{"MagickDescribeImage", &DescribeImage},
+	{"MagickDeskewImage", &DeskewImage},
+	{"MagickDespeckleImage", &DespeckleImage},
+	{"MagickDestroyImage", &DestroyImage},
+	{"MagickDisplayImage", &DisplayImage},
+	{"MagickDisplayImages", &DisplayImages},
+	{"MagickDistortImage", &DistortImage},
+	{"MagickDrawImage", &DrawImage},
+	{"MagickEdgeImage", &EdgeImage},
+	{"MagickEmbossImage", &EmbossImage},
+	{"MagickEncipherImage", &EncipherImage},
+	{"MagickEnhanceImage", &EnhanceImage},
+	{"MagickEqualizeImage", &EqualizeImage},
+	{"MagickEqualizeImageChannel", &EqualizeImageChannel},
+	{"MagickEvaluateImage", &EvaluateImage},
+	{"MagickEvaluateImageChannel", &EvaluateImageChannel},
+	{"MagickEvaluateImages", &EvaluateImages},
+	{"MagickExportImagePixels", &ExportImagePixels},
+	{"MagickExtentImage", &ExtentImage},
+	{"MagickFilterImage", &FilterImage},
+	{"MagickFilterImageChannel", &FilterImageChannel},
+	{"MagickFlattenImages", &FlattenImages},
+	{"MagickFlipImage", &FlipImage},
+	{"MagickFloodfillPaintImage", &FloodfillPaintImage},
+	{"MagickFlopImage", &FlopImage},
+	{"MagickForwardFourierTransformImage", &ForwardFourierTransformImage},
+	{"MagickFrameImage", &FrameImage},
+	{"MagickFunctionImage", &FunctionImage},
+	{"MagickFunctionImageChannel", &FunctionImageChannel},
+	{"MagickFxImage", &FxImage},
+	{"MagickFxImageChannel", &FxImageChannel},
+	{"MagickGammaImage", &GammaImage},
+	{"MagickGammaImageChannel", &GammaImageChannel},
+	{"MagickGaussianBlurImage", &GaussianBlurImage},
+	{"MagickGaussianBlurImageChannel", &GaussianBlurImageChannel},
+	{"MagickGetAntialias", &GetAntialias},
+	{"MagickGetBackgroundColor", &GetBackgroundColor},
+	{"MagickGetColorspace", &GetColorspace},
+	{"MagickGetCompression", &GetCompression},
+	{"MagickGetCompressionQuality", &GetCompressionQuality},
+	{"MagickGetCopyright", &GetCopyright},
+	{"MagickGetException", &GetException},
+	{"MagickGetExceptionType", &GetExceptionType},
+	{"MagickGetFilename", &GetFilename},
+	{"MagickGetFont", &GetFont},
+	{"MagickGetFormat", &GetFormat},
+	{"MagickGetGravity", &GetGravity},
+	{"MagickGetHomeURL", &GetHomeURL},
+	{"MagickGetImage", &GetImage},
+	{"MagickGetImageAlphaChannel", &GetImageAlphaChannel},
+	{"MagickGetImageArtifact", &GetImageArtifact},
+	{"MagickGetImageArtifacts", &GetImageArtifacts},
+	{"MagickGetImageAttribute", &GetImageAttribute},
+	{"MagickGetImageBackgroundColor", &GetImageBackgroundColor},
+	{"MagickGetImageBlob", &GetImageBlob},
+	{"MagickGetImageBluePrimary", &GetImageBluePrimary},
+	{"MagickGetImageBorderColor", &GetImageBorderColor},
+	{"MagickGetImageChannelDepth", &GetImageChannelDepth},
+	{"MagickGetImageChannelDistortion", &GetImageChannelDistortion},
+	{"MagickGetImageChannelDistortions", &GetImageChannelDistortions},
+	{"MagickGetImageChannelExtrema", &GetImageChannelExtrema},
+	{"MagickGetImageChannelFeatures", &GetImageChannelFeatures},
+	{"MagickGetImageChannelKurtosis", &GetImageChannelKurtosis},
+	{"MagickGetImageChannelMean", &GetImageChannelMean},
+	{"MagickGetImageChannelRange", &GetImageChannelRange},
+	{"MagickGetImageChannelStatistics", &GetImageChannelStatistics},
+	{"MagickGetImageClipMask", &GetImageClipMask},
+	{"MagickGetImageColormapColor", &GetImageColormapColor},
+	{"MagickGetImageColors", &GetImageColors},
+	{"MagickGetImageColorspace", &GetImageColorspace},
+	{"MagickGetImageCompose", &GetImageCompose},
+	{"MagickGetImageCompression", &GetImageCompression},
+	{"MagickGetImageCompressionQuality", &GetImageCompressionQuality},
+	{"MagickGetImageDelay", &GetImageDelay},
+	{"MagickGetImageDepth", &GetImageDepth},
+	{"MagickGetImageDispose", &GetImageDispose},
+	{"MagickGetImageDistortion", &GetImageDistortion},
+	{"MagickGetImageEndian", &GetImageEndian},
+	{"MagickGetImageExtrema", &GetImageExtrema},
+	{"MagickGetImageFilename", &GetImageFilename},
+	{"MagickGetImageFormat", &GetImageFormat},
+	{"MagickGetImageFuzz", &GetImageFuzz},
+	{"MagickGetImageGamma", &GetImageGamma},
+	{"MagickGetImageGravity", &GetImageGravity},
+	{"MagickGetImageGreenPrimary", &GetImageGreenPrimary},
+	{"MagickGetImageHeight", &GetImageHeight},
+	{"MagickGetImageHistogram", &GetImageHistogram},
+	{"MagickGetImageIndex", &GetImageIndex},
+	{"MagickGetImageInterlaceScheme", &GetImageInterlaceScheme},
+	{"MagickGetImageInterpolateMethod", &GetImageInterpolateMethod},
+	{"MagickGetImageIterations", &GetImageIterations},
+	{"MagickGetImageLength", &GetImageLength},
+	{"MagickGetImageMatte", &GetImageMatte},
+	{"MagickGetImageMatteColor", &GetImageMatteColor},
+	{"MagickGetImageOrientation", &GetImageOrientation},
+	{"MagickGetImagePage", &GetImagePage},
+	{"MagickGetImagePixelColor", &GetImagePixelColor},
+	{"MagickGetImagePixels", &GetImagePixels},
+	{"MagickGetImageProfile", &GetImageProfile},
+	{"MagickGetImageProfiles", &GetImageProfiles},
+	{"MagickGetImageProperties", &GetImageProperties},
+	{"MagickGetImageProperty", &GetImageProperty},
+	{"MagickGetImageRange", &GetImageRange},
+	{"MagickGetImageRedPrimary", &GetImageRedPrimary},
+	{"MagickGetImageRegion", &GetImageRegion},
+	{"MagickGetImageRenderingIntent", &GetImageRenderingIntent},
+	{"MagickGetImageResolution", &GetImageResolution},
+	{"MagickGetImageScene", &GetImageScene},
+	{"MagickGetImageSignature", &GetImageSignature},
+	{"MagickGetImageSize", &GetImageSize},
+	{"MagickGetImageTicksPerSecond", &GetImageTicksPerSecond},
+	{"MagickGetImageTotalInkDensity", &GetImageTotalInkDensity},
+	{"MagickGetImageType", &GetImageType},
+	{"MagickGetImageUnits", &GetImageUnits},
+	{"MagickGetImageVirtualPixelMethod", &GetImageVirtualPixelMethod},
+	{"MagickGetImageWhitePoint", &GetImageWhitePoint},
+	{"MagickGetImageWidth", &GetImageWidth},
+	{"MagickGetImagesBlob", &GetImagesBlob},
+	{"MagickGetInterlaceScheme", &GetInterlaceScheme},
+	{"MagickGetInterpolateMethod", &GetInterpolateMethod},
+	{"MagickGetIteratorIndex", &GetIteratorIndex},
+	{"MagickGetNumberImages", &GetNumberImages},
+	{"MagickGetOption", &GetOption},
+	{"MagickGetOptions", &GetOptions},
+	{"MagickGetOrientation", &GetOrientation},
+	{"MagickGetPackageName", &GetPackageName},
+	{"MagickGetPage", &GetPage},
+	{"MagickGetPointsize", &GetPointsize},
+	{"MagickGetQuantumDepth", &GetQuantumDepth},
+	{"MagickGetQuantumRange", &GetQuantumRange},
+	{"MagickGetReleaseDate", &GetReleaseDate},
+	{"MagickGetResolution", &GetResolution},
+	{"MagickGetResource", &Resource},
+	{"MagickGetResourceLimit", &ResourceLimit},
+	{"MagickGetSamplingFactors", &GetSamplingFactors},
+	{"MagickGetSize", &GetSize},
+	{"MagickGetSizeOffset", &GetSizeOffset},
+	{"MagickGetType", &GetType},
+	{"MagickGetVersion", &GetVersion},
+	{"MagickHaldClutImage", &HaldClutImage},
+	{"MagickHaldClutImageChannel", &HaldClutImageChannel},
+	{"MagickHasNextImage", &HasNextImage},
+	{"MagickHasPreviousImage", &HasPreviousImage},
+	{"MagickIdentifyImage", &IdentifyImage},
+	{"MagickImplodeImage", &ImplodeImage},
+	{"MagickImportImagePixels", &ImportImagePixels},
+	{"MagickInverseFourierTransformImage", &InverseFourierTransformImage},
+	{"MagickLabelImage", &LabelImage},
+	{"MagickLevelImage", &LevelImage},
+	{"MagickLevelImageChannel", &LevelImageChannel},
+	{"MagickLinearStretchImage", &LinearStretchImage},
+	{"MagickLiquidRescaleImage", &LiquidRescaleImage},
+	{"MagickMagnifyImage", &MagnifyImage},
+	{"MagickMapImage", &MapImage},
+	{"MagickMatteFloodfillImage", &MatteFloodfillImage},
+	{"MagickMaximumImages", &MaximumImages},
+	{"MagickMedianFilterImage", &MedianFilterImage},
+	{"MagickMergeImageLayers", &MergeImageLayers},
+	{"MagickMinifyImage", &MinifyImage},
+	{"MagickMinimumImages", &MinimumImages},
+	{"MagickModeImage", &ModeImage},
+	{"MagickModulateImage", &ModulateImage},
+	{"MagickMontageImage", &MontageImage},
+	{"MagickMorphImages", &MorphImages},
+	{"MagickMorphologyImage", &MorphologyImage},
+	{"MagickMorphologyImageChannel", &MorphologyImageChannel},
+	{"MagickMosaicImages", &MosaicImages},
+	{"MagickMotionBlurImage", &MotionBlurImage},
+	{"MagickMotionBlurImageChannel", &MotionBlurImageChannel},
+	{"MagickNegateImage", &NegateImage},
+	{"MagickNegateImageChannel", &NegateImageChannel},
+	{"MagickNewImage", &NewImage},
+	{"MagickNextImage", &NextImage},
+	{"MagickNormalizeImage", &NormalizeImage},
+	{"MagickNormalizeImageChannel", &NormalizeImageChannel},
+	{"MagickOilPaintImage", &OilPaintImage},
+	{"MagickOpaqueImage", &OpaqueImage},
+	{"MagickOpaquePaintImage", &OpaquePaintImage},
+	{"MagickOpaquePaintImageChannel", &OpaquePaintImageChannel},
+	{"MagickOptimizeImageLayers", &OptimizeImageLayers},
+	{"MagickOptimizeImageTransparency", &OptimizeImageTransparency},
+	{"MagickOrderedPosterizeImage", &OrderedPosterizeImage},
+	{"MagickOrderedPosterizeImageChannel", &OrderedPosterizeImageChannel},
+	{"MagickPaintFloodfillImage", &PaintFloodfillImage},
+	{"MagickPaintOpaqueImage", &PaintOpaqueImage},
+	{"MagickPaintOpaqueImageChannel", &PaintOpaqueImageChannel},
+	{"MagickPaintTransparentImage", &PaintTransparentImage},
+	{"MagickPingImage", &PingImage},
+	{"MagickPingImageBlob", &PingImageBlob},
+	{"MagickPingImageFile", &PingImageFile},
+	{"MagickPolaroidImage", &PolaroidImage},
+	{"MagickPosterizeImage", &PosterizeImage},
+	{"MagickPreviewImages", &PreviewImages},
+	{"MagickPreviousImage", &PreviousImage},
+	{"MagickProfileImage", &ProfileImage},
+	{"MagickQuantizeImage", &QuantizeImage},
+	{"MagickQuantizeImages", &QuantizeImages},
+	{"MagickQueryConfigureOption", &QueryConfigureOption},
+	{"MagickQueryConfigureOptions", &QueryConfigureOptions},
+	{"MagickQueryFontMetrics", &QueryFontMetrics},
+	{"MagickQueryFonts", &QueryFonts},
+	{"MagickQueryFormats", &QueryFormats},
+	{"MagickQueryMultilineFontMetrics", &QueryMultilineFontMetrics},
+	{"MagickRadialBlurImage", &RadialBlurImage},
+	{"MagickRadialBlurImageChannel", &RadialBlurImageChannel},
+	{"MagickRaiseImage", &RaiseImage},
+	{"MagickRandomThresholdImage", &RandomThresholdImage},
+	{"MagickRandomThresholdImageChannel", &RandomThresholdImageChannel},
+	{"MagickReadImage", &ReadImage},
+	{"MagickReadImageBlob", &ReadImageBlob},
+	{"MagickReadImageFile", &ReadImageFile},
+	{"MagickRecolorImage", &RecolorImage},
+	{"MagickReduceNoiseImage", &ReduceNoiseImage},
+	{"MagickRegionOfInterestImage", &RegionOfInterestImage},
+	{"MagickRelinquishMemory", &RelinquishMemory},
+	{"MagickRemapImage", &RemapImage},
+	{"MagickRemoveImage", &RemoveImage},
+	{"MagickRemoveImageProfile", &RemoveImageProfile},
+	{"MagickResampleImage", &ResampleImage},
+	{"MagickResetImagePage", &ResetImagePage},
+	{"MagickResetIterator", &ResetIterator},
+	{"MagickResizeImage", &ResizeImage},
+	{"MagickRollImage", &RollImage},
+	{"MagickRotateImage", &RotateImage},
+	{"MagickSampleImage", &SampleImage},
+	{"MagickScaleImage", &ScaleImage},
+	{"MagickSegmentImage", &SegmentImage},
+	{"MagickSelectiveBlurImage", &SelectiveBlurImage},
+	{"MagickSelectiveBlurImageChannel", &SelectiveBlurImageChannel},
+	{"MagickSeparateImageChannel", &SeparateImageChannel},
+	{"MagickSepiaToneImage", &SepiaToneImage},
+	{"MagickSetAntialias", &SetAntialias},
+	{"MagickSetBackgroundColor", &SetBackgroundColor},
+	{"MagickSetColorspace", &SetColorspace},
+	{"MagickSetCompression", &SetCompression},
+	{"MagickSetCompressionQuality", &SetCompressionQuality},
+	{"MagickSetDepth", &SetDepth},
+	{"MagickSetExtract", &SetExtract},
+	{"MagickSetFilename", &SetFilename},
+	{"MagickSetFirstIterator", &SetFirstIterator},
+	{"MagickSetFont", &SetFont},
+	{"MagickSetFormat", &SetFormat},
+	{"MagickSetGravity", &SetGravity},
+	{"MagickSetImage", &SetImage},
+	{"MagickSetImageAlphaChannel", &SetImageAlphaChannel},
+	{"MagickSetImageArtifact", &SetImageArtifact},
+	{"MagickSetImageAttribute", &SetImageAttribute},
+	{"MagickSetImageBackgroundColor", &SetImageBackgroundColor},
+	{"MagickSetImageBias", &SetImageBias},
+	{"MagickSetImageBluePrimary", &SetImageBluePrimary},
+	{"MagickSetImageBorderColor", &SetImageBorderColor},
+	{"MagickSetImageChannelDepth", &SetImageChannelDepth},
+	{"MagickSetImageClipMask", &SetImageClipMask},
+	{"MagickSetImageColor", &SetImageColor},
+	{"MagickSetImageColormapColor", &SetImageColormapColor},
+	{"MagickSetImageColorspace", &SetImageColorspace},
+	{"MagickSetImageCompose", &SetImageCompose},
+	{"MagickSetImageCompression", &SetImageCompression},
+	{"MagickSetImageCompressionQuality", &SetImageCompressionQuality},
+	{"MagickSetImageDelay", &SetImageDelay},
+	{"MagickSetImageDepth", &SetImageDepth},
+	{"MagickSetImageDispose", &SetImageDispose},
+	{"MagickSetImageEndian", &SetImageEndian},
+	{"MagickSetImageExtent", &SetImageExtent},
+	{"MagickSetImageFilename", &SetImageFilename},
+	{"MagickSetImageFormat", &SetImageFormat},
+	{"MagickSetImageFuzz", &SetImageFuzz},
+	{"MagickSetImageGamma", &SetImageGamma},
+	{"MagickSetImageGravity", &SetImageGravity},
+	{"MagickSetImageGreenPrimary", &SetImageGreenPrimary},
+	{"MagickSetImageIndex", &SetImageIndex},
+	{"MagickSetImageInterlaceScheme", &SetImageInterlaceScheme},
+	{"MagickSetImageInterpolateMethod", &SetImageInterpolateMethod},
+	{"MagickSetImageIterations", &SetImageIterations},
+	{"MagickSetImageMatte", &SetImageMatte},
+	{"MagickSetImageMatteColor", &SetImageMatteColor},
+	{"MagickSetImageOpacity", &SetImageOpacity},
+	{"MagickSetImageOption", &SetImageOption},
+	{"MagickSetImageOrientation", &SetImageOrientation},
+	{"MagickSetImagePage", &SetImagePage},
+	{"MagickSetImagePixels", &SetImagePixels},
+	{"MagickSetImageProfile", &SetImageProfile},
+	{"MagickSetImageProgressMonitor", &SetImageProgressMonitor},
+	{"MagickSetImageProperty", &SetImageProperty},
+	{"MagickSetImageRedPrimary", &SetImageRedPrimary},
+	{"MagickSetImageRenderingIntent", &SetImageRenderingIntent},
+	{"MagickSetImageResolution", &SetImageResolution},
+	{"MagickSetImageScene", &SetImageScene},
+	{"MagickSetImageTicksPerSecond", &SetImageTicksPerSecond},
+	{"MagickSetImageType", &SetImageType},
+	{"MagickSetImageUnits", &SetImageUnits},
+	{"MagickSetImageVirtualPixelMethod", &SetImageVirtualPixelMethod},
+	{"MagickSetImageWhitePoint", &SetImageWhitePoint},
+	{"MagickSetInterlaceScheme", &SetInterlaceScheme},
+	{"MagickSetInterpolateMethod", &SetInterpolateMethod},
+	{"MagickSetIteratorIndex", &SetIteratorIndex},
+	{"MagickSetLastIterator", &SetLastIterator},
+	{"MagickSetOption", &SetOption},
+	{"MagickSetOrientation", &SetOrientation},
+	{"MagickSetPage", &SetPage},
+	{"MagickSetPassphrase", &SetPassphrase},
+	{"MagickSetPointsize", &SetPointsize},
+	{"MagickSetProgressMonitor", &SetProgressMonitor},
+	{"MagickSetResolution", &SetResolution},
+	{"MagickSetResourceLimit", &SetResourceLimit},
+	{"MagickSetSamplingFactors", &SetSamplingFactors},
+	{"MagickSetSize", &SetSize},
+	{"MagickSetSizeOffset", &SetSizeOffset},
+	{"MagickSetType", &SetType},
+	{"MagickShadeImage", &ShadeImage},
+	{"MagickShadowImage", &ShadowImage},
+	{"MagickSharpenImage", &SharpenImage},
+	{"MagickSharpenImageChannel", &SharpenImageChannel},
+	{"MagickShaveImage", &ShaveImage},
+	{"MagickShearImage", &ShearImage},
+	{"MagickSigmoidalContrastImage", &SigmoidalContrastImage},
+	{"MagickSigmoidalContrastImageChannel", &SigmoidalContrastImageChannel},
+	{"MagickSimilarityImage", &SimilarityImage},
+	{"MagickSketchImage", &SketchImage},
+	{"MagickSmushImages", &SmushImages},
+	{"MagickSolarizeImage", &SolarizeImage},
+	{"MagickSolarizeImageChannel", &SolarizeImageChannel},
+	{"MagickSparseColorImage", &SparseColorImage},
+	{"MagickSpliceImage", &SpliceImage},
+	{"MagickSpreadImage", &SpreadImage},
+	{"MagickStatisticImage", &StatisticImage},
+	{"MagickSteganoImage", &SteganoImage},
+	{"MagickStereoImage", &StereoImage},
+	{"MagickStripImage", &StripImage},
+	{"MagickSwirlImage", &SwirlImage},
+	{"MagickTextureImage", &TextureImage},
+	{"MagickThresholdImage", &ThresholdImage},
+	{"MagickThresholdImageChannel", &ThresholdImageChannel},
+	{"MagickThumbnailImage", &ThumbnailImage},
+	{"MagickTintImage", &TintImage},
+	{"MagickTransformImage", &TransformImage},
+	{"MagickTransformImageColorspace", &TransformImageColorspace},
+	{"MagickTransparentImage", &TransparentImage},
+	{"MagickTransparentPaintImage", &TransparentPaintImage},
+	{"MagickTransposeImage", &TransposeImage},
+	{"MagickTransverseImage", &TransverseImage},
+	{"MagickTrimImage", &TrimImage},
+	{"MagickUniqueImageColors", &UniqueImageColors},
+	{"MagickUnsharpMaskImage", &UnsharpMaskImage},
+	{"MagickUnsharpMaskImageChannel", &UnsharpMaskImageChannel},
+	{"MagickVignetteImage", &VignetteImage},
+	{"MagickWandGenesis", &WandGenesis},
+	{"MagickWandTerminus", &WandTerminus},
+	{"MagickWaveImage", &WaveImage},
+	{"MagickWhiteThresholdImage", &WhiteThresholdImage},
+	{"MagickWriteImage", &WriteImage},
+	{"MagickWriteImageBlob", &WriteImageBlob},
+	{"MagickWriteImageFile", &WriteImageFile},
+	{"MagickWriteImages", &WriteImages},
+	{"MagickWriteImagesFile", &WriteImagesFile},
+	{"MogrifyImage", &MogrifyImage},
+	{"MogrifyImageCommand", &MogrifyImageCommand},
+	{"MogrifyImageInfo", &MogrifyImageInfo},
+	{"MogrifyImageList", &MogrifyImageList},
+	{"MogrifyImages", &MogrifyImages},
+	{"MontageImageCommand", &MontageImageCommand},
+	{"NewDrawingWand", &NewDrawingWand},
+	{"NewMagickWand", &NewMagickWand},
+	{"NewMagickWandFromImage", &NewMagickWandFromImage},
+	{"NewPixelIterator", &NewPixelIterator},
+	{"NewPixelRegionIterator", &NewPixelRegionIterator},
+	{"NewPixelView", &NewPixelView},
+	{"NewPixelViewRegion", &NewPixelViewRegion},
+	{"NewPixelWand", &NewPixelWand},
+	{"NewPixelWands", &NewPixelWands},
+	{"NewWandView", &NewWandView},
+	{"NewWandViewExtent", &NewWandViewExtent},
+	{"PeekDrawingWand", &PeekDrawingWand},
+	{"PixelClearException", &PixelClearException},
+	{"PixelClearIteratorException", &PixelClearIteratorException},
+	{"PixelGetAlpha", &PixelGetAlpha},
+	{"PixelGetAlphaQuantum", &PixelGetAlphaQuantum},
+	{"PixelGetBlack", &PixelGetBlack},
+	{"PixelGetBlackQuantum", &PixelGetBlackQuantum},
+	{"PixelGetBlue", &PixelGetBlue},
+	{"PixelGetBlueQuantum", &PixelGetBlueQuantum},
+	{"PixelGetColorAsNormalizedString", &PixelGetColorAsNormalizedString},
+	{"PixelGetColorAsString", &PixelGetColorAsString},
+	{"PixelGetColorCount", &PixelGetColorCount},
+	{"PixelGetCurrentIteratorRow", &PixelGetCurrentIteratorRow},
+	{"PixelGetCyan", &PixelGetCyan},
+	{"PixelGetCyanQuantum", &PixelGetCyanQuantum},
+	{"PixelGetException", &PixelGetException},
+	{"PixelGetExceptionType", &PixelGetExceptionType},
+	{"PixelGetFuzz", &PixelGetFuzz},
+	{"PixelGetGreen", &PixelGetGreen},
+	{"PixelGetGreenQuantum", &PixelGetGreenQuantum},
+	{"PixelGetHSL", &PixelGetHSL},
+	{"PixelGetIndex", &PixelGetIndex},
+	{"PixelGetIteratorException", &PixelGetIteratorException},
+	{"PixelGetIteratorExceptionType", &PixelGetIteratorExceptionType},
+	{"PixelGetIteratorRow", &PixelGetIteratorRow},
+	{"PixelGetMagenta", &PixelGetMagenta},
+	{"PixelGetMagentaQuantum", &PixelGetMagentaQuantum},
+	{"PixelGetMagickColor", &PixelGetMagickColor},
+	{"PixelGetNextIteratorRow", &PixelGetNextIteratorRow},
+	{"PixelGetNextRow", &PixelGetNextRow},
+	{"PixelGetOpacity", &PixelGetOpacity},
+	{"PixelGetOpacityQuantum", &PixelGetOpacityQuantum},
+	{"PixelGetPreviousIteratorRow", &PixelGetPreviousIteratorRow},
+	// Undocumented {"PixelGetPreviousRow", &PixelGetPreviousRow},
+	{"PixelGetQuantumColor", &PixelGetQuantumColor},
+	{"PixelGetRed", &PixelGetRed},
+	{"PixelGetRedQuantum", &PixelGetRedQuantum},
+	{"PixelGetYellow", &PixelGetYellow},
+	{"PixelGetYellowQuantum", &PixelGetYellowQuantum},
+	{"PixelIteratorGetException", &PixelIteratorGetException},
+	{"PixelResetIterator", &PixelResetIterator},
+	{"PixelSetAlpha", &PixelSetAlpha},
+	{"PixelSetAlphaQuantum", &PixelSetAlphaQuantum},
+	{"PixelSetBlack", &PixelSetBlack},
+	{"PixelSetBlackQuantum", &PixelSetBlackQuantum},
+	{"PixelSetBlue", &PixelSetBlue},
+	{"PixelSetBlueQuantum", &PixelSetBlueQuantum},
+	{"PixelSetColor", &PixelSetColor},
+	{"PixelSetColorCount", &PixelSetColorCount},
+	{"PixelSetColorFromWand", &PixelSetColorFromWand},
+	{"PixelSetCyan", &PixelSetCyan},
+	{"PixelSetCyanQuantum", &PixelSetCyanQuantum},
+	{"PixelSetFirstIteratorRow", &PixelSetFirstIteratorRow},
+	{"PixelSetFuzz", &PixelSetFuzz},
+	{"PixelSetGreen", &PixelSetGreen},
+	{"PixelSetGreenQuantum", &PixelSetGreenQuantum},
+	{"PixelSetHSL", &PixelSetHSL},
+	{"PixelSetIndex", &PixelSetIndex},
+	{"PixelSetIteratorRow", &PixelSetIteratorRow},
+	{"PixelSetLastIteratorRow", &PixelSetLastIteratorRow},
+	{"PixelSetMagenta", &PixelSetMagenta},
+	{"PixelSetMagentaQuantum", &PixelSetMagentaQuantum},
+	{"PixelSetMagickColor", &PixelSetMagickColor},
+	{"PixelSetOpacity", &PixelSetOpacity},
+	{"PixelSetOpacityQuantum", &PixelSetOpacityQuantum},
+	{"PixelSetQuantumColor", &PixelSetQuantumColor},
+	{"PixelSetRed", &PixelSetRed},
+	{"PixelSetRedQuantum", &PixelSetRedQuantum},
+	{"PixelSetYellow", &PixelSetYellow},
+	{"PixelSetYellowQuantum", &PixelSetYellowQuantum},
+	{"PixelSyncIterator", &PixelSyncIterator},
+	{"PopDrawingWand", &PopDrawingWand},
+	{"PushDrawingWand", &PushDrawingWand},
+	{"RelinquishWandId", &RelinquishWandId},
+	{"SetPixelViewIterator", &SetPixelViewIterator},
+	{"SetWandViewDescription", &SetWandViewDescription},
+	{"SetWandViewIterator", &SetWandViewIterator},
+	{"SetWandViewThreads", &SetWandViewThreads},
+	{"StreamImageCommand", &StreamImageCommand},
+	{"TransferPixelViewIterator", &TransferPixelViewIterator},
+	{"TransferWandViewIterator", &TransferWandViewIterator},
+	{"UpdatePixelViewIterator", &UpdatePixelViewIterator},
+	{"UpdateWandViewIterator", &UpdateWandViewIterator},
+}
+
+// Deprecated.
+var AverageImages func(m *MagickWand) *MagickWand
+
+// Deprecated.
+func (m *MagickWand) Average() *MagickWand { return AverageImages(m) }
+
+// Deprecated.
+var ColorFloodfillImage func(m *MagickWand, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32) bool
+
+// Deprecated.
+func (m *MagickWand) ColorFloodfill(fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32) bool {
+	return ColorFloodfillImage(m, fill, fuzz, bordercolor, x, y)
+}
+
+// Deprecated.
+var DescribeImage func(m *MagickWand) string
+
+// Deprecated.
+func (m *MagickWand) Describe() string { return DescribeImage(m) }
+
+// Deprecated.
+var FlattenImages func(m *MagickWand) *MagickWand
+
+// Deprecated.
+func (m *MagickWand) Flatten() *MagickWand { return FlattenImages(m) }
+
+// Deprecated.
+var GetImageAttribute func(m *MagickWand, property string) string
+
+// Deprecated.
+func (m *MagickWand) Attribute(property string) string {
+	return GetImageAttribute(m, property)
+}
+
+// Deprecated.
+var GetImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool
+
+// Deprecated.
+func (m *MagickWand) Pixels(x, y int32, columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool {
+	return GetImagePixels(m, x, y, columns, rows, map_, storage, pixels)
+}
+
+// Deprecated.
+var GetImageSize func(m *MagickWand, length *T.MagickSizeType) bool
+
+// Deprecated.
+func (m *MagickWand) ImageSize(length *T.MagickSizeType) bool { return GetImageSize(m, length) }
+
+// Deprecated.
+var MatteFloodfillImage func(m *MagickWand, alpha, fuzz float64, bordercolor *PixelWand, x, y int32) bool
+
+// Deprecated.
+func (m *MagickWand) MatteFloodfill(alpha, fuzz float64, bordercolor *PixelWand, x, y int32) bool {
+	return MatteFloodfillImage(m, alpha, fuzz, bordercolor, x, y)
+}
+
+// Deprecated.
+var MedianFilterImage func(m *MagickWand, radius float64) bool
+
+// Deprecated.
+func (m *MagickWand) MedianFilter(radius float64) bool {
+	return MedianFilterImage(m, radius)
+}
+
+// Deprecated.
+var MosaicImages func(m *MagickWand) *MagickWand
+
+// Deprecated.
+func (m *MagickWand) Mosaic() *MagickWand { return MosaicImages(m) }
+
+// Deprecated.
+var OpaqueImage func(m *MagickWand, target, fill *PixelWand, fuzz float64) bool
+
+// Deprecated.
+func (m *MagickWand) Opaque(target, fill *PixelWand, fuzz float64) bool {
+	return OpaqueImage(m, target, fill, fuzz)
+}
+
+// Deprecated.
+var ReduceNoiseImage func(m *MagickWand, radius float64) bool
+
+// Deprecated.
+func (m *MagickWand) ReduceNoise(radius float64) bool { return ReduceNoiseImage(m, radius) }
+
+// Deprecated.
+var SetImageAttribute func(m *MagickWand, property, value string) bool
+
+// Deprecated.
+func (m *MagickWand) SetAttribute(property, value string) bool {
+	return SetImageAttribute(m, property, value)
+}
+
+// Deprecated.
+var SetImageIndex func(m *MagickWand, index int32) bool
+
+// Deprecated.
+func (m *MagickWand) SetIndex(index int32) bool { return SetImageIndex(m, index) }
+
+// Deprecated.
+var SetImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool
+
+// Deprecated.
+func (m *MagickWand) SetImagePixels(x, y int32, columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool {
+	return SetImagePixels(m, x, y, columns, rows, map_, storage, pixels)
+}
+
+// Deprecated.
+var TransparentImage func(m *MagickWand, target *PixelWand, alpha, fuzz float64) bool
+
+// Deprecated.
+func (m *MagickWand) Transparent(target *PixelWand, alpha, fuzz float64) bool {
+	return TransparentImage(m, target, alpha, fuzz)
+}
+
+// Deprecated.
+var WriteImageBlob func(m *MagickWand, length *uint32) *byte
+
+// Deprecated.
+func (m *MagickWand) WriteBlob(length *uint32) *byte {
+	return WriteImageBlob(m, length)
+}
+
+// Deprecated.
+var SetImageOption func(m *MagickWand, format, key, value string) bool
+
+// Deprecated.
+func (m *MagickWand) SetImageOption(format, key, value string) bool {
+	return SetImageOption(m, format, key, value)
+}
+
+// Deprecated.
+var NewPixelView func(m *MagickWand) *PixelView
+
+// Deprecated.
+var NewPixelViewRegion func(m *MagickWand, x, y int32, width, height uint32) *PixelView
+
+// Deprecated.
+var GetImageMatte func(m *MagickWand) uint32
+
+// Deprecated.
+func (m *MagickWand) Matte() uint32 { return GetImageMatte(m) }
+
+// Deprecated.
+var MaximumImages func(m *MagickWand) *MagickWand
+
+// Deprecated.
+func (m *MagickWand) MaximumImages() *MagickWand { return MaximumImages(m) }
+
+// Deprecated.
+var MinimumImages func(m *MagickWand) *MagickWand
+
+// Deprecated.
+func (m *MagickWand) MinimumImages() *MagickWand { return MinimumImages(m) }
+
+// Deprecated.
+var ModeImage func(m *MagickWand, radius float64) bool
+
+// Deprecated.
+func (m *MagickWand) Mode(radius float64) bool { return ModeImage(m, radius) }
+
+// Deprecated.
+var PaintFloodfillImage func(m *MagickWand, channel T.ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32) bool
+
+// Deprecated.
+func (m *MagickWand) PaintFloodfill(channel T.ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32) bool {
+	return PaintFloodfillImage(m, channel, fill, fuzz, bordercolor, x, y)
+}
+
+// Deprecated.
+var PaintOpaqueImage func(m *MagickWand, target, fill *PixelWand, fuzz float64) bool
+
+// Deprecated.
+func (m *MagickWand) PaintOpaque(target, fill *PixelWand, fuzz float64) bool {
+	return PaintOpaqueImage(m, target, fill, fuzz)
+}
+
+// Deprecated.
+var PaintTransparentImage func(m *MagickWand, target *PixelWand, alpha, fuzz float64) bool
+
+// Deprecated.
+func (m *MagickWand) PaintTransparent(target *PixelWand, alpha, fuzz float64) bool {
+	return PaintTransparentImage(m, target, alpha, fuzz)
+}
+
+// Deprecated.
+var RecolorImage func(m *MagickWand, order uint32, colorMatrix *float64) bool
+
+// Deprecated.
+func (m *MagickWand) Recolor(order uint32, colorMatrix *float64) bool {
+	return RecolorImage(m, order, colorMatrix)
+}
+
+// Deprecated.
+var RegionOfInterestImage func(m *MagickWand, width, height uint32, x, y int32) *MagickWand
+
+// Deprecated.
+func (m *MagickWand) RegionOfInterest(width, height uint32, x, y int32) *MagickWand {
+	return RegionOfInterestImage(m, width, height, x, y)
+}
+
+// Deprecated.
+var DrawGetFillAlpha func(d *DrawingWand) float64
+
+// Deprecated.
+func (d *DrawingWand) FillAlpha() float64 { return DrawGetFillAlpha(d) }
+
+// Deprecated.
+var DrawGetStrokeAlpha func(d *DrawingWand) float64
+
+// Deprecated.
+func (d *DrawingWand) StrokeAlpha() float64 { return DrawGetStrokeAlpha(d) }
+
+// Deprecated.
+var DrawPeekGraphicWand func(d *DrawingWand) *DrawInfo
+
+// Deprecated.
+func (d *DrawingWand) PeekGraphicWand() *DrawInfo { return DrawPeekGraphicWand(d) }
+
+// Deprecated.
+var DrawPopGraphicContext func(d *DrawingWand) bool
+
+// Deprecated.
+func (d *DrawingWand) PopGraphicContext() bool { return DrawPopGraphicContext(d) }
+
+// Deprecated.
+var DrawPushGraphicContext func(d *DrawingWand) bool
+
+// Deprecated.
+func (d *DrawingWand) PushGraphicContext() bool { return DrawPushGraphicContext(d) }
+
+// Deprecated.
+var DrawSetFillAlpha func(d *DrawingWand, fillAlpha float64)
+
+// Deprecated.
+func (d *DrawingWand) SetFillAlpha(fillAlpha float64) { DrawSetFillAlpha(d, fillAlpha) }
+
+// Deprecated.
+var DrawSetStrokeAlpha func(d *DrawingWand, strokeAlpha float64)
+
+// Deprecated.
+func (d *DrawingWand) SetStrokeAlpha(strokeAlpha float64) { DrawSetStrokeAlpha(d, strokeAlpha) }
+
+// Deprecated.
+var GetPixelViewException func(p *PixelWand, severity *T.ExceptionType) string
+
+// Deprecated.
+func (p *PixelWand) PixelViewException(severity *T.ExceptionType) string {
+	return GetPixelViewException(p, severity)
+}
+
+// Deprecated.
+var ClonePixelView func(pixelView *PixelView) *PixelView
+
+// Deprecated.
+var DestroyPixelView func(pixelView *PixelView, numberWands, numberThreads uint32) *PixelView
+
+// Deprecated.
+var DuplexTransferPixelViewIterator func(source, duplex, destination *PixelView, transfer T.DuplexTransferPixelViewMethod, context *T.Void) bool
+
+// Deprecated.
+func (p *PixelView) DuplexTransferIterator(duplex, destination *PixelView, transfer T.DuplexTransferPixelViewMethod, context *T.Void) bool {
+	return DuplexTransferPixelViewIterator(p, duplex, destination, transfer, context)
+}
+
+// Deprecated.
+var GetPixelViewHeight func(pixelView *PixelView) uint32
+
+// Deprecated.
+func (p *PixelView) Height() uint32 { return GetPixelViewHeight(p) }
+
+// Deprecated.
+var GetPixelViewIterator func(source *PixelView, get T.GetPixelViewMethod, context *T.Void) bool
+
+// Deprecated.
+func (p *PixelView) Iterator(get T.GetPixelViewMethod, context *T.Void) bool {
+	return GetPixelViewIterator(p, get, context)
+}
+
+// Deprecated.
+var GetPixelViewPixels func(pixelView *PixelView) *PixelWand
+
+// Deprecated.
+func (p *PixelView) Pixels() *PixelWand { return GetPixelViewPixels(p) }
+
+// Deprecated.
+var GetPixelViewWand func(pixelView *PixelView) *MagickWand
+
+// Deprecated.
+func (p *PixelView) Wand() *MagickWand { return GetPixelViewWand(p) }
+
+// Deprecated.
+var GetPixelViewWidth func(pixelView *PixelView) uint32
+
+// Deprecated.
+func (p *PixelView) Width() uint32 { return GetPixelViewWidth(p) }
+
+// Deprecated.
+var GetPixelViewX func(pixelView *PixelView) int32
+
+// Deprecated.
+func (p *PixelView) X() int32 { return GetPixelViewX(p) }
+
+// Deprecated.
+var GetPixelViewY func(pixelView *PixelView) int32
+
+// Deprecated.
+func (p *PixelView) Y() int32 { return GetPixelViewY(p) }
+
+// Deprecated.
+var IsPixelView func(pixelView *PixelView) bool
+
+// Deprecated.
+func (p *PixelView) IsPixelView() bool { return IsPixelView(p) }
+
+// Deprecated.
+var SetPixelViewIterator func(destination *PixelView, set T.SetPixelViewMethod, context *T.Void) bool
+
+// Deprecated.
+func (p *PixelView) SetIterator(set T.SetPixelViewMethod, context *T.Void) bool {
+	return SetPixelViewIterator(p, set, context)
+}
+
+// Deprecated.
+var TransferPixelViewIterator func(source, destination *PixelView, transfer T.TransferPixelViewMethod, context *T.Void) bool
+
+// Deprecated.
+func (p *PixelView) TransIterator(destination *PixelView, transfer T.TransferPixelViewMethod, context *T.Void) bool {
+	return TransferPixelViewIterator(p, destination, transfer, context)
+}
+
+// Deprecated.
+var UpdatePixelViewIterator func(source *PixelView, update T.UpdatePixelViewMethod, context *T.Void) bool
+
+// Deprecated.
+func (p *PixelView) UpdateIterator(update T.UpdatePixelViewMethod, context *T.Void) bool {
+	return UpdatePixelViewIterator(p, update, context)
+}
+
+// Deprecated.
+var PixelGetNextRow func(p *PixelIterator, numberWands *uint32) []*PixelWand
+
+// Deprecated.
+func (p *PixelIterator) NextRow(numberWands *uint32) []*PixelWand {
+	return PixelGetNextRow(p, numberWands)
+}
+
+// Deprecated.
+var PixelIteratorGetException func(p *PixelIterator, severity *T.ExceptionType) string
+
+// Deprecated.
+func (p *PixelIterator) Exception(severity *T.ExceptionType) string {
+	return PixelIteratorGetException(p, severity)
 }

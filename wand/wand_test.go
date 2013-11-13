@@ -1,39 +1,55 @@
-package magickwand
+package wand
 
-import "testing"
+import (
+	T "github.com/tHinqa/outside-imagemagick/types"
+	"testing"
+)
 
-func TestInit(t *testing.T) {
-	t.Log(MagickQueryConfigureOption("NAME"),
-		MagickQueryConfigureOption("VERSION"))
+func aTestInit(t *testing.T) {
+	var w *MagickWand
+	t.Log(QueryConfigureOption("NAME"),
+		QueryConfigureOption("VERSION"))
+	w = NewMagickWand()
 	if !IsMagickWand(NewMagickWand()) {
 		t.Error("IsMagickWand(NewMagickWand()) failed")
 	}
+	if w != nil {
+		var s uint32
+		t.Logf("%x, %s", s, GetVersion(&s))
+		w.Destroy()
+	}
+	t.Log(GetPackageName())
+	var d uint32
+	t.Log(GetQuantumDepth(&d), d)
+	t.Log(GetReleaseDate())
+	t.Log(GetCopyright())
+	t.Log(GetHomeURL())
 }
 
 func aTestQuery(t *testing.T) {
-	// MagickWandGenesis()
-	// defer MagickWandTerminus()
-	var n size_t
-	t.Log(n, MagickQueryFonts("*", &n))
-	t.Log(n, MagickQueryFormats("*", &n))
-	os := MagickQueryConfigureOptions("*", &n)
+	var n uint32
+	t.Log(n, QueryFonts("*", &n))
+	t.Log(n, QueryFormats("*", &n))
+	os := QueryConfigureOptions("*", &n)
 	t.Log(n, os)
-	for _, o := range os {
-		t.Log(o, ":", MagickQueryConfigureOption(o))
+	for i, o := range os {
+		t.Log(i, ":", o, ":", QueryConfigureOption(o))
 	}
 }
 
-func TestMagickWand(t *testing.T) {
+func aTestMagickWand(t *testing.T) {
 	w := NewMagickWand()
 	defer w.Destroy()
-	var n size_t
-	t.Log(n, MagickQueryFormats("*", &n))
-	if w.NewImage(20, 20, w.BackgroundColor()) {
-		var x, y float64
-		w.ImageResolution(&x, &y)
-		t.Log(x, y)
-		for _, f := range []string{"gif", "png", "svg", "xbm"} {
-			t.Log(f, w.WriteImage("test."+f))
+	if w.New(1, 1, w.BackgroundColor()) {
+		w.Resize(200, 200, 0, 0)
+		w.AddNoise(T.GaussianNoise)
+		w.Edge(0)
+		w.Enhance()
+		w.Despeckle()
+		w.Emboss(10, 2)
+		w.Equalize()
+		for _, f := range []string{"png" /*, "gif", "jpg", "svg", "xbm"*/} {
+			t.Log(f, w.Write("_test."+f))
 		}
 	}
 }
