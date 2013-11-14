@@ -16,86 +16,73 @@ const (
 )
 
 type (
-	FILE                 fix
-	PixelIntensityMethod fix
-	XrmDatabase          fix
+	CompositeMethod      Fixme
+	DIR                  Fixme
+	FILE                 Fixme
+	PixelIntensityMethod Fixme
+	Time                 Fixme // time_t
 )
+
+// X
 type (
-	fix uintptr
+	Atom              UnsignedLong
+	Colormap          UnsignedLong
+	Cursor            UnsignedLong
+	Pixmap            UnsignedLong
+	Status            int
+	Visual            struct{}
+	Window            UnsignedLong
+	XClassHint        struct{}
+	XColor            struct{}
+	XErrorEvent       struct{}
+	XEvent            struct{} // union
+	XFontStruct       struct{}
+	XImage            struct{}
+	XPoint            struct{ x, y Short }
+	XrmDatabase       *struct{}
+	XSegment          struct{ x1, y1, x2, y2 Short }
+	XStandardColormap struct{}
+	XVisualInfo       struct{}
+	XWMHints          struct{}
+)
+
+// Placeholder type to be rectified.
+type (
+	Fixme uintptr
 
 	Char             int8
 	Enum             int
 	IndexPacket      Quantum
-	Long             int    // TODO(t):size on gcc vs msc 32 vs 64
+	Long             int    // TODO(t):long on gcc vs msc 32 vs 64
 	MagickOffsetType int64  // TODO(t):size on gcc vs msc 32 vs 64
 	MagickSizeType   uint64 // TODO(t):size on gcc vs msc 32 vs 64
 	MagickStatusType uint
-	Size             uint // TODO(t):size_t on gcc vs msc 32 vs 64
-	SSize            int  // TODO(t):ssize_t on gcc vs msc 32 vs 64
-	Time             fix
-	UnsignedShort    uint16 // TODO(t):ssize_t on gcc vs msc 32 vs 64
+	Short            uint16 // TODO(t):short on gcc vs msc 32 vs 64
+	Size             uint   // TODO(t):size_t on gcc vs msc 32 vs 64
+	SSize            int    // TODO(t):ssize_t on gcc vs msc 32 vs 64
+	UnsignedShort    uint16 // TODO(t):unsigned short on gcc vs msc 32 vs 64
+	UnsignedLong     uint   // TODO(t):unsigned long on gcc vs msc 32 vs 64
 	Void             struct{}
 )
+
+// Opaque types
 type (
 	Ascii85Info   struct{}
 	BlobInfo      struct{}
 	CacheView     struct{}
 	FxInfo        struct{}
+	GC            *struct{}
+	ImageView     struct{}
 	PixelView     struct{}
+	RandomInfo    struct{}
 	SemaphoreInfo struct{}
+	ThresholdMap  struct{}
 	WandView      struct{}
 )
 
-// 	ErrorHandler          func(ExceptionType, string, string)
-// 	FatalErrorHandler     func(ExceptionType, string, string)
-// 	GeometryInfo          struct{ Rho, Sigma, Xi, Psi, Chi float64 }
-// 	MonitorHandler        func(string, MagickOffsetType, MagickSizeType, *ExceptionInfo) bool
-
-// 	RandomInfo      struct{}
 // 	RealPixelPacket struct{ Red, Green, Blue, Opacity MagickRealType }
-
-// 	WarningHandler func(ExceptionType, string, string)
 // 	XImportInfo    struct{ Frame, Borders, Screen, Descend, Silent MagickBooleanType }
 
-// 	AcquireMemoryHandler func(size_t) *Void
-
-// 	Atom            fix
-// 	Colormap        fix
-// 	CompositeMethod fix
-
-// 	Cursor                            fix
-// 	DestroyMemoryHandler              fix
-// 	DIR                               fix
-// 	DuplexTransferImageViewMethodFunc fix
-// 	GC                            fix
-// 	GetImageViewMethodFunc        fix
-// 	Long                          fix
-// 	MagickCore                    fix
-// 	MagickThreadType              pthread_t // ok // or DWORD
-// 	PixelImage                    fix
-// 	ResizeMemoryHandler           fix
-// 	SetImageViewMethodFunc        fix
-// 	Status                        fix
-// 	Time                          fix
-// 	TransferImageViewMethodFunc   fix
-// 	UnsignedLong                  fix
-// 	UpdateImageViewMethodFunc     fix
-// 	Window                        fix
-// 	XAnnotateInfo                 fix
-// 	XClassHint                    fix
-// 	XColor                        fix
-// 	XDrawInfo                     fix
-// 	XErrorEvent                   fix
-// 	XEvent                        fix
-// 	XFontStruct                   fix
-// 	XImage                        fix
-// 	XPixelInfo                    fix
-// 	XSegment                      fix
-// 	XStandardColormap             fix
-// 	XVisualInfo                   fix
-// 	XWindowInfo                   fix
-// 	XWindows                      fix
-// 	XWMHints                      fix
 // )
 
 // type AESInfo struct {
@@ -109,7 +96,6 @@ type (
 type AffineMatrix struct {
 	Sx, Rx, Ry, Sy, Tx, Ty float64
 }
-
 type AlignType Enum
 
 const (
@@ -137,15 +123,26 @@ const (
 	RemoveAlphaChannel
 )
 
-// type BlobMode Enum
+type AnnotationStencil Enum
 
-// const (
-// 	UndefinedBlobMode BlobMode = iota
-// 	ReadBlobMode
-// 	ReadBinaryBlobMode
-// 	WriteBlobMode
-// 	WriteBinaryBlobMode
-// )
+const (
+	ForegroundStencil AnnotationStencil = iota
+	BackgroundStencil
+	OpaqueStencil
+	TransparentStencil
+)
+
+type BlobMode Enum
+
+const (
+	UndefinedBlobMode BlobMode = iota
+	ReadBlobMode
+	ReadBinaryBlobMode
+	WriteBlobMode
+	WriteBinaryBlobMode
+	AppendBlobMode
+	AppendBinaryBlobMode
+)
 
 // type CacheInfo struct { // ok
 // 	StorageClass             ClassType
@@ -179,26 +176,30 @@ const (
 // 	Signature                size_t
 // }
 
-// type CacheMethods struct {
-// 	// acquireIndexesFromHandler   AcquireIndexesFromHandler
-// 	// acquireOnePixelFromHandler AcquireOnePixelFromHandler
-// 	// acquirePixelHandler          AcquirePixelHandler
-// 	// destroyPixelHandler          DestroyPixelHandler
-// 	// getIndexesFromHandler       GetIndexesFromHandler
-// 	// getOnePixelFromHandler     GetOnePixelFromHandler
-// 	// getPixelHandler              GetPixelHandler
-// 	// getPixelsFromHandler        GetPixelsFromHandler
-// 	// setPixelHandler              SetPixelHandler
-// 	// syncPixelHandler             SyncPixelHandler
-// }
-// type CacheType Enum
+type CacheMethods struct {
+	// GetVirtualPixelHandler          GetVirtualPixelHandler
+	// GetVirtualPixelsHandler         GetVirtualPixelsHandler
+	// GetVirtualIndexesFromHandler    GetVirtualIndexesFromHandler
+	// GetOneVirtualPixelFromHandler   GetOneVirtualPixelFromHandler
+	// GetAuthenticPixelsHandler       GetAuthenticPixelsHandler
+	// GetAuthenticIndexesFromHandler  GetAuthenticIndexesFromHandler
+	// GetOneAuthenticPixelFromHandler GetOneAuthenticPixelFromHandler
+	// GetAuthenticPixelsFromHandler   GetAuthenticPixelsFromHandler
+	// QueueAuthenticPixelsHandler     QueueAuthenticPixelsHandler
+	// SyncAuthenticPixelsHandler      SyncAuthenticPixelsHandler
+	// DestroyPixelHandler             DestroyPixelHandler
+}
 
-// const (
-// 	UndefinedCache CacheType = iota
-// 	MemoryCache
-// 	MapCache
-// 	DiskCache
-// )
+type CacheType Enum
+
+const (
+	UndefinedCache CacheType = iota
+	MemoryCache
+	MapCache
+	DiskCache
+	PingCache
+	DistributedCache
+)
 
 type ChannelStatistics struct {
 	Depth Size
@@ -284,25 +285,27 @@ const (
 	ObjectBoundingBox
 )
 
-// type CoderInfo struct {
-// 	Path      *uint8
-// 	Magick    *uint8
-// 	Name      *uint8
-// 	Stealth   MagickBooleanType
-// 	Previous  *CoderInfo
-// 	Next      *CoderInfo
-// 	Signature UnsignedLong
-// }
-// type ColorInfo struct {
-// 	Path       *uint8
-// 	Name       *uint8
-// 	Compliance ComplianceType
-// 	Color      MagickPixelPacket
-// 	Stealth    MagickBooleanType
-// 	Previous   *ColorInfo
-// 	Next       *ColorInfo
-// 	Signature  UnsignedLong
-// }
+type CoderInfo struct {
+	Path      *string
+	Magick    *string
+	Name      *string
+	Exempt    MagickBooleanType
+	Stealth   MagickBooleanType
+	Previous  *CoderInfo
+	next      *CoderInfo // Deprecated
+	Signature Size
+}
+type ColorInfo struct {
+	Path       *string
+	Name       *string
+	Compliance ComplianceType
+	Color      MagickPixelPacket
+	Exempt     MagickBooleanType
+	Stealth    MagickBooleanType
+	Previous   *ColorInfo
+	next       *ColorInfo // Deprecated
+	Signature  UnsignedLong
+}
 type ColorPacket struct {
 	Pixel PixelPacket
 	Index IndexPacket
@@ -535,15 +538,17 @@ const (
 	JBIG2Compression
 )
 
-// type ConfigureInfo struct {
-// 	Path      *char
-// 	Name      *char
-// 	Value     *char
-// 	Stealth   MagickBooleanType
-// 	Previous  *ConfigureInfo
-// 	Next      *ConfigureInfo
-// 	Signature unsignedlong
-// }
+type ConfigureInfo struct {
+	Path      *string
+	Name      *string
+	Value     *string
+	Exempt    MagickBooleanType
+	Stealth   MagickBooleanType
+	Previous  *ConfigureInfo
+	next      *ConfigureInfo // Deprecated
+	Signature Size
+}
+
 // type DataType Enum
 
 // const (
@@ -618,8 +623,8 @@ const (
 )
 
 type DrawInfo struct {
-	Primitive        *Char
-	Geometry         *Char
+	Primitive        *string
+	Geometry         *string
 	Viewbox          RectangleInfo
 	Affine           AffineMatrix
 	Gravity          GravityType
@@ -639,23 +644,23 @@ type DrawInfo struct {
 	DashOffset       float64
 	Decorate         DecorationType
 	Compose          CompositeOperator
-	Text             *Char
+	Text             *string
 	Face             Size
-	Font             *Char
-	Metrics          *Char
-	Family           *Char
+	Font             *string
+	Metrics          *string
+	Family           *string
 	Style            StyleType
 	Stretch          StretchType
 	Weight           Size
-	Encoding         *Char
+	Encoding         *string
 	Pointsize        float64
-	Density          *Char
+	Density          *string
 	Align            AlignType
 	Undercolor       PixelPacket
 	BorderColor      PixelPacket
-	ServerName       *Char
+	ServerName       *string
 	DashPattern      *float64
-	ClipMask         *Char
+	ClipMask         *string
 	Bounds           SegmentInfo
 	ClipUnits        ClipPathUnits
 	Opacity          Quantum
@@ -668,6 +673,9 @@ type DrawInfo struct {
 	InterlineSpacing float64
 	Direction        DirectionType
 }
+type DuplexTransferImageViewMethod func(
+	*ImageView, *ImageView, *ImageView, SSize, int,
+	*Void) MagickBooleanType
 type DuplexTransferPixelViewMethod func(
 	*PixelView, *PixelView, *PixelView, *Void) bool
 type DuplexTransferWandViewMethod func(
@@ -682,15 +690,34 @@ type DuplexTransferWandViewMethod func(
 // 	Value *void
 // 	Next  *ElementInfo
 // }
-
 type ElementReference struct {
-	Id        *Char
+	Id        *string
 	Type      ReferenceType
 	Gradient  GradientInfo
 	Signature Size
 	Previous  *ElementReference
 	Next      *ElementReference
 }
+type ElementType Enum
+
+const (
+	UndefinedElement ElementType = iota
+	PointElement
+	LineElement
+	RectangleElement
+	FillRectangleElement
+	CircleElement
+	FillCircleElement
+	EllipseElement
+	FillEllipseElement
+	PolygonElement
+	FillPolygonElement
+	ColorElement
+	MatteElement
+	TextElement
+	ImageElement
+)
+
 type EncodeImageHandler func(*ImageInfo, *Image) bool
 type EndianType Enum
 
@@ -708,8 +735,8 @@ type ErrorInfo struct {
 type ExceptionInfo struct {
 	Severity    ExceptionType
 	ErrorNumber int
-	Reason      *Char
-	Description *Char
+	Reason      *string
+	Description *string
 	Exceptions  *Void
 	Relinquish  MagickBooleanType
 	Semaphore   *SemaphoreInfo
@@ -840,19 +867,19 @@ type FrameInfo struct {
 	Width, Height                Size
 	X, Y, InnerBevel, OuterBevel SSize
 }
-
+type GeometryInfo struct{ Rho, Sigma, Xi, Psi, Chi float64 }
+type GetImageViewMethod func(*ImageView, SSize, int, *Void) MagickBooleanType
 type GetPixelViewMethod func(*PixelView, *Void) bool
-
 type GetWandViewMethod func(*WandView, SSize, int, *Void) bool
 
-// type GhostscriptVectors struct {
-// 	// doc garbage
-// 	// int (MagickDLLCall *exit)(gsMainInstance *)
-// 	// int (MagickDLLCall *initWithArgs)(gsMainInstance *
-// 	// 	char ** int (MagickDLLCall *newInstance)(gsMainInstance **
-// 	// 	char **void * int (MagickDLLCall *runString)(gsMainInstance *
-// 	// 	char **void *const char int * void (MagickDLLCall *deleteInstance)(gsMainInstance *)
-// }
+type GhostInfo struct {
+	// exit            func(*gs_main_instance) int
+	// init_with_args  func(*gs_main_instance, int, []string) int
+	// new_instance    func(**gs_main_instance, *Void) int
+	// run_string      func(*gs_main_instance, string, int, *int) int
+	// delete_instance func(*gs_main_instance)
+}
+
 type GradientInfo struct {
 	Type           GradientType
 	BoundingBox    RectangleInfo
@@ -912,9 +939,9 @@ type Image struct {
 	RenderingIntent        RenderingIntent
 	Profiles               *Void
 	Units                  ResolutionType
-	Montage                *Char
-	Directory              *Char
-	Geometry_              *Char
+	Montage                *string
+	Directory              *string
+	Geometry_              *string
 	Offset                 SSize
 	XResolution            float64
 	YResolution            float64
@@ -978,11 +1005,11 @@ type Image struct {
 	Intensity              PixelIntensityMethod
 }
 type ImageAttribute struct {
-	Key         *Char
-	Value       *Char
+	Key         *string
+	Value       *string
 	Compression MagickBooleanType
 	Previous    *ImageAttribute
-	Next        *ImageAttribute // Deprecated
+	next        *ImageAttribute // Deprecated
 }
 type ImageInfo struct {
 	Compression        CompressionType
@@ -991,10 +1018,10 @@ type ImageInfo struct {
 	Adjoin             MagickBooleanType
 	Affirm             MagickBooleanType
 	Antialias          MagickBooleanType
-	Size               *Char
-	Extract            *Char
-	Page               *Char
-	Scenes             *Char
+	Size               *string
+	Extract            *string
+	Page               *string
+	Scenes             *string
 	Scene              Size
 	NumberScenes       Size
 	Depth              Size
@@ -1002,11 +1029,11 @@ type ImageInfo struct {
 	Endian             EndianType
 	Units              ResolutionType
 	Quality            Size
-	SamplingFactor     *Char
-	ServerName         *Char
-	Font               *Char
-	Texture            *Char
-	Density            *Char
+	SamplingFactor     *string
+	ServerName         *string
+	Font               *string
+	Texture            *string
+	Density            *string
 	Pointsize          float64
 	Fuzz               float64
 	BackgroundColor    PixelPacket
@@ -1021,8 +1048,8 @@ type ImageInfo struct {
 	Group              SSize
 	Ping               MagickBooleanType
 	Verbose            MagickBooleanType
-	View               *Char
-	Authenticate       *Char
+	View               *string
+	Authenticate       *string
 	Channel            ChannelType
 	Attributes         *Image
 	Options            *Void
@@ -1038,7 +1065,7 @@ type ImageInfo struct {
 	Zero               [MaxTextExtent]Char
 	Filename           [MaxTextExtent]Char
 	Debug              MagickBooleanType
-	Tile               *Char
+	Tile               *string
 	Subimage           Size
 	Subrange           Size
 	Pen                PixelPacket
@@ -1193,38 +1220,43 @@ const (
 	BevelJoin
 )
 
-// type LocaleInfo struct {
-// 	Path      *char
-// 	Tag       *char
-// 	Message   *char
-// 	Stealth   MagickBooleanType
-// 	Previous  *LocaleInfo
-// 	Next      *LocaleInfo
-// 	Signature unsignedlong
-// }
-// type LogEventType Enum
+type LocaleInfo struct {
+	Path      *string
+	Tag       *string
+	Message   *string
+	Stealth   MagickBooleanType
+	Previous  *LocaleInfo
+	next      *LocaleInfo // Deprecated
+	Signature Size
+}
 
-// const (
-// 	UndefinedEvents LogEventType = iota
-// 	NoEvents
-// 	TraceEvent
-// 	AnnotateEvent
-// 	BlobEvent
-// 	CacheEvent
-// 	CoderEvent
-// 	ConfigureEvent
-// 	DeprecateEvent
-// 	DrawEvent
-// 	ExceptionEvent
-// 	LocaleEvent
-// 	ModuleEvent
-// 	ResourceEvent
-// 	TransformEvent
-// 	UserEvent
-// 	WandEvent
-// 	X11Event
-// 	AllEvents
-// )
+type LogEventType Enum
+
+const (
+	TraceEvent LogEventType = 1 << iota
+	AnnotateEvent
+	BlobEvent
+	CacheEvent
+	CoderEvent
+	ConfigureEvent
+	DeprecateEvent
+	DrawEvent
+	ExceptionEvent
+	ImageEvent
+	LocaleEvent
+	ModuleEvent
+	PolicyEvent
+	ResourceEvent
+	TransformEvent
+	_ // See UserEvent
+	WandEvent
+	X11Event
+	AccelerateEvent
+	UndefinedEvents LogEventType = 0
+	NoEvents                     = UndefinedEvents
+	UserEvent       LogEventType = 0x9000 // Weird
+	AllEvents       LogEventType = 0x7FFFFFFF
+)
 
 // type LogHandlerType Enum
 
@@ -1239,22 +1271,6 @@ const (
 // 	EventHandler
 // )
 
-// type LogInfo struct {
-// 	EventMask   LogEventType
-// 	HandlerMask LogHandlerType
-// 	Path        *char
-// 	Name        *char
-// 	Filename    *char
-// 	Format      *char
-// 	Generations unsignedlong
-// 	Limit       unsignedlong
-// 	File        *FILE
-// 	Generation  unsignedlong
-// 	Append      MagickBooleanType
-// 	Stealth     MagickBooleanType
-// 	Timer       TimerInfo
-// 	Signature   unsignedlong
-// }
 // Changed to bool for uses other than in structs
 type MagickBooleanType Enum
 
@@ -1275,18 +1291,19 @@ const (
 	ArctanFunction
 )
 
-// type MagicInfo struct {
-// 	Path      *char
-// 	Name      *char
-// 	Target    *char
-// 	Magic     *byte
-// 	Length    size_t
-// 	Offset    MagickOffsetType
-// 	Stealth   MagickBooleanType
-// 	Previous  *MagicInfo
-// 	Next      *MagicInfo
-// 	Signature size_t
-// }
+type MagicInfo struct {
+	Path      *string
+	Name      *string
+	Target    *string
+	Magic     *byte
+	Length    Size
+	Offset    MagickOffsetType
+	Exempt    MagickBooleanType
+	Stealth   MagickBooleanType
+	Previous  *MagicInfo
+	next      *MagicInfo // Deprecated
+	Signature Size
+}
 
 type MagickEvaluateOperator Enum
 
@@ -1349,13 +1366,13 @@ type MagickProgressMonitor func(string, MagickOffsetType, MagickSizeType, *Void)
 
 // const MagickSignatureSize = 64
 
-// type MapMode Enum
+type MapMode Enum
 
-// const (
-// 	ReadMode MapMode = iota
-// 	WriteMode
-// 	IOMode
-// )
+const (
+	ReadMode MapMode = iota
+	WriteMode
+	IOMode
+)
 
 type MetricType Enum
 
@@ -1373,55 +1390,40 @@ const (
 	UndefinedErrorMetric = UndefinedMetric
 )
 
-// type MimeInfo struct {
-// 	Path        *char
-// 	Type        *char
-// 	Description *char
-// 	Pattern     *char
-// 	Priority    ssize_t
-// 	Offset      MagickOffsetType
-// 	Extent      size_t
-// 	DataType    DataType
-// 	Mask        ssize_t
-// 	Value       ssize_t
-// 	Endian      EndianType
-// 	Length      size_t
-// 	Magic       *byte
-// 	Stealth     MagickBooleanType
-// 	Signature   size_t
-// }
-// type ModuleInfo struct {
-// 	Path             *char
-// 	Tag              *char
-// 	Handle           *void
-// 	UnregisterModule func()
-// 	RegisterModule   func() unsignedlong
-// 	LoadTime         time_t
-// 	Stealth          MagickBooleanType
-// 	Previous         *ModuleInfo
-// 	Next             *ModuleInfo
-// 	Signature        unsignedlong
-// }
-// type MontageInfo struct {
-// 	Geometry        *char
-// 	Tile            *char
-// 	Title           *char
-// 	Frame           *char
-// 	Texture         *char
-// 	Font            *char
-// 	Pointsize       float64
-// 	BorderWidth     unsignedlong
-// 	Shadow          MagickBooleanType
-// 	Fill            PixelPacket
-// 	Stroke          PixelPacket
-// 	BackgroundColor PixelPacket
-// 	BorderColor     PixelPacket
-// 	MatteColor      PixelPacket
-// 	Gravity         GravityType
-// 	Filename        [MaxTextExtent]char
-// 	Debug           MagickBooleanType
-// 	Signature       unsignedlong
-// }
+type ModuleInfo struct {
+	Path             *string
+	Tag              *string
+	Handle           *Void
+	UnregisterModule func()
+	RegisterModule   func() Size
+	LoadTime         Time
+	Stealth          MagickBooleanType
+	Previous         *ModuleInfo
+	next             *ModuleInfo // Deprecated
+	Signature        Size
+}
+
+type MonitorHandler func(string, MagickOffsetType, MagickSizeType, *ExceptionInfo) bool
+type MontageInfo struct {
+	Geometry        *string
+	Tile            *string
+	Title           *string
+	Frame           *string
+	Texture         *string
+	Font            *string
+	Pointsize       float64
+	BorderWidth     Size
+	Shadow          MagickBooleanType
+	Fill            PixelPacket
+	Stroke          PixelPacket
+	BackgroundColor PixelPacket
+	BorderColor     PixelPacket
+	MatteColor      PixelPacket
+	Gravity         GravityType
+	Filename        [MaxTextExtent]Char
+	Debug           MagickBooleanType
+	Signature       Size
+}
 type MontageMode Enum
 
 const (
@@ -1459,18 +1461,17 @@ const (
 	IterativeDistanceMorphology
 )
 
-// type NexusInfo struct {
-// 	Available MagickBooleanType
-// 	Mapped    MagickBooleanType
-// 	Columns   unsignedlong
-// 	Rows      unsignedlong
-// 	X         long
-// 	Y         long
-// 	Length    MagickSizeType
-// 	Cache     *PixelPacket
-// 	Pixels    *PixelPacket
-// 	Indexes   *IndexPacket
-// }
+type NexusInfo struct {
+	Mapped              MagickBooleanType
+	Region              RectangleInfo
+	Length              MagickSizeType
+	Cache               *PixelPacket
+	Pixels              *PixelPacket
+	AuthenticPixelCache MagickBooleanType
+	Indexes             *IndexPacket
+	Signature           Size
+}
+
 // type NodeInfo struct {
 // 	Child         [16]*NodeInfo
 // 	List          *ColorPacket
@@ -1524,19 +1525,19 @@ const (
 	ResetMethod
 )
 
-// type PathType Enum
+type PathType Enum
 
-// const (
-// 	UndefinedPath PathType = iota
-// 	MagickPath
-// 	RootPath
-// 	HeadPath
-// 	TailPath
-// 	BasePath
-// 	ExtensionPath
-// 	SubimagePath
-// 	CanonicalPath
-// )
+const (
+	UndefinedPath PathType = iota
+	MagickPath
+	RootPath
+	HeadPath
+	TailPath
+	BasePath
+	ExtensionPath
+	SubimagePath
+	CanonicalPath
+)
 
 // Little-endian
 type PixelPacket struct {
@@ -1551,27 +1552,27 @@ type PointInfo struct {
 	X, Y float64
 }
 
-// type PolicyDomain Enum
+type PolicyDomain Enum
 
-// const (
-// 	UndefinedPolicyDomain PolicyDomain = iota
-// 	CoderPolicyDomain
-// 	DelegatePolicyDomain
-// 	FilterPolicyDomain
-// 	PathPolicyDomain
-// 	ResourcePolicyDomain
-// 	SystemPolicyDomain
-// )
+const (
+	UndefinedPolicyDomain PolicyDomain = iota
+	CoderPolicyDomain
+	DelegatePolicyDomain
+	FilterPolicyDomain
+	PathPolicyDomain
+	ResourcePolicyDomain
+	SystemPolicyDomain
+)
 
-// type PolicyRights Enum
+type PolicyRights Enum
 
-// const (
-// 	ReadPolicyRights PolicyRights = 1 << iota
-// 	WritePolicyRights
-// 	ExecutePolicyRights
-// 	UndefinedPolicyRights PolicyRights = 0
-// 	NoPolicyRights                     = UndefinedPolicyRights
-// )
+const (
+	ReadPolicyRights PolicyRights = 1 << iota
+	WritePolicyRights
+	ExecutePolicyRights
+	UndefinedPolicyRights PolicyRights = 0
+	NoPolicyRights                     = UndefinedPolicyRights
+)
 
 type PreviewType Enum
 
@@ -1617,7 +1618,7 @@ type PrimitiveInfo struct {
 	Coordinates Size
 	Primitive   PrimitiveType
 	Method      PaintMethod
-	Text        *Char
+	Text        *string
 }
 
 type PrimitiveType Enum
@@ -1642,7 +1643,7 @@ const (
 )
 
 type ProfileInfo struct {
-	Name      *Char
+	Name      *string
 	Length    Size
 	Info      *byte
 	Signature Size
@@ -1747,14 +1748,14 @@ const (
 	GradientReference
 )
 
-// type RegistryType Enum
+type RegistryType Enum
 
-// const (
-// 	UndefinedRegistryType RegistryType = iota
-// 	ImageRegistryType
-// 	ImageInfoRegistryType
-// 	StringRegistryType
-// )
+const (
+	UndefinedRegistryType RegistryType = iota
+	ImageRegistryType
+	ImageInfoRegistryType
+	StringRegistryType
+)
 
 type RenderingIntent Enum
 
@@ -1791,8 +1792,6 @@ const (
 type SegmentInfo struct {
 	X1, Y1, X2, Y2 float64
 }
-type SetPixelViewMethod func(*PixelView, *Void) bool
-type SetWandViewMethod func(*WandView, SSize, int, *Void) bool
 
 type SparseColorMethod Enum
 
@@ -1895,14 +1894,6 @@ const (
 	AnyStyle
 )
 
-// type ThresholdMap struct {
-// 	MapId       *char
-// 	Description *char
-// 	Width       int
-// 	Height      int
-// 	Divisor     int
-// 	Levels      *int
-// }
 type Timer struct {
 	Start,
 	Stop,
@@ -1922,28 +1913,28 @@ const (
 	RunningTimerState
 )
 
+type TransferImageViewMethod func(*ImageView, *ImageView, SSize, int, *Void) MagickBooleanType
 type TransferPixelViewMethod func(*PixelView, *PixelView, *Void) bool
 type TransferWandViewMethod func(*WandView, *WandView, SSize, int, *Void) bool
-
-// type TypeInfo struct {
-// 	Face        unsignedlong
-// 	Path        *char
-// 	Name        *char
-// 	Description *char
-// 	Family      *char
-// 	Style       StyleType
-// 	Stretch     StretchType
-// 	Weight      unsignedlong
-// 	Encoding    *char
-// 	Foundry     *char
-// 	Format      *char
-// 	Metrics     *char
-// 	Glyphs      *char
-// 	Stealth     MagickBooleanType
-// 	Previous    *TypeInfo
-// 	Next        *TypeInfo
-// 	Signature   unsignedlong
-// }
+type TypeInfo struct {
+	Face        Size
+	Path        *string
+	Name        *string
+	Description *string
+	Family      *string
+	Style       StyleType
+	Stretch     StretchType
+	Weight      Size
+	Encoding    *string
+	Foundry     *string
+	Format      *string
+	Metrics     *string
+	Glyphs      *string
+	Stealth     MagickBooleanType
+	Previous    *TypeInfo
+	next        *TypeInfo // Deprecated
+	Signature   Size
+}
 type TypeMetric struct {
 	PixelsPerEm        PointInfo
 	Ascent             float64
@@ -1956,6 +1947,7 @@ type TypeMetric struct {
 	Bounds             SegmentInfo
 	Origin             PointInfo
 }
+type UpdateImageViewMethod func(*ImageView, SSize, int, *Void) MagickBooleanType
 type UpdatePixelViewMethod func(*PixelView, *Void) bool
 type UpdateWandViewMethod func(*WandView, SSize, int, *Void) bool
 type VirtualPixelMethod Enum
@@ -1983,6 +1975,20 @@ const (
 
 // const WLUT_WIDTH = 1024
 
+type XAnnotateInfo struct {
+	X        int
+	Y        int
+	Width    uint
+	Height   uint
+	Degrees  float64
+	FontInfo *XFontStruct
+	Text     *string
+	Stencil  AnnotationStencil
+	Geometry [MaxTextExtent]Char
+	Next     *XAnnotateInfo
+	Previous *XAnnotateInfo
+}
+
 type XColormapType Enum
 
 const (
@@ -1991,6 +1997,52 @@ const (
 	SharedColormap
 )
 
+type XDrawInfo struct {
+	X                 int
+	Y                 int
+	Width             uint
+	Height            uint
+	Degrees           float64
+	Stencil           AnnotationStencil
+	Element           ElementType
+	Stipple           Pixmap
+	LineWidth         uint
+	LineInfo          XSegment
+	NumberCoordinates uint
+	RectangleInfo     RectangleInfo
+	CoordinateInfo    *XPoint
+	Geometry          [MaxTextExtent]Char
+}
+
+type XImportInfo struct {
+	Frame   MagickBooleanType
+	Borders MagickBooleanType
+	Screen  MagickBooleanType
+	Descend MagickBooleanType
+	Silent  MagickBooleanType
+}
+
+type XPixelInfo struct {
+	Colors           SSize
+	Pixels           *UnsignedLong
+	ForegroundColor  XColor
+	BackgroundColor  XColor
+	BorderColor      XColor
+	MatteColor       XColor
+	HighlightColor   XColor
+	ShadowColor      XColor
+	DepthColor       XColor
+	TroughColor      XColor
+	BoxColor         XColor
+	PenColor         XColor
+	PenColors        [MaxNumberPens]XColor
+	AnnotateContext  GC
+	HighlightContext GC
+	WidgetContext    GC
+	BoxIndex         UnsignedShort
+	PenIndex         UnsignedShort
+}
+
 type XResourceInfo struct {
 	ResourceDatabase XrmDatabase
 	ImageInfo        *ImageInfo
@@ -1998,43 +2050,135 @@ type XResourceInfo struct {
 	Colors           Size
 	CloseServer      MagickBooleanType
 	Backdrop         MagickBooleanType
-	BackgroundColor  *Char
-	BorderColor      *Char
-	ClientName       *Char
+	BackgroundColor  *string
+	BorderColor      *string
+	ClientName       *string
 	Colormap         XColormapType
 	BorderWidth      uint
 	Delay            Size
 	ColorRecovery    MagickBooleanType
 	ConfirmExit      MagickBooleanType
 	ConfirmEdit      MagickBooleanType
-	DisplayGamma     *Char
-	Font             *Char
-	FontName         [MaxNumberFonts]*Char
-	ForegroundColor  *Char
+	DisplayGamma     *string
+	Font             *string
+	FontName         [MaxNumberFonts]*string
+	ForegroundColor  *string
 	DisplayWarnings  MagickBooleanType
 	GammaCorrect     MagickBooleanType
-	IconGeometry     *Char
+	IconGeometry     *string
 	Iconic           MagickBooleanType
 	Immutable        MagickBooleanType
-	ImageGeometry    *Char
-	MapType          *Char
-	MatteColor       *Char
-	Name             *Char
+	ImageGeometry    *string
+	MapType          *string
+	MatteColor       *string
+	Name             *string
 	Magnify          uint
 	Pause            uint
-	PenColors        [MaxNumberPens]*Char
-	TextFont         *Char
-	Title            *Char
+	PenColors        [MaxNumberPens]*string
+	TextFont         *string
+	Title            *string
 	Quantum          int
 	Update           uint
 	UsePixmap        MagickBooleanType
 	UseSharedMemory  MagickBooleanType
 	UndoCache        Size
-	VisualType       *Char
-	WindowGroup      *Char
-	WindowId         *Char
-	WriteFilename    *Char
+	VisualType       *string
+	WindowGroup      *string
+	WindowId         *string
+	WriteFilename    *string
 	CopyImage        *Image
 	Gravity          int
 	HomeDirectory    [MaxTextExtent]Char
+}
+
+type XWindowInfo struct {
+	// Id               Window
+	// Root             Window
+	// Visual           *Visual
+	// StorageClass     uint
+	// Depth            uint
+	// VisualInfo       *XVisualInfo
+	// MapInfo          *XStandardColormap
+	// PixelInfo        *XPixelInfo
+	// FontInfo         *XFontStruct
+	// AnnotateContext  GC
+	// HighlightContext GC
+	// WidgetContext    GC
+	// Cursor           Cursor
+	// BusyCursor       Cursor
+	// Name             *string
+	// Geometry         *string
+	// IconName         *string
+	// IconGeometry     *string
+	// CropGeometry     *string
+	// Data             Size
+	// Flags            Size
+	// X                int
+	// Y                int
+	// Width            uint
+	// Height           uint
+	// MinWidth         uint
+	// MinHeight        uint
+	// WidthInc         uint
+	// HeightInc        uint
+	// BorderWidth      uint
+	// UsePixmap        MagickBooleanType
+	// Immutable        MagickBooleanType
+	// Shape            MagickBooleanType
+	// SharedMemory     MagickBooleanType
+	// Screen           int
+	// Ximage           *XImage
+	// MatteImage       *XImage
+	// HighlightStipple Pixmap
+	// ShadowStipple    Pixmap
+	// Pixmap           Pixmap
+	// Pixmaps          *Pixmap
+	// MattePixmap      Pixmap
+	// MattePixmaps     *Pixmap
+	// Attributes       XSetWindowAttributes // NOT POINTER
+	// WindowChanges    XWindowChanges // NOT POINTER
+	// SegmentInfo      *Void
+	// Mask             Long
+	// Orphan           MagickBooleanType
+	// Mapped           MagickBooleanType
+	// Stasis           MagickBooleanType
+	// Image            *Image
+	// Destroy          MagickBooleanType
+}
+
+type XWindows struct {
+	// display            *Display
+	// map_info           *XStandardColormap
+	// icon_map           *XStandardColormap
+	// visual_info        *XVisualInfo
+	// icon_visual        *XVisualInfo
+	// pixel_info         *XPixelInfo
+	// icon_pixel         *XPixelInfo
+	// font_info          *XFontStruct
+	// icon_resources     *XResourceInfo
+	// class_hints        *XClassHint
+	// manager_hints      *XWMHints
+	// context            XWindowInfo
+	// group_leader       XWindowInfo
+	// backdrop           XWindowInfo
+	// icon               XWindowInfo
+	// image              XWindowInfo
+	// info               XWindowInfo
+	// magnify            XWindowInfo
+	// pan                XWindowInfo
+	// command            XWindowInfo
+	// widget             XWindowInfo
+	// popup              XWindowInfo
+	// wm_protocols       Atom
+	// wm_delete_window   Atom
+	// wm_take_focus      Atom
+	// im_protocols       Atom
+	// im_remote_command  Atom
+	// im_update_widget   Atom
+	// im_update_colormap Atom
+	// im_former_image    Atom
+	// im_retain_colors   Atom
+	// im_next_image      Atom
+	// im_exit            Atom
+	// dnd_protocols      Atom
 }
