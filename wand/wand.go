@@ -2517,11 +2517,11 @@ func (d *DrawingWand) Translate(x, y float64) { DrawTranslate(d, x, y) }
 
 var NewPixelWand func() *PixelWand
 
-var NewPixelWands func(numberWands uint32) **PixelWand
+var NewPixelWands func(numberWands uint32) []*PixelWand
 
-var ClonePixelWands func(wands **PixelWand, numberWands uint32) **PixelWand
+var ClonePixelWands func(wands []*PixelWand, numberWands uint32) []*PixelWand
 
-var DestroyPixelWands func(wand, numberWands uint32) **PixelWand
+var DestroyPixelWands func(wands []*PixelWand, numberWands uint32) []*PixelWand
 
 var ClearPixelWand func(p *PixelWand)
 
@@ -2785,37 +2785,37 @@ var IsPixelIterator func(p *PixelIterator) bool
 
 func (p *PixelIterator) IsPixelIterator() bool { return IsPixelIterator(p) }
 
-var PixelGetCurrentIteratorRow func(p *PixelIterator, numberWands *uint32) **PixelWand
+var PixelGetCurrentIteratorRow func(p *PixelIterator, numberWands *uint32) []*PixelWand
 
-func (p *PixelIterator) CurrentIteratorRow(numberWands *uint32) **PixelWand {
+func (p *PixelIterator) CurrentRow(numberWands *uint32) []*PixelWand {
 	return PixelGetCurrentIteratorRow(p, numberWands)
 }
 
 var PixelGetIteratorException func(p *PixelIterator, severity *T.ExceptionType) string
 
-func (p *PixelIterator) IteratorException(severity *T.ExceptionType) string {
+func (p *PixelIterator) IteratoException(severity *T.ExceptionType) string {
 	return PixelGetIteratorException(p, severity)
 }
 
 var PixelGetIteratorExceptionType func(p *PixelIterator) T.ExceptionType
 
-func (p *PixelIterator) IteratorExceptionType() T.ExceptionType {
+func (p *PixelIterator) ExceptionType() T.ExceptionType {
 	return PixelGetIteratorExceptionType(p)
 }
 
 var PixelGetIteratorRow func(p *PixelIterator) bool
 
-func (p *PixelIterator) IteratorRow() bool { return PixelGetIteratorRow(p) }
+func (p *PixelIterator) Row() bool { return PixelGetIteratorRow(p) }
 
 var PixelGetNextIteratorRow func(p *PixelIterator, numberWands *uint32) []*PixelWand
 
-func (p *PixelIterator) NextIteratorRow(numberWands *uint32) []*PixelWand {
+func (p *PixelIterator) NextRow(numberWands *uint32) []*PixelWand {
 	return PixelGetNextIteratorRow(p, numberWands)
 }
 
-var PixelGetPreviousIteratorRow func(p *PixelIterator, numberWands *uint32) **PixelWand
+var PixelGetPreviousIteratorRow func(p *PixelIterator, numberWands *uint32) []*PixelWand
 
-func (p *PixelIterator) PreviousIteratorRow(numberWands *uint32) **PixelWand {
+func (p *PixelIterator) PreviousRow(numberWands *uint32) []*PixelWand {
 	return PixelGetPreviousIteratorRow(p, numberWands)
 }
 
@@ -2911,15 +2911,81 @@ func (w *WandView) UpdateIterator(update T.UpdateWandViewMethod, context *T.Void
 	return UpdateWandViewIterator(w, update, context)
 }
 
+var AnimateImageCommand func(i *ImageInfo, argc int, argv, metadata []string, e *ExceptionInfo) bool
+var CommandGenesis func(i *ImageInfo, command T.MagickCommand, argc int, argv, metadata []string, exception *ExceptionInfo) bool
+var CompareImageCommand func(i *ImageInfo, argc int, argv, metadata []string, e *ExceptionInfo) bool
+var CompositeImageCommand func(i *ImageInfo, argc int, argv, metadata []string, e *ExceptionInfo) bool
+var ConjureImageCommand func(i *ImageInfo, argc int, argv, metadata []string, e *ExceptionInfo) bool
+var ConvertImageCommand func(i *ImageInfo, argc int, argv, metadata []string, e *ExceptionInfo) bool
+var DisplayImageCommand func(i *ImageInfo, argc int, argv, metadata []string, e *ExceptionInfo) bool
+var IdentifyImageCommand func(i *ImageInfo, argc int, argv, metadata []string, e *ExceptionInfo) bool
+var ImportImageCommand func(i *ImageInfo, argc int, argv, metadata []string, e *ExceptionInfo) bool
+var MogrifyImage func(i *ImageInfo, argc int, argv []string, images []*Image, e *ExceptionInfo) bool
+var MogrifyImageCommand func(i *ImageInfo, argc int, argv, metadata []string, e *ExceptionInfo) bool
+var MogrifyImageInfo func(i *ImageInfo, argc int, argv []string, e *ExceptionInfo) bool
+var MogrifyImageList func(i *ImageInfo, argc int, argv []string, images []*Image, e *ExceptionInfo) bool
+var MogrifyImages func(i *ImageInfo, post bool, argc int, argv []string, images []*Image, e *ExceptionInfo) bool
+var MontageImageCommand func(i *ImageInfo, argc int, argv, metadata []string, e *ExceptionInfo) bool
+var StreamImageCommand func(i *ImageInfo, argc int, argv, metadata []string, e *ExceptionInfo) bool
+
+func (i *ImageInfo) AnimateImageCommand(argc int, argv, metadata []string, e *ExceptionInfo) bool {
+	return AnimateImageCommand(i, argc, argv, metadata, e)
+}
+func (i *ImageInfo) CommandGenesis(command T.MagickCommand, argc int, argv, metadata []string, exception *ExceptionInfo) bool {
+	return CommandGenesis(i, command, argc, argv, metadata, exception)
+}
+func (i *ImageInfo) CompareImageCommand(argc int, argv, metadata []string, e *ExceptionInfo) bool {
+	return CompareImageCommand(i, argc, argv, metadata, e)
+}
+func (i *ImageInfo) CompositeImageCommand(argc int, argv, metadata []string, e *ExceptionInfo) bool {
+	return CompositeImageCommand(i, argc, argv, metadata, e)
+}
+func (i *ImageInfo) ConjureImageCommand(argc int, argv, metadata []string, e *ExceptionInfo) bool {
+	return ConjureImageCommand(i, argc, argv, metadata, e)
+}
+func (i *ImageInfo) ConvertImageCommand(argc int, argv, metadata []string, e *ExceptionInfo) bool {
+	return ConvertImageCommand(i, argc, argv, metadata, e)
+}
+func (i *ImageInfo) DisplayImageCommand(argc int, argv, metadata []string, e *ExceptionInfo) bool {
+	return DisplayImageCommand(i, argc, argv, metadata, e)
+}
+func (i *ImageInfo) IdentifyImageCommand(argc int, argv, metadata []string, e *ExceptionInfo) bool {
+	return IdentifyImageCommand(i, argc, argv, metadata, e)
+}
+func (i *ImageInfo) ImportImageCommand(argc int, argv, metadata []string, e *ExceptionInfo) bool {
+	return ImportImageCommand(i, argc, argv, metadata, e)
+}
+func (i *ImageInfo) MogrifyImage(argc int, argv []string, images []*Image, e *ExceptionInfo) bool {
+	return MogrifyImage(i, argc, argv, images, e)
+}
+func (i *ImageInfo) MogrifyImageCommand(argc int, argv, metadata []string, e *ExceptionInfo) bool {
+	return MogrifyImageCommand(i, argc, argv, metadata, e)
+}
+func (i *ImageInfo) MogrifyImageInfo(argc int, argv []string, e *ExceptionInfo) bool {
+	return MogrifyImageInfo(i, argc, argv, e)
+}
+func (i *ImageInfo) MogrifyImageList(argc int, argv []string, images []*Image, e *ExceptionInfo) bool {
+	return MogrifyImageList(i, argc, argv, images, e)
+}
+func (i *ImageInfo) MogrifyImages(post bool, argc int, argv []string, images []*Image, e *ExceptionInfo) bool {
+	return MogrifyImages(i, post, argc, argv, images, e)
+}
+func (i *ImageInfo) MontageImageCommand(argc int, argv, metadata []string, e *ExceptionInfo) bool {
+	return MontageImageCommand(i, argc, argv, metadata, e)
+}
+func (i *ImageInfo) StreamImageCommand(argc int, argv, metadata []string, e *ExceptionInfo) bool {
+	return StreamImageCommand(i, argc, argv, metadata, e)
+}
+
 var Resource func(r T.ResourceType) T.MagickSizeType
 
 var ResourceLimit func(r T.ResourceType) T.MagickSizeType
 
 var SetResourceLimit func(r T.ResourceType, limit T.MagickSizeType) bool
 
-var CommandGenesis func(imageInfo *ImageInfo, command T.MagickCommand, argc int, argv, metadata []string, exception *ExceptionInfo) bool
+var DestroyImage func(i *Image) *Image
 
-var DestroyImage func(image *Image) *Image
+func (i *Image) Destroy() *Image { return DestroyImage(i) }
 
 var GetCopyright func() string
 
@@ -2949,35 +3015,23 @@ var WandGenesis func()
 
 var WandTerminus func()
 
-var NewMagickWandFromImage func(image *Image) *MagickWand
+var NewMagickWandFromImage func(i *Image) *MagickWand
+
+func (i *Image) NewMagickWand() *MagickWand { return NewMagickWandFromImage(i) }
 
 var AcquireWandId func() uint32
 
-var AnimateImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
-
-var CompareImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
-
-var CompositeImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
-
-var ConjureImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
-
-var ConvertImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
-
 var DestroyWandIds func()
-
-var DisplayImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
 
 var DrawAllocateWand func(*DrawInfo, *Image) *DrawingWand
 
-var DrawGetClipRule func(*DrawingWand) T.FillRule
+var DrawGetClipRule func(d *DrawingWand) T.FillRule
+var DrawGetTextInterlineSpacing func(d *DrawingWand) float64
+var DrawRender func(d *DrawingWand) bool
 
-var DrawGetTextInterlineSpacing func(*DrawingWand) float64
-
-var DrawRender func(*DrawingWand) bool
-
-var IdentifyImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
-
-var ImportImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
+func (d *DrawingWand) ClipRule() T.FillRule          { return DrawGetClipRule(d) }
+func (d *DrawingWand) TextInterlineSpacing() float64 { return DrawGetTextInterlineSpacing(d) }
+func (d *DrawingWand) Render() bool                  { return DrawRender(d) }
 
 var GetImageChannelExtrema func(m *MagickWand, c T.ChannelType, minima, maxima *uint32) bool
 
@@ -3007,21 +3061,7 @@ var OptimizeImageTransparency func(*MagickWand) bool
 
 var SolarizeImageChannel func(*MagickWand, T.ChannelType, float64) bool
 
-var MogrifyImage func(*ImageInfo, int, []string, **Image, *ExceptionInfo) bool
-
-var MogrifyImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
-
-var MogrifyImageInfo func(*ImageInfo, int, []string, *ExceptionInfo) bool
-
-var MogrifyImageList func(*ImageInfo, int, []string, **Image, *ExceptionInfo) bool
-
-var MogrifyImages func(*ImageInfo, bool, int, []string, **Image, *ExceptionInfo) bool
-
-var MontageImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
-
 var RelinquishWandId func(uint32)
-
-var StreamImageCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
 
 var DLL = "CORE_RL_wand_.dll"
 
@@ -3246,7 +3286,7 @@ var allApis = Apis{
 	{"MagickClearException", &ClearException},
 	{"MagickClipImage", &ClipImage},
 	{"MagickClipImagePath", &ClipImagePath},
-	// Deprecated {"MagickClipPathImage", &MagickClipPathImage},
+	{"MagickClipPathImage", &ClipPathImage},
 	{"MagickClutImage", &ClutImage},
 	{"MagickClutImageChannel", &ClutImageChannel},
 	{"MagickCoalesceImages", &CoalesceImages},
@@ -4075,7 +4115,7 @@ func (p *PixelView) UpdateIterator(update T.UpdatePixelViewMethod, context *T.Vo
 var PixelGetNextRow func(p *PixelIterator, numberWands *uint32) []*PixelWand
 
 // Deprecated.
-func (p *PixelIterator) NextRow(numberWands *uint32) []*PixelWand {
+func (p *PixelIterator) GetNextRow(numberWands *uint32) []*PixelWand {
 	return PixelGetNextRow(p, numberWands)
 }
 
@@ -4086,3 +4126,6 @@ var PixelIteratorGetException func(p *PixelIterator, severity *T.ExceptionType) 
 func (p *PixelIterator) Exception(severity *T.ExceptionType) string {
 	return PixelIteratorGetException(p, severity)
 }
+
+// Deprecated.
+var ClipPathImage func(m *MagickWand, pathname string, inside bool) bool
