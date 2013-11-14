@@ -11,22 +11,27 @@ import (
 	// . "github.com/tHinqa/outside/types"
 )
 
+// Opaque
 type (
-	GetPixelViewMethod func(*I.PixelView, *I.Void) bool
-	GetWandViewMethod  func(*I.WandView, I.SSize, int, *I.Void) bool
-	SetPixelViewMethod func(*I.PixelView, *I.Void) bool
-	SetWandViewMethod  func(*I.WandView, I.SSize, int, *I.Void) bool
+	CacheView   struct{}
+	DrawingWand struct{}
+	PixelView   struct{}
+	Void        struct{}
 )
 
 type (
-	fix int
+	DuplexTransferPixelViewMethod func(*PixelView, *PixelView, *PixelView, *Void) bool
+	GetPixelViewMethod            func(*PixelView, *Void) bool
+	GetWandViewMethod             func(*I.WandView, I.SSize, int, *Void) bool
+	SetPixelViewMethod            func(*PixelView, *Void) bool
+	SetWandViewMethod             func(*I.WandView, I.SSize, int, *Void) bool
+	TransferPixelViewMethod       func(*PixelView, *PixelView, *Void) bool
+	UpdatePixelViewMethod         func(*PixelView, *Void) bool
+)
 
-	char fix
+type (
+	DrawInfo I.DrawInfo
 
-	CacheView         I.CacheView
-	DrawContext       fix
-	DrawInfo          I.DrawInfo
-	DrawingWand       struct{}
 	ExceptionInfo     I.ExceptionInfo
 	FILE              I.FILE
 	Image             I.Image
@@ -34,8 +39,7 @@ type (
 	ImageView         struct{}
 	MagickPixelPacket I.MagickPixelPacket
 	MagickWand        struct{}
-	PixelView         fix
-	PixelIterator     fix
+	PixelIterator     I.Fixme
 	PixelWand         struct{}
 	WandView          struct{}
 )
@@ -316,9 +320,9 @@ func (m *MagickWand) CompositeLayers(sourceWand *MagickWand, compose I.Composite
 	return CompositeLayers(m, sourceWand, compose, x, y)
 }
 
-var ConstituteImage func(m *MagickWand, columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool
+var ConstituteImage func(m *MagickWand, columns, rows uint32, map_ string, storage I.StorageType, pixels *Void) bool
 
-func (m *MagickWand) Constitute(columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool {
+func (m *MagickWand) Constitute(columns, rows uint32, map_ string, storage I.StorageType, pixels *Void) bool {
 	return ConstituteImage(m, columns, rows, map_, storage, pixels)
 }
 
@@ -460,9 +464,9 @@ func (m *MagickWand) EvaluateImages(operator I.MagickEvaluateOperator) bool {
 	return EvaluateImages(m, operator)
 }
 
-var ExportImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool
+var ExportImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *Void) bool
 
-func (m *MagickWand) ExportPixels(x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool {
+func (m *MagickWand) ExportPixels(x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *Void) bool {
 	return ExportImagePixels(m, x, y, columns, rows, map_, storage, pixels)
 }
 
@@ -982,9 +986,9 @@ var ImplodeImage func(m *MagickWand, radius float64) bool
 
 func (m *MagickWand) Implode(radius float64) bool { return ImplodeImage(m, radius) }
 
-var ImportImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool
+var ImportImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *Void) bool
 
-func (m *MagickWand) ImportPixels(x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool {
+func (m *MagickWand) ImportPixels(x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *Void) bool {
 	return ImportImagePixels(m, x, y, columns, rows, map_, storage, pixels)
 }
 
@@ -1150,9 +1154,9 @@ var PingImage func(m *MagickWand, filename string) bool
 
 func (m *MagickWand) Ping(filename string) bool { return PingImage(m, filename) }
 
-var PingImageBlob func(m *MagickWand, blob *I.Void, length uint32) bool
+var PingImageBlob func(m *MagickWand, blob *Void, length uint32) bool
 
-func (m *MagickWand) PingBlob(blob *I.Void, length uint32) bool {
+func (m *MagickWand) PingBlob(blob *Void, length uint32) bool {
 	return PingImageBlob(m, blob, length)
 }
 
@@ -1182,9 +1186,9 @@ var PreviousImage func(m *MagickWand) bool
 
 func (m *MagickWand) Previous() bool { return PreviousImage(m) }
 
-var ProfileImage func(m *MagickWand, name string, profile *I.Void, length uint32) bool
+var ProfileImage func(m *MagickWand, name string, profile *Void, length uint32) bool
 
-func (m *MagickWand) ProfileImage(name string, profile *I.Void, length uint32) bool {
+func (m *MagickWand) ProfileImage(name string, profile *Void, length uint32) bool {
 	return ProfileImage(m, name, profile, length)
 }
 
@@ -1578,15 +1582,15 @@ func (m *MagickWand) SetImagePage(width, height uint32, x, y int32) bool {
 	return SetImagePage(m, width, height, x, y)
 }
 
-var SetImageProfile func(m *MagickWand, name string, profile *I.Void, length uint32) bool
+var SetImageProfile func(m *MagickWand, name string, profile *Void, length uint32) bool
 
-func (m *MagickWand) SetImageProfile(name string, profile *I.Void, length uint32) bool {
+func (m *MagickWand) SetImageProfile(name string, profile *Void, length uint32) bool {
 	return SetImageProfile(m, name, profile, length)
 }
 
-var SetImageProgressMonitor func(m *MagickWand, progressMonitor, clientData *I.Void) I.MagickProgressMonitor
+var SetImageProgressMonitor func(m *MagickWand, progressMonitor, clientData *Void) I.MagickProgressMonitor
 
-func (m *MagickWand) SetImageProgressMonitor(progressMonitor, clientData *I.Void) I.MagickProgressMonitor {
+func (m *MagickWand) SetImageProgressMonitor(progressMonitor, clientData *Void) I.MagickProgressMonitor {
 	return SetImageProgressMonitor(m, progressMonitor, clientData)
 }
 
@@ -1686,9 +1690,9 @@ var SetPointsize func(m *MagickWand, pointsize float64) bool
 
 func (m *MagickWand) SetPointsize(pointsize float64) bool { return SetPointsize(m, pointsize) }
 
-var SetProgressMonitor func(m *MagickWand, progressMonitor, clientData *I.Void) I.MagickProgressMonitor
+var SetProgressMonitor func(m *MagickWand, progressMonitor, clientData *Void) I.MagickProgressMonitor
 
-func (m *MagickWand) SetProgressMonitor(progressMonitor, clientData *I.Void) I.MagickProgressMonitor {
+func (m *MagickWand) SetProgressMonitor(progressMonitor, clientData *Void) I.MagickProgressMonitor {
 	return SetProgressMonitor(m, progressMonitor, clientData)
 }
 
@@ -2858,9 +2862,9 @@ var DestroyWandView func(w *WandView) *WandView
 
 func (w *WandView) Destroy() *WandView { return DestroyWandView(w) }
 
-var DuplexTransferWandViewIterator func(w *WandView, duplex, destination *WandView, transfer I.DuplexTransferWandViewMethod, context *I.Void) bool
+var DuplexTransferWandViewIterator func(w *WandView, duplex, destination *WandView, transfer I.DuplexTransferWandViewMethod, context *Void) bool
 
-func (w *WandView) DuplexTransferIterator(duplex, destination *WandView, transfer I.DuplexTransferWandViewMethod, context *I.Void) bool {
+func (w *WandView) DuplexTransferIterator(duplex, destination *WandView, transfer I.DuplexTransferWandViewMethod, context *Void) bool {
 	return DuplexTransferWandViewIterator(w, duplex, destination, transfer, context)
 }
 
@@ -2874,9 +2878,9 @@ var GetWandViewExtent func(w *WandView) I.RectangleInfo
 
 func (w *WandView) Extent() I.RectangleInfo { return GetWandViewExtent(w) }
 
-var GetWandViewIterator func(w *WandView, get GetWandViewMethod, context *I.Void) bool
+var GetWandViewIterator func(w *WandView, get GetWandViewMethod, context *Void) bool
 
-func (w *WandView) Iterator(get GetWandViewMethod, context *I.Void) bool {
+func (w *WandView) Iterator(get GetWandViewMethod, context *Void) bool {
 	return GetWandViewIterator(w, get, context)
 }
 
@@ -2896,9 +2900,9 @@ var SetWandViewDescription func(w *WandView, description string)
 
 func (w *WandView) SetDescription(description string) { SetWandViewDescription(w, description) }
 
-var SetWandViewIterator func(w *WandView, set SetWandViewMethod, context *I.Void) bool
+var SetWandViewIterator func(w *WandView, set SetWandViewMethod, context *Void) bool
 
-func (w *WandView) SetIterator(set SetWandViewMethod, context *I.Void) bool {
+func (w *WandView) SetIterator(set SetWandViewMethod, context *Void) bool {
 	return SetWandViewIterator(w, set, context)
 }
 
@@ -2906,15 +2910,15 @@ var SetWandViewThreads func(w *WandView, numberThreads uint32)
 
 func (w *WandView) SetThreads(numberThreads uint32) { SetWandViewThreads(w, numberThreads) }
 
-var TransferWandViewIterator func(w *WandView, destination *WandView, transfer I.TransferWandViewMethod, context *I.Void) bool
+var TransferWandViewIterator func(w *WandView, destination *WandView, transfer I.TransferWandViewMethod, context *Void) bool
 
-func (w *WandView) TransferIterator(destination *WandView, transfer I.TransferWandViewMethod, context *I.Void) bool {
+func (w *WandView) TransferIterator(destination *WandView, transfer I.TransferWandViewMethod, context *Void) bool {
 	return TransferWandViewIterator(w, destination, transfer, context)
 }
 
-var UpdateWandViewIterator func(w *WandView, update I.UpdateWandViewMethod, context *I.Void) bool
+var UpdateWandViewIterator func(w *WandView, update I.UpdateWandViewMethod, context *Void) bool
 
-func (w *WandView) UpdateIterator(update I.UpdateWandViewMethod, context *I.Void) bool {
+func (w *WandView) UpdateIterator(update I.UpdateWandViewMethod, context *Void) bool {
 	return UpdateWandViewIterator(w, update, context)
 }
 
@@ -3016,7 +3020,7 @@ var QueryFonts func(pattern string, numberFonts *uint32) []string
 
 var QueryFormats func(pattern string, numberFormats *uint32) []string
 
-var RelinquishMemory func(resource *I.Void) *I.Void
+var RelinquishMemory func(resource *Void) *Void
 
 var WandGenesis func()
 
@@ -3815,10 +3819,10 @@ func (m *MagickWand) Attribute(property string) string {
 }
 
 // Deprecated.
-var GetImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool
+var GetImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *Void) bool
 
 // Deprecated.
-func (m *MagickWand) Pixels(x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool {
+func (m *MagickWand) Pixels(x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *Void) bool {
 	return GetImagePixels(m, x, y, columns, rows, map_, storage, pixels)
 }
 
@@ -3879,10 +3883,10 @@ var SetImageIndex func(m *MagickWand, index int32) bool
 func (m *MagickWand) SetIndex(index int32) bool { return SetImageIndex(m, index) }
 
 // Deprecated.
-var SetImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool
+var SetImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *Void) bool
 
 // Deprecated.
-func (m *MagickWand) SetImagePixels(x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool {
+func (m *MagickWand) SetImagePixels(x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *Void) bool {
 	return SetImagePixels(m, x, y, columns, rows, map_, storage, pixels)
 }
 
@@ -4037,10 +4041,10 @@ var ClonePixelView func(pixelView *PixelView) *PixelView
 var DestroyPixelView func(pixelView *PixelView, numberWands, numberThreads uint32) *PixelView
 
 // Deprecated.
-var DuplexTransferPixelViewIterator func(source, duplex, destination *PixelView, transfer I.DuplexTransferPixelViewMethod, context *I.Void) bool
+var DuplexTransferPixelViewIterator func(source, duplex, destination *PixelView, transfer DuplexTransferPixelViewMethod, context *Void) bool
 
 // Deprecated.
-func (p *PixelView) DuplexTransferIterator(duplex, destination *PixelView, transfer I.DuplexTransferPixelViewMethod, context *I.Void) bool {
+func (p *PixelView) DuplexTransferIterator(duplex, destination *PixelView, transfer DuplexTransferPixelViewMethod, context *Void) bool {
 	return DuplexTransferPixelViewIterator(p, duplex, destination, transfer, context)
 }
 
@@ -4051,10 +4055,10 @@ var GetPixelViewHeight func(pixelView *PixelView) uint32
 func (p *PixelView) Height() uint32 { return GetPixelViewHeight(p) }
 
 // Deprecated.
-var GetPixelViewIterator func(source *PixelView, get GetPixelViewMethod, context *I.Void) bool
+var GetPixelViewIterator func(source *PixelView, get GetPixelViewMethod, context *Void) bool
 
 // Deprecated.
-func (p *PixelView) Iterator(get GetPixelViewMethod, context *I.Void) bool {
+func (p *PixelView) Iterator(get GetPixelViewMethod, context *Void) bool {
 	return GetPixelViewIterator(p, get, context)
 }
 
@@ -4095,26 +4099,26 @@ var IsPixelView func(pixelView *PixelView) bool
 func (p *PixelView) IsPixelView() bool { return IsPixelView(p) }
 
 // Deprecated.
-var SetPixelViewIterator func(destination *PixelView, set SetPixelViewMethod, context *I.Void) bool
+var SetPixelViewIterator func(destination *PixelView, set SetPixelViewMethod, context *Void) bool
 
 // Deprecated.
-func (p *PixelView) SetIterator(set SetPixelViewMethod, context *I.Void) bool {
+func (p *PixelView) SetIterator(set SetPixelViewMethod, context *Void) bool {
 	return SetPixelViewIterator(p, set, context)
 }
 
 // Deprecated.
-var TransferPixelViewIterator func(source, destination *PixelView, transfer I.TransferPixelViewMethod, context *I.Void) bool
+var TransferPixelViewIterator func(source, destination *PixelView, transfer TransferPixelViewMethod, context *Void) bool
 
 // Deprecated.
-func (p *PixelView) TransIterator(destination *PixelView, transfer I.TransferPixelViewMethod, context *I.Void) bool {
+func (p *PixelView) TransIterator(destination *PixelView, transfer TransferPixelViewMethod, context *Void) bool {
 	return TransferPixelViewIterator(p, destination, transfer, context)
 }
 
 // Deprecated.
-var UpdatePixelViewIterator func(source *PixelView, update I.UpdatePixelViewMethod, context *I.Void) bool
+var UpdatePixelViewIterator func(source *PixelView, update UpdatePixelViewMethod, context *Void) bool
 
 // Deprecated.
-func (p *PixelView) UpdateIterator(update I.UpdatePixelViewMethod, context *I.Void) bool {
+func (p *PixelView) UpdateIterator(update UpdatePixelViewMethod, context *Void) bool {
 	return UpdatePixelViewIterator(p, update, context)
 }
 
