@@ -102,19 +102,27 @@ type (
 	XMLTreeInfo    struct{}
 )
 type (
-	AcquireMemoryHandler  func(Size) *Void
-	DecodeImageHandler    func(*ImageInfo, *ExceptionInfo) *Image
-	DestroyMemoryHandler  func(*Void)
-	EncodeImageHandler    func(*ImageInfo, *Image) bool
-	ErrorHandler          func(ExceptionType, string, string)
-	FatalErrorHandler     func(ExceptionType, string, string)
-	GetImageViewMethod    func(*ImageView, SSize, int, *Void) MagickBooleanType
-	IsImageFormatHandler  func(*byte, Size) MagickBooleanType
-	ResizeMemoryHandler   func(*Void, Size) *Void
-	SetImageViewMethod    func(*ImageView, SSize, int, *Void) MagickBooleanType
-	UpdateImageViewMethod func(*ImageView, SSize, int, *Void) MagickBooleanType
-	UpdateWandViewMethod  func(*WandView, SSize, int, *Void) bool
-	WarningHandler        func(ExceptionType, string, string)
+	AcquireMemoryHandler          func(Size) *Void
+	DecodeImageHandler            func(*ImageInfo, *ExceptionInfo) *Image
+	DestroyMemoryHandler          func(*Void)
+	DuplexTransferImageViewMethod func(*ImageView, *ImageView, *ImageView, SSize, int, *Void) MagickBooleanType
+	DuplexTransferWandViewMethod  func(*WandView, *WandView, *WandView, SSize, int, *Void) bool
+	EncodeImageHandler            func(*ImageInfo, *Image) bool
+	ErrorHandler                  func(ExceptionType, string, string)
+	FatalErrorHandler             func(ExceptionType, string, string)
+	GetImageViewMethod            func(*ImageView, SSize, int, *Void) MagickBooleanType
+	IsImageFormatHandler          func(*byte, Size) MagickBooleanType
+	MagickCommand                 func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
+	MagickProgressMonitor         func(string, MagickOffsetType, MagickSizeType, *Void) bool
+	MonitorHandler                func(string, MagickOffsetType, MagickSizeType, *ExceptionInfo) bool
+	ResizeMemoryHandler           func(*Void, Size) *Void
+	SetImageViewMethod            func(*ImageView, SSize, int, *Void) MagickBooleanType
+	StreamHandler                 func(*Image, *Void, Size) Size
+	TransferImageViewMethod       func(*ImageView, *ImageView, SSize, int, *Void) MagickBooleanType
+	TransferWandViewMethod        func(*WandView, *WandView, SSize, int, *Void) bool
+	UpdateImageViewMethod         func(*ImageView, SSize, int, *Void) MagickBooleanType
+	UpdateWandViewMethod          func(*WandView, SSize, int, *Void) bool
+	WarningHandler                func(ExceptionType, string, string)
 )
 
 // TODO(t): image *Image; images *Image; images **Image distinctions
@@ -699,9 +707,10 @@ var ZoomImage func(i *Image, columns, rows Size, exception *ExceptionInfo) *Imag
 var AcquireAuthenticCacheView func(i *Image, exception *ExceptionInfo) *CacheView
 var AcquireCacheView func(i *Image) *CacheView
 var AcquireImageColormap func(i *Image, colors uint32) bool
-var AcquirePixelCache func(*Image, VirtualPixelMethod, SSize, SSize, Size, Size, *ExceptionInfo) *PixelPacket // doc c-static
+var AcquirePixelCache func(*Image, VirtualPixelMethod, SSize, SSize, Size, Size, *ExceptionInfo) *PixelPacket
+
 // Deprecated
-var AcquirePixels func(i *Image) *PixelPacket // doc (image Image)
+var AcquirePixels func(i *Image) *PixelPacket // doc not ptr (i Image)
 var AcquireVirtualCacheView func(i *Image, exception *ExceptionInfo) *CacheView
 var AutoGammaImage func(i *Image) bool
 var AutoGammaImageChannel func(i *Image, channel ChannelType) bool
@@ -726,7 +735,7 @@ var ForwardFourierTransformImage func(i *Image, modulus bool, exception *Excepti
 var FunctionImage func(i *Image, function MagickFunction, numberParameters int32, parameters *float64, exception *ExceptionInfo) bool
 var FunctionImageChannel func(i *Image, channel ChannelType, function MagickFunction, numberParameters int32, argument *float64, exception *ExceptionInfo) bool
 var GetAuthenticIndexQueue func(i *Image) *IndexPacket
-var GetAuthenticPixelQueue func(i *Image) *PixelPacket // doc (image Image)
+var GetAuthenticPixelQueue func(i *Image) *PixelPacket // doc not ptr (image Image)
 var GetAuthenticPixels func(i *Image, x, y int32, columns, rows uint32, exception *ExceptionInfo) *PixelPacket
 var GetBlobProperties func(i *Image) *Stat
 var GetImageAlphaChannel func(i *Image) bool
@@ -734,12 +743,12 @@ var GetImageChannelDistortions func(i *Image, reconstructImage *Image, metric Me
 var GetImageChannelFeatures func(i *Image, distance uint32, exception *ExceptionInfo) *ChannelFeatures
 var GetImageChannelKurtosis func(i *Image, channel ChannelType, kurtosis, kewness *float64, exception *ExceptionInfo) bool
 var GetImageChannels func(i *Image) uint32
-var GetOneAuthenticPixel func(i *Image, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool                                       // doc (image Image)
-var GetOneVirtualMagickPixel func(i *Image, x, y int32, pixel *MagickPixelPacket, exception *ExceptionInfo) bool                             // doc (image Image...exception ExceptionInfo)
-var GetOneVirtualMethodPixel func(i *Image, virtualPixelMethod VirtualPixelMethod, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) // doc (image Image...Pixelpacket...exception ExceptionInfo)
-var GetOneVirtualPixel func(i *Image, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool                                         // doc (image Image...exception ExceptionInfo)
+var GetOneAuthenticPixel func(i *Image, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool                                       // doc not ptr (image Image)
+var GetOneVirtualMagickPixel func(i *Image, x, y int32, pixel *MagickPixelPacket, exception *ExceptionInfo) bool                             // doc not ptr (image Image...exception ExceptionInfo)
+var GetOneVirtualMethodPixel func(i *Image, virtualPixelMethod VirtualPixelMethod, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) // doc not ptr (image Image...pixel Pixelpacket...exception ExceptionInfo)
+var GetOneVirtualPixel func(i *Image, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool                                         // doc not ptr (image Image...exception ExceptionInfo)
 var GetVirtualIndexQueue func(i *Image) *IndexPacket
-var GetVirtualPixelQueue func(i *Image) *PixelPacket // doc (image Image)
+var GetVirtualPixelQueue func(i *Image) *PixelPacket // doc not ptr (image Image)
 var GetVirtualPixels func(i *Image, x, y int32, columns, rows uint32, exception *ExceptionInfo) *PixelPacket
 var HaldClutImage func(i *Image, haldImage *Image) bool
 var HaldClutImageChannel func(i *Image, channel ChannelType, haldImage *Image) bool
@@ -763,7 +772,7 @@ var MorphologyImageChannel func(i *Image, channel ChannelType, method Morphology
 var MotionBlurImageChannel func(i *Image, channel ChannelType, radius, sigma, angle float64, exception *ExceptionInfo) *Image
 
 // Deprecated
-var ParseSizeGeometry func(i *Image, geometry string, regionInfo *RectangleInfo) MagickStatusType // doc RectangeInfo
+var ParseSizeGeometry func(i *Image, geometry string, regionInfo *RectangleInfo) MagickStatusType // doc not ptr (r RectangeInfo)
 var PasskeyDecipherImage func(i *Image, passkey *StringInfo, exception *ExceptionInfo) bool
 var PasskeyEncipherImage func(i *Image, passkey *StringInfo, exception *ExceptionInfo) bool
 var PosterizeImageChannel func(i *Image, channel ChannelType, levels uint32, dither bool) bool
@@ -772,7 +781,7 @@ var SelectiveBlurImage func(i *Image, radius, sigma, threshold float64, exceptio
 var SelectiveBlurImageChannel func(i *Image, channel ChannelType, radius, sigma, threshold float64, exception *ExceptionInfo) *Image
 var SetImageChannels func(i *Image, channels uint32) bool
 var SetImageColor func(i *Image, color *MagickPixelPacket) bool
-var SetImageColorspace func(i *Image, colorspace ColorspaceType) // return ???
+var SetImageColorspace func(i *Image, colorspace ColorspaceType) bool
 var ShearRotateImage func(i *Image, degrees float64, exception *ExceptionInfo) *Image
 var SimilarityImage func(i *Image, reference *Image, offset *RectangleInfo, similarity *float64, exception *ExceptionInfo) *Image
 var SparseColorImage func(i *Image, channel ChannelType, method SparseColorMethod, numberArguments uint32, arguments *float64, exception *ExceptionInfo) *Image
@@ -946,7 +955,7 @@ func (i *Image) ExportPixels(xOffset, yOffset SSize, columns, rows Size, map_ st
 func (i *Image) ExportQuantumPixels(quantumInfo *QuantumInfo, quantumType QuantumType, pixels *byte) bool {
 	return ExportQuantumPixels(i, quantumInfo, quantumType, pixels)
 }
-func (i *Image) Extent(geometry *RectangleInfo, exception *ExceptionInfo) *Image {
+func (i *Image) ExtentImage(geometry *RectangleInfo, exception *ExceptionInfo) *Image {
 	return ExtentImage(i, geometry, exception)
 }
 func (i *Image) FromFile(filename string) bool { return FileToImage(i, filename) }
@@ -1712,7 +1721,7 @@ func (i *Image) MotionBlurChannel(channel ChannelType, radius, sigma, angle floa
 }
 
 // Deprecated
-func (i *Image) ParseSizeGeometry(geometry string, regionInfo *RectangleInfo) MagickStatusType { // doc RectangeInfo
+func (i *Image) ParseSizeGeometry(geometry string, regionInfo *RectangleInfo) MagickStatusType { // doc not ptr (r RectangeInfo)
 	return ParseSizeGeometry(i, geometry, regionInfo)
 }
 func (i *Image) PasskeyDecipher(passkey *StringInfo, exception *ExceptionInfo) bool {
@@ -1864,7 +1873,7 @@ var GetCacheViewChannels func(c *CacheView) uint32
 var GetCacheViewVirtualIndexQueue func(c *CacheView) *IndexPacket
 var GetCacheViewVirtualPixelQueue func(c *CacheView) *PixelPacket
 var GetCacheViewVirtualPixels func(c *CacheView, x, y int32, columns, rows uint32, exception *ExceptionInfo) *PixelPacket
-var GetOneCacheViewAuthenticPixel func(c *CacheView, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool // doc Pixelpacket
+var GetOneCacheViewAuthenticPixel func(c *CacheView, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool // doc not ptr (p Pixelpacket)
 var GetOneCacheViewVirtualMethodPixel func(c *CacheView, virtualPixelMethod VirtualPixelMethod, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool
 var GetOneCacheViewVirtualPixel func(c *CacheView, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool
 var QueueCacheViewAuthenticPixels func(c *CacheView, x, y int32, columns, rows uint32, exception *ExceptionInfo) *PixelPacket
@@ -2507,6 +2516,9 @@ var GetValueFromSplayTree func(s *SplayTreeInfo, key *Void) *Void
 var RemoveNodeByValueFromSplayTree func(s *SplayTreeInfo, value *Void) *Void
 var RemoveNodeFromSplayTree func(s *SplayTreeInfo, key *Void) *Void
 var ResetSplayTreeIterator func(s *SplayTreeInfo)
+var ResetSplayTree func(s *SplayTreeInfo)
+
+func (s *SplayTreeInfo) Reset() { ResetSplayTree(s) }
 
 func (s *SplayTreeInfo) AddValue(key, value *Void) bool { return AddValueToSplayTree(s, key, value) }
 func (s *SplayTreeInfo) Clone(cloneKey, cloneValue func(*Void) *Void) *SplayTreeInfo {
@@ -2585,7 +2597,7 @@ var GetImageViewAuthenticPixels func(i *ImageView) *PixelPacket
 
 func (i *ImageView) AuthenticPixels() *PixelPacket { return GetImageViewAuthenticPixels(i) }
 
-var GetImageViewExtent func(i *ImageView) *RectangleInfo // doc RectangleInfo
+var GetImageViewExtent func(i *ImageView) *RectangleInfo // doc not ptr (RectangleInfo)
 func (i *ImageView) Extent() *RectangleInfo              { return GetImageViewExtent(i) }
 
 var GetImageViewImage func(i *ImageView) *Image
@@ -2949,8 +2961,9 @@ var IsMagickColorSimilar func(p *MagickPixelPacket, q *MagickPixelPacket) bool
 
 func (p *MagickPixelPacket) ColorSimilar(q *MagickPixelPacket) bool { return IsMagickColorSimilar(p, q) }
 
-var CloneMagickPixelPacket func(m *MagickPixelPacket) *MagickPixelPacket // doc c-static inline
-func (m *MagickPixelPacket) Clone() *MagickPixelPacket                   { return CloneMagickPixelPacket(m) }
+var CloneMagickPixelPacket func(m *MagickPixelPacket) *MagickPixelPacket
+
+func (m *MagickPixelPacket) Clone() *MagickPixelPacket { return CloneMagickPixelPacket(m) }
 
 var AcquireTimerInfo func() *TimerInfo
 var ContinueTimer func(t *TimerInfo) bool
@@ -3085,18 +3098,32 @@ func (m CommandOption) Parse(list bool, options string) SSize {
 	return ParseCommandOption(m, list, options)
 }
 
-var AcquirePixelCachePixels /*IM*/ func(i *Image, m *MagickSizeType, e *ExceptionInfo) *Void
+var AcquirePixelCachePixels func(i *Image, m *MagickSizeType, e *ExceptionInfo) *Void
+
+func (i *Image) AcquirePixelCachePixels(m *MagickSizeType, e *ExceptionInfo) *Void {
+	return AcquirePixelCachePixels(i, m, e)
+}
+
 var AcquireRandomInfo func() *RandomInfo
 var DestroyRandomInfo func(*RandomInfo) *RandomInfo
 var AnnotateComponentGenesis func() bool
 var AnnotateComponentTerminus func()
 var AsynchronousResourceComponentTerminus func()
 var BlackThresholdImageChannel func(*Image, ChannelType, string, *ExceptionInfo) bool
+
+func (i *Image) BlackThresholdChannel(c ChannelType, threshold string, e *ExceptionInfo) bool {
+	return BlackThresholdImageChannel(i, c, threshold, e)
+}
+
 var BlobToStringInfo func(*Void, uint32) *StringInfo
 var CacheComponentGenesis func() bool
 var CacheComponentTerminus func()
-var ClampImage func(*Image) bool
-var ClampImageChannel func(*Image, ChannelType) bool
+var ClampImage func(i *Image) bool
+var ClampImageChannel func(i *Image, c ChannelType) bool
+
+func (i *Image) ClampImage() bool                     { return ClampImage(i) }
+func (i *Image) ClampImageChannel(c ChannelType) bool { return ClampImageChannel(i, c) }
+
 var ClonePixelCache func(Cache) Cache
 var ClonePixelCacheMethods func(Cache, Cache)
 var CoderComponentGenesis func() bool
@@ -3115,6 +3142,13 @@ var DestroyPixelCacheNexus func(**NexusInfo, uint32) **NexusInfo
 var DiscardBlobBytes func(*Image, MagickSizeType) bool
 var DistortResizeImage func(*Image, uint32, uint32, *ExceptionInfo) *Image
 var DuplicateBlob func(*Image, *Image)
+
+func (i *Image) DiscardBlobBytes(length MagickSizeType) bool { return DiscardBlobBytes(i, length) }
+func (i *Image) DistortResizeImage(columns, rows uint32, e *ExceptionInfo) *Image {
+	return DistortResizeImage(i, columns, rows, e)
+}
+func (i *Image) DuplicateBlob(duplicate *Image) { DuplicateBlob(i, duplicate) }
+
 var FormatLocaleFile func(*FILE, string, ...VArg) int32
 var FormatLocaleFileList func(*FILE, string, VAList) int32
 var FormatLocaleString func(string, uint32, string, ...VArg) int32
@@ -3124,10 +3158,18 @@ var GetAuthenticPixelCacheNexus func(*Image, int32, int32, uint32, uint32, *Nexu
 var GetCacheViewExtent func(*CacheView) MagickSizeType
 var GetCommandOptionFlags func(CommandOption, bool, string) int32
 var GetConfigureOption func(string) string
-var GetImageExtent func(*Image) MagickSizeType
-var GetImageKurtosis func(*Image, *float64, *float64, *ExceptionInfo) bool
-var GetImagePixelCacheType func(*Image) CacheType
-var GetImageReferenceCount func(*Image) int32
+var GetImageExtent func(i *Image) MagickSizeType
+var GetImageKurtosis func(i *Image, kurtosis, skewness *float64, e *ExceptionInfo) bool
+var GetImagePixelCacheType func(i *Image) CacheType
+var GetImageReferenceCount func(i *Image) int32
+
+func (i *Image) Extent() MagickSizeType { return GetImageExtent(i) }
+func (i *Image) Kurtosis(kurtosis, skewness *float64, e *ExceptionInfo) bool {
+	return GetImageKurtosis(i, kurtosis, skewness, e)
+}
+func (i *Image) ImagePixelCacheType() CacheType { return GetImagePixelCacheType(i) }
+func (i *Image) ReferenceCount() int32          { return GetImageReferenceCount(i) }
+
 var GetMagickPageSize func() int32
 var GetMagickRawSupport func(*MagickInfo) bool
 var GetPathAttributes func(string, *Void) bool
@@ -3135,11 +3177,21 @@ var GetPixelCacheChannels func(Cache) uint32
 var GetPixelCacheColorspace func(Cache) ColorspaceType
 var GetPixelCacheMethods func(*CacheMethods)
 var GetPixelCacheNexusExtent func(Cache, *NexusInfo) MagickSizeType
-var GetPixelCachePixels func(*Image, *MagickSizeType, *ExceptionInfo) *Void
+var GetPixelCachePixels func(i *Image, length *MagickSizeType, e *ExceptionInfo) *Void
+
+func (i *Image) CachePixels(length *MagickSizeType, e *ExceptionInfo) *Void {
+	return GetPixelCachePixels(i, length, e)
+}
+
 var GetPixelCacheStorageClass func(Cache) ClassType
-var GetPixelCacheTileSize func(*Image, *uint32, *uint32)
-var GetPixelCacheType func(*Image) CacheType
-var GetPixelCacheVirtualMethod func(*Image) VirtualPixelMethod
+var GetPixelCacheTileSize func(i *Image, width, height *uint32)
+var GetPixelCacheType func(i *Image) CacheType
+var GetPixelCacheVirtualMethod func(i *Image) VirtualPixelMethod
+
+func (i *Image) CacheTileSize(width, height *uint32)    { GetPixelCacheTileSize(i, width, height) }
+func (i *Image) CacheType() CacheType                   { return GetPixelCacheType(i) }
+func (i *Image) CacheVirtualMethod() VirtualPixelMethod { return GetPixelCacheVirtualMethod(i) }
+
 var GetPolicyInfoList func(string, *uint32, *ExceptionInfo) []*PolicyInfo
 var GetPolicyList func(string, *uint32, *ExceptionInfo) []string
 var GetPolicyValue func(string) string
@@ -3148,18 +3200,34 @@ var GetQuantumEndian func(*QuantumInfo) EndianType
 var GetQuantumExtent func(*Image, *QuantumInfo, QuantumType) uint32
 var GetQuantumFormat func(*QuantumInfo) QuantumFormatType
 var GetQuantumPixels func(*QuantumInfo) *byte
-var GetQuantumType func(*Image, *ExceptionInfo) QuantumType
+var GetQuantumType func(i *Image, e *ExceptionInfo) QuantumType
+
+func (i *Image) QuantumType(e *ExceptionInfo) QuantumType { return GetQuantumType(i, e) }
+
 var GetRandomSecretKey func(*RandomInfo) Size
 var GetSignatureBlocksize func(*SignatureInfo) uint
 var GetSignatureDigest func(*SignatureInfo) *StringInfo
 var GetSignatureDigestsize func(*SignatureInfo) uint
 var Gettimeofday func(*Timeval, *Timezone)
 var GetVirtualIndexesFromNexus func(Cache, *NexusInfo) *IndexPacket
-var GetVirtualPixelsFromNexus func(*Image, VirtualPixelMethod, int32, int32, uint32, uint32, *NexusInfo, *ExceptionInfo) *PixelPacket
+var GetVirtualPixelsFromNexus func(i *Image, v VirtualPixelMethod, x, y int32, columns, rows uint32, n *NexusInfo, e *ExceptionInfo) *PixelPacket
+
+func (i *Image) VirtualPixelsFromNexus(m VirtualPixelMethod, x, y int32, columns, rows uint32, n *NexusInfo, e *ExceptionInfo) *PixelPacket {
+	return GetVirtualPixelsFromNexus(i, m, x, y, columns, rows, n, e)
+}
+
 var GetVirtualPixelsNexus func(Cache, *NexusInfo) *PixelPacket
 var InitializeSignature func(*SignatureInfo)
-var InterpolateMagickPixelPacket func(*Image, *CacheView, InterpolatePixelMethod, float64, float64, *MagickPixelPacket, *ExceptionInfo) bool
-var InterpolativeResizeImage func(*Image, uint32, uint32, InterpolatePixelMethod, *ExceptionInfo) *Image
+var InterpolateMagickPixelPacket func(i *Image, v *CacheView, m InterpolatePixelMethod, x, y float64, p *MagickPixelPacket, e *ExceptionInfo) bool
+var InterpolativeResizeImage func(i *Image, columns, rows uint32, m InterpolatePixelMethod, e *ExceptionInfo) *Image
+
+func (i *Image) InterpolatePacket(v *CacheView, m InterpolatePixelMethod, x, y float64, p *MagickPixelPacket, e *ExceptionInfo) bool {
+	return InterpolateMagickPixelPacket(i, v, m, x, y, p, e)
+}
+func (i *Image) InterpolativeResize(columns, rows uint32, m InterpolatePixelMethod, e *ExceptionInfo) *Image {
+	return InterpolativeResizeImage(i, columns, rows, m, e)
+}
+
 var InterpretLocaleValue func(string, []string) float64
 var InterpretSiPrefixValue func(string, []string) float64
 var InversesRGBCompandor func(MagickRealType) MagickRealType
@@ -3188,40 +3256,91 @@ var ModuleComponentGenesis func() bool
 var ModuleComponentTerminus func()
 var NTArgvToUTF8 func(argc int, argv []WString) []string
 var NTGatherRandomData func(uint32, *byte) bool
-var ParseRegionGeometry func(*Image, string, *RectangleInfo, *ExceptionInfo) MagickStatusType
-var PerceptibleImage func(*Image, float64) bool
-var PerceptibleImageChannel func(*Image, ChannelType, float64) bool
-var PersistPixelCache func(*Image, string, bool, *MagickOffsetType, *ExceptionInfo) bool
+var ParseRegionGeometry func(i *Image, geometry string, r *RectangleInfo, e *ExceptionInfo) MagickStatusType
+var PerceptibleImage func(i *Image, epsilon float64) bool
+var PerceptibleImageChannel func(i *Image, c ChannelType, epsilon float64) bool
+var PersistPixelCache func(i *Image, filename string, attach bool, o *MagickOffsetType, e *ExceptionInfo) bool
+
+func (i *Image) ParseRegionGeometry(geometry string, r *RectangleInfo, e *ExceptionInfo) MagickStatusType {
+	return ParseRegionGeometry(i, geometry, r, e)
+}
+func (i *Image) Perceptible(epsilon float64) bool { return PerceptibleImage(i, epsilon) }
+func (i *Image) PerceptibleChannel(c ChannelType, epsilon float64) bool {
+	return PerceptibleImageChannel(i, c, epsilon)
+}
+func (i *Image) PersistPixelCache(filename string, attach bool, o *MagickOffsetType, e *ExceptionInfo) bool {
+	return PersistPixelCache(i, filename, attach, o, e)
+}
+
 var PolicyComponentGenesis func() bool
 var PolicyComponentTerminus func()
-var PolynomialImage func(*Image, uint32, *float64, *ExceptionInfo) *Image
-var PolynomialImageChannel func(*Image, ChannelType, uint32, *float64, *ExceptionInfo) *Image
+var PolynomialImage func(i *Image, nTerms uint32, terms []float64, e *ExceptionInfo) *Image
+var PolynomialImageChannel func(i *Image, c ChannelType, nTerms uint32, terms []float64, e *ExceptionInfo) *Image
+
+func (i *Image) Polynomial(nTerms uint32, terms []float64, e *ExceptionInfo) *Image {
+	return PolynomialImage(i, nTerms, terms, e)
+}
+func (i *Image) PolynomialChannel(c ChannelType, nTerms uint32, terms []float64, e *ExceptionInfo) *Image {
+	return PolynomialImageChannel(i, c, nTerms, terms, e)
+}
+
 var QueryMagickColorCompliance func(string, ComplianceType, *MagickPixelPacket, *ExceptionInfo) bool
-var QueueAuthenticPixel func(*Image, int32, int32, uint32, uint32, bool, *NexusInfo, *ExceptionInfo) *PixelPacket
-var QueueAuthenticPixelCacheNexus func(*Image, int32, int32, uint32, uint32, bool, *NexusInfo, *ExceptionInfo) *PixelPacket
+var QueueAuthenticPixel func(i *Image, x, y int32, columns, rows uint32, clone bool, n *NexusInfo, e *ExceptionInfo) *PixelPacket
+var QueueAuthenticPixelCacheNexus func(i *Image, x, y int32, columns, rows uint32, clone bool, n *NexusInfo, e *ExceptionInfo) *PixelPacket
+
+func (i *Image) QueueAuthentic(x, y int32, columns, rows uint32, clone bool, n *NexusInfo, e *ExceptionInfo) *PixelPacket {
+	return QueueAuthenticPixel(i, x, y, columns, rows, clone, n, e)
+}
+func (i *Image) QueueAuthenticNexus(x, y int32, columns, rows uint32, clone bool, n *NexusInfo, e *ExceptionInfo) *PixelPacket {
+	return QueueAuthenticPixelCacheNexus(i, x, y, columns, rows, clone, n, e)
+}
+
 var RandomComponentGenesis func() bool
 var RandomComponentTerminus func()
-var ReadBlobMSBLongLong func(*Image) MagickSizeType
+var ReadBlobMSBLongLong func(i *Image) MagickSizeType
+
+func (i *Image) ReadBlobMSBLongLong() MagickSizeType { return ReadBlobMSBLongLong(i) }
+
 var ReferencePixelCache func(Cache) Cache
 var RegistryComponentGenesis func() bool
 var ResetImageOptions func(*ImageInfo)
-var ResetSplayTree func(*SplayTreeInfo)
 var ResourceComponentGenesis func() bool
 var ResourceComponentTerminus func()
 var SeedPseudoRandomGenerator func(Size)
 var SemaphoreComponentGenesis func() bool
 var SemaphoreComponentTerminus func()
-var SetBlobExtent func(*Image, MagickSizeType) bool
+var SetBlobExtent func(i *Image, extent MagickSizeType) bool
+
+func (i *Image) SetBlobExtent(extent MagickSizeType) bool { return SetBlobExtent(i, extent) }
+
 var SetPixelCacheMethods func(Cache, *CacheMethods)
-var SetPixelCacheVirtualMethod func(*Image, VirtualPixelMethod) VirtualPixelMethod
+var SetPixelCacheVirtualMethod func(i *Image, m VirtualPixelMethod) VirtualPixelMethod
+
+func (i *Image) SetPixelCacheVirtualMethod(m VirtualPixelMethod) VirtualPixelMethod {
+	return SetPixelCacheVirtualMethod(i, m)
+}
+
 var SetQuantumAlphaType func(*QuantumInfo, QuantumAlphaType)
-var SetQuantumDepth func(*Image, *QuantumInfo, uint32) bool
-var SetQuantumEndian func(*Image, *QuantumInfo, EndianType) bool
-var SetQuantumFormat func(*Image, *QuantumInfo, QuantumFormatType) bool
-var SetQuantumImageType func(*Image, QuantumType)
+var SetQuantumDepth func(i *Image, q *QuantumInfo, depth uint32) bool
+var SetQuantumEndian func(i *Image, q *QuantumInfo, e EndianType) bool
+var SetQuantumFormat func(i *Image, q *QuantumInfo, f QuantumFormatType) bool
+var SetQuantumImageType func(i *Image, q QuantumType)
+
+func (i *Image) SetQuantumDepth(q *QuantumInfo, depth uint32) bool {
+	return SetQuantumDepth(i, q, depth)
+}
+func (i *Image) SetQuantumEndian(q *QuantumInfo, e EndianType) bool { return SetQuantumEndian(i, q, e) }
+func (i *Image) SetQuantumFormat(q *QuantumInfo, f QuantumFormatType) bool {
+	return SetQuantumFormat(i, q, f)
+}
+func (i *Image) SetQuantumType(q QuantumType) { SetQuantumImageType(i, q) }
+
 var SetQuantumMinIsWhite func(*QuantumInfo, bool)
 var SetQuantumPack func(*QuantumInfo, bool)
-var SetQuantumPad func(*Image, *QuantumInfo, uint32) bool
+var SetQuantumPad func(i *Image, q *QuantumInfo, pad uint32) bool
+
+func (i *Image) SetQuantumPad(q *QuantumInfo, pad uint32) bool { return SetQuantumPad(i, q, pad) }
+
 var SetQuantumQuantum func(*QuantumInfo, uint32)
 var SetQuantumScale func(*QuantumInfo, float64)
 var SetRandomKey func(*RandomInfo, uint32, *byte)
@@ -3231,16 +3350,41 @@ var SetResampleFilter func(*ResampleFilter, FilterTypes, float64)
 var SetSignatureDigest func(*SignatureInfo, *StringInfo)
 var SimilarityMetricImage func(*Image, *Image, MetricType, *RectangleInfo, *float64, *ExceptionInfo) *Image
 var SolarizeImageChannel func(*Image, ChannelType, float64, *ExceptionInfo) bool
+
+func (i *Image) SimilarityMetricImage(ref *Image, m MetricType, r *RectangleInfo, similarity *float64, e *ExceptionInfo) *Image {
+	return SimilarityMetricImage(i, ref, m, r, similarity, e)
+}
+func (i *Image) SolarizeImageChannel(c ChannelType, threshold float64, e *ExceptionInfo) bool {
+	return SolarizeImageChannel(i, c, threshold, e)
+}
+
 var SRGBCompandor func(MagickRealType) MagickRealType
+
 var StringInfoToHexString func(*StringInfo) string
 var StringToArrayOfDoubles func(string, *int32, *ExceptionInfo) []float64
-var SyncAuthenticPixelCacheNexus func(*Image, *NexusInfo, *ExceptionInfo) bool
-var TransparentPaintImageChroma func(*Image, *MagickPixelPacket, *MagickPixelPacket, Quantum, bool) bool
+var SyncAuthenticPixelCacheNexus func(i *Image, n *NexusInfo, e *ExceptionInfo) bool
+var TransparentPaintImageChroma func(i *Image, low, high *MagickPixelPacket, opacity Quantum, invert bool) bool
+
+func (i *Image) SyncAuthenticPixelCacheNexus(n *NexusInfo, e *ExceptionInfo) bool {
+	return SyncAuthenticPixelCacheNexus(i, n, e)
+}
+func (i *Image) TransparentPaintImageChroma(low, high *MagickPixelPacket, opacity Quantum, invert bool) bool {
+	return TransparentPaintImageChroma(i, low, high, opacity, invert)
+}
+
 var TypeComponentGenesis func() bool
 var TypeComponentTerminus func()
 var UnityAddKernelInfo func(*KernelInfo, float64)
-var WhiteThresholdImageChannel func(*Image, ChannelType, string, *ExceptionInfo) bool
-var WriteBlobMSBLongLong func(*Image, MagickSizeType) int32
+var WhiteThresholdImageChannel func(i *Image, c ChannelType, threshold string, e *ExceptionInfo) bool
+var WriteBlobMSBLongLong func(i *Image, value MagickSizeType) int32
+
+func (i *Image) WhiteThresholdImageChannel(c ChannelType, threshold string, e *ExceptionInfo) bool {
+	return WhiteThresholdImageChannel(i, c, threshold, e)
+}
+func (i *Image) WriteBlobMSBLongLong(value MagickSizeType) int32 {
+	return WriteBlobMSBLongLong(i, value)
+}
+
 var XComponentGenesis func() bool
 var XComponentTerminus func()
 var AcquireMagickMatrix func(nptrs, size Size) **float64
@@ -3349,7 +3493,7 @@ var GetGeometry func(geometry string, x, y *Long, width, height *Size) MagickSta
 
 // Deprecated
 var GetImageFromMagickRegistry func(name string, id *Long, exception *ExceptionInfo) *Image
-var GetImageMagick func(magick *byte, length uint32) string
+var GetImageMagick func(magick *byte, length uint32, format string) string
 var GetImageRegistry func(type_ RegistryType, key string, exception *ExceptionInfo) *Void
 var GetLocaleExceptionMessage func(severity ExceptionType, tag string) string
 var GetLocaleInfo func(tag string, exception *ExceptionInfo) *LocaleInfo
@@ -3381,11 +3525,17 @@ var GetMagickPrecision func() int
 var GetMagickVersion func(version *Size) string
 var GetMagicList func(pattern string, numberAliases *Size, exception *ExceptionInfo) []string
 var GetMagicName func(magicInfo *MagicInfo) string
-var GetMimeDescription func(mimeInfo *MimeInfo) string
+var GetMimeDescription func(m *MimeInfo) string
+
+func (m *MimeInfo) Description() string { return GetMimeDescription(m) }
+
 var GetMimeInfo func(filename string, magic *byte, length uint32, exception *ExceptionInfo) *MimeInfo
 var GetMimeInfoList func(pattern string, numberAliases *Size, exception *ExceptionInfo) []*MimeInfo
 var GetMimeList func(pattern string, numberAliases *Size, exception *ExceptionInfo) []string
-var GetMimeType func(mimeInfo *MimeInfo) string
+var GetMimeType func(m *MimeInfo) string
+
+func (m *MimeInfo) Type() string { return GetMimeType(m) }
+
 var GetModuleInfo func(tag string, exception *ExceptionInfo) *ModuleInfo
 var GetModuleInfoList func(pattern string, numberModules *Size, exception *ExceptionInfo) **ModuleInfo
 var GetModuleList func(pattern string, numberModules *Size, exception *ExceptionInfo) []string
@@ -3563,6 +3713,9 @@ var MaximumImages func(images *Image, exception *ExceptionInfo) *Image
 // Deprecated
 var MinimumImages func(images *Image, exception *ExceptionInfo) *Image
 var NewImageView func(i *Image) *ImageView
+
+func (i *Image) NewView() *ImageView { return NewImageView(i) }
+
 var NewImageViewRegion func(i *Image, x, y int32, width, height uint32) *ImageView
 
 // Deprecated
@@ -3587,12 +3740,12 @@ var NTCloseDirectory func(*DIR) int
 var NTCloseLibrary func(*Void) int
 var NTControlHandler func() int
 var NTElapsedTime func() float64
-var NTErrorHandler func(ExceptionType, string, string) // Return
+var NTErrorHandler func(severity ExceptionType, reason string, description string)
 var NTExitLibrary func() int
 var NTGetExecutionPath func(string, uint32) bool
 var NTGetLastError func() string
 var NTGetLibraryError func() string
-var NTGetLibrarySymbol func(*Void, string) *Void //* Return?
+var NTGetLibrarySymbol func(handle *Void, name string) *Void
 var NTGetModulePath func(string, string) bool
 var NTGhostscriptDLL func(string, int) int
 var NTGhostscriptDLLVectors func() *GhostInfo
@@ -3603,14 +3756,14 @@ var NTGhostscriptUnLoadDLL func() int
 var NTInitializeLibrary func() int
 var NTIsMagickConflict func(string) bool
 var NTLoadTypeLists func(*SplayTreeInfo, *ExceptionInfo) bool
-var NTMapMemory func(string, uint32, int, int, int, MagickOffsetType) **Void //** Return?
+var NTMapMemory func(address string, length uint32, protection int, access int, file int, offset MagickOffsetType) *Void
 var NTOpenDirectory func(string) *DIR
-var NTOpenLibrary func(string) ***Void //*** Return?
+var NTOpenLibrary func(filename string) *Void
 var NTReadDirectory func(*DIR) *Dirent
 var NTRegistryKeyLookup func(string) string
 var NTReportEvent func(string, bool) bool
 var NTResourceToBlob func(string) *byte
-var NTSeekDirectory func(*DIR, SSize) ***Void //*** Return?
+var NTSeekDirectory func(entry *DIR, position SSize)
 var NTSetSearchPath func(string) int
 var NTSyncMemory func(*Void, uint32, int) int
 var NTSystemCommand func(string) int
@@ -3619,8 +3772,13 @@ var NTTellDirectory func(*DIR) SSize
 var NTTruncateFile func(int, Off) int
 var NTUnmapMemory func(*Void, uint32) int
 var NTUserTime func() float64
-var NTWarningHandler func(ExceptionType, string, string) ***Void //*** Return?
-var PlasmaImageProxy func(image *Image, image_view *CacheView, random_info *RandomInfo, segment *SegmentInfo, attenuate, depth uint32) bool
+var NTWarningHandler func(severity ExceptionType, reason string, description string)
+var PlasmaImageProxy func(i *Image, imageView *CacheView, randomInfo *RandomInfo, segment *SegmentInfo, attenuate, depth uint32) bool
+
+func (i *Image) PlasmaProxy(imageView *CacheView, randomInfo *RandomInfo, segment *SegmentInfo, attenuate, depth uint32) bool {
+	return PlasmaImageProxy(i, imageView, randomInfo, segment, attenuate, depth)
+}
+
 var GetColorCompliance func(name string, compliance ComplianceType, exception *ExceptionInfo) *ColorInfo
 
 func init() {
@@ -5644,11 +5802,6 @@ type DrawInfo struct {
 	InterlineSpacing float64
 	Direction        DirectionType
 }
-type DuplexTransferImageViewMethod func(
-	*ImageView, *ImageView, *ImageView, SSize, int,
-	*Void) MagickBooleanType
-type DuplexTransferWandViewMethod func(
-	*WandView, *WandView, *WandView, SSize, int, *Void) bool
 type ElementReference struct {
 	Id        *string
 	Type      ReferenceType
@@ -5929,7 +6082,7 @@ type Image struct {
 	MagickRows             Size
 	Exception_             ExceptionInfo
 	Debug                  MagickBooleanType
-	ReferenceCount         SSize
+	ReferenceCount_        SSize
 	Semaphore              *SemaphoreInfo
 	ColorProfile           ProfileInfo
 	IptcProfile            ProfileInfo
@@ -6215,7 +6368,6 @@ const (
 	MagickTrue
 )
 
-type MagickCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
 type MagickFunction Enum
 
 const (
@@ -6288,7 +6440,6 @@ type MagickPixelPacket struct {
 	Opacity      MagickRealType
 	Index        MagickRealType
 }
-type MagickProgressMonitor func(string, MagickOffsetType, MagickSizeType, *Void) bool
 type MapMode Enum
 
 const (
@@ -6325,7 +6476,6 @@ type ModuleInfo struct {
 	next             *ModuleInfo // Deprecated
 	Signature        Size
 }
-type MonitorHandler func(string, MagickOffsetType, MagickSizeType, *ExceptionInfo) bool
 type MontageInfo struct {
 	Geometry        *string
 	Tile            *string
@@ -6741,7 +6891,6 @@ const (
 	ShortPixel
 )
 
-type StreamHandler func(*Image, *Void, Size) Size
 type StretchType Enum
 
 const (
@@ -6793,8 +6942,6 @@ const (
 	RunningTimerState
 )
 
-type TransferImageViewMethod func(*ImageView, *ImageView, SSize, int, *Void) MagickBooleanType
-type TransferWandViewMethod func(*WandView, *WandView, SSize, int, *Void) bool
 type TypeInfo struct {
 	Face        Size
 	Path        *string
