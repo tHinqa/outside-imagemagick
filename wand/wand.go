@@ -7,8 +7,15 @@ package wand
 
 import (
 	. "github.com/tHinqa/outside"
-	T "github.com/tHinqa/outside-imagemagick/types"
+	I "github.com/tHinqa/outside-imagemagick"
 	// . "github.com/tHinqa/outside/types"
+)
+
+type (
+	GetPixelViewMethod func(*I.PixelView, *I.Void) bool
+	GetWandViewMethod  func(*I.WandView, I.SSize, int, *I.Void) bool
+	SetPixelViewMethod func(*I.PixelView, *I.Void) bool
+	SetWandViewMethod  func(*I.WandView, I.SSize, int, *I.Void) bool
 )
 
 type (
@@ -16,16 +23,16 @@ type (
 
 	char fix
 
-	CacheView         T.CacheView
+	CacheView         I.CacheView
 	DrawContext       fix
-	DrawInfo          T.DrawInfo
+	DrawInfo          I.DrawInfo
 	DrawingWand       struct{}
-	ExceptionInfo     T.ExceptionInfo
-	FILE              T.FILE
-	Image             T.Image
-	ImageInfo         T.ImageInfo
+	ExceptionInfo     I.ExceptionInfo
+	FILE              I.FILE
+	Image             I.Image
+	ImageInfo         I.ImageInfo
 	ImageView         struct{}
-	MagickPixelPacket T.MagickPixelPacket
+	MagickPixelPacket I.MagickPixelPacket
 	MagickWand        struct{}
 	PixelView         fix
 	PixelIterator     fix
@@ -69,9 +76,9 @@ func (m *MagickWand) AdaptiveBlur(radius, sigma float64) bool {
 	return AdaptiveBlurImage(m, radius, sigma)
 }
 
-var AdaptiveBlurImageChannel func(m *MagickWand, channel T.ChannelType, radius, sigma float64) bool
+var AdaptiveBlurImageChannel func(m *MagickWand, channel I.ChannelType, radius, sigma float64) bool
 
-func (m *MagickWand) AdaptiveBlurChannel(channel T.ChannelType, radius, sigma float64) bool {
+func (m *MagickWand) AdaptiveBlurChannel(channel I.ChannelType, radius, sigma float64) bool {
 	return AdaptiveBlurImageChannel(m, channel, radius, sigma)
 }
 
@@ -87,9 +94,9 @@ func (m *MagickWand) AdaptiveSharpen(radius, sigma float64) bool {
 	return AdaptiveSharpenImage(m, radius, sigma)
 }
 
-var AdaptiveSharpenImageChannel func(m *MagickWand, channel T.ChannelType, radius, sigma float64) bool
+var AdaptiveSharpenImageChannel func(m *MagickWand, channel I.ChannelType, radius, sigma float64) bool
 
-func (m *MagickWand) AdaptiveSharpenChannel(channel T.ChannelType, radius, sigma float64) bool {
+func (m *MagickWand) AdaptiveSharpenChannel(channel I.ChannelType, radius, sigma float64) bool {
 	return AdaptiveSharpenImageChannel(m, channel, radius, sigma)
 }
 
@@ -103,15 +110,15 @@ var AddImage func(m *MagickWand, addWand *MagickWand) bool
 
 func (m *MagickWand) Add(addWand *MagickWand) bool { return AddImage(m, addWand) }
 
-var AddNoiseImage func(m *MagickWand, noiseType T.NoiseType) bool
+var AddNoiseImage func(m *MagickWand, noiseType I.NoiseType) bool
 
-func (m *MagickWand) AddNoise(noiseType T.NoiseType) bool {
+func (m *MagickWand) AddNoise(noiseType I.NoiseType) bool {
 	return AddNoiseImage(m, noiseType)
 }
 
-var AddNoiseImageChannel func(m *MagickWand, channel T.ChannelType, noiseType T.NoiseType) bool
+var AddNoiseImageChannel func(m *MagickWand, channel I.ChannelType, noiseType I.NoiseType) bool
 
-func (m *MagickWand) AddNoiseChannel(channel T.ChannelType, noiseType T.NoiseType) bool {
+func (m *MagickWand) AddNoiseChannel(channel I.ChannelType, noiseType I.NoiseType) bool {
 	return AddNoiseImageChannel(m, channel, noiseType)
 }
 
@@ -141,9 +148,9 @@ var AutoGammaImage func(m *MagickWand) bool
 
 func (m *MagickWand) AutoGamma() bool { return AutoGammaImage(m) }
 
-var AutoGammaImageChannel func(m *MagickWand, channel T.ChannelType) bool
+var AutoGammaImageChannel func(m *MagickWand, channel I.ChannelType) bool
 
-func (m *MagickWand) AutoGammaChannel(channel T.ChannelType) bool {
+func (m *MagickWand) AutoGammaChannel(channel I.ChannelType) bool {
 	return AutoGammaImageChannel(m, channel)
 }
 
@@ -151,9 +158,9 @@ var AutoLevelImage func(m *MagickWand) bool
 
 func (m *MagickWand) AutoLevel() bool { return AutoLevelImage(m) }
 
-var AutoLevelImageChannel func(m *MagickWand, channel T.ChannelType) bool
+var AutoLevelImageChannel func(m *MagickWand, channel I.ChannelType) bool
 
-func (m *MagickWand) AutoLevelChannel(channel T.ChannelType) bool {
+func (m *MagickWand) AutoLevelChannel(channel I.ChannelType) bool {
 	return AutoLevelImageChannel(m, channel)
 }
 
@@ -171,9 +178,9 @@ var BlurImage func(m *MagickWand, radius, sigma float64) bool
 
 func (m *MagickWand) Blur(radius, sigma float64) bool { return BlurImage(m, radius, sigma) }
 
-var BlurImageChannel func(m *MagickWand, channel T.ChannelType, radius, sigma float64) bool
+var BlurImageChannel func(m *MagickWand, channel I.ChannelType, radius, sigma float64) bool
 
-func (m *MagickWand) BlurChannel(channel T.ChannelType, radius, sigma float64) bool {
+func (m *MagickWand) BlurChannel(channel I.ChannelType, radius, sigma float64) bool {
 	return BlurImageChannel(m, channel, radius, sigma)
 }
 
@@ -189,9 +196,9 @@ func (m *MagickWand) BrightnessContrast(brightness, contrast float64) bool {
 	return BrightnessContrastImage(m, brightness, contrast)
 }
 
-var BrightnessContrastImageChannel func(m *MagickWand, channel T.ChannelType, brightness, contrast float64) bool
+var BrightnessContrastImageChannel func(m *MagickWand, channel I.ChannelType, brightness, contrast float64) bool
 
-func (m *MagickWand) BrightnessContrastChannel(channel T.ChannelType, brightness, contrast float64) bool {
+func (m *MagickWand) BrightnessContrastChannel(channel I.ChannelType, brightness, contrast float64) bool {
 	return BrightnessContrastImageChannel(m, channel, brightness, contrast)
 }
 
@@ -211,9 +218,9 @@ var ClampImage func(m *MagickWand) bool
 
 func (m *MagickWand) Clamp() bool { return ClampImage(m) }
 
-var ClampImageChannel func(m *MagickWand, channel T.ChannelType) bool
+var ClampImageChannel func(m *MagickWand, channel I.ChannelType) bool
 
-func (m *MagickWand) ClampChannel(channel T.ChannelType) bool {
+func (m *MagickWand) ClampChannel(channel I.ChannelType) bool {
 	return ClampImageChannel(m, channel)
 }
 
@@ -235,9 +242,9 @@ var ClutImage func(m *MagickWand, clutWand *MagickWand) bool
 
 func (m *MagickWand) Clut(clutWand *MagickWand) bool { return ClutImage(m, clutWand) }
 
-var ClutImageChannel func(m *MagickWand, channel T.ChannelType, clutWand *MagickWand) bool
+var ClutImageChannel func(m *MagickWand, channel I.ChannelType, clutWand *MagickWand) bool
 
-func (m *MagickWand) ClutChannel(channel T.ChannelType, clutWand *MagickWand) bool {
+func (m *MagickWand) ClutChannel(channel I.ChannelType, clutWand *MagickWand) bool {
 	return ClutImageChannel(m, channel, clutWand)
 }
 
@@ -257,15 +264,15 @@ func (m *MagickWand) Colorize(colorize, opacity *PixelWand) bool {
 	return ColorizeImage(m, colorize, opacity)
 }
 
-var ColorMatrixImage func(m *MagickWand, colorMatrix *T.KernelInfo) bool
+var ColorMatrixImage func(m *MagickWand, colorMatrix *I.KernelInfo) bool
 
-func (m *MagickWand) ColorMatrix(colorMatrix *T.KernelInfo) bool {
+func (m *MagickWand) ColorMatrix(colorMatrix *I.KernelInfo) bool {
 	return ColorMatrixImage(m, colorMatrix)
 }
 
-var CombineImages func(m *MagickWand, channel T.ChannelType) *MagickWand
+var CombineImages func(m *MagickWand, channel I.ChannelType) *MagickWand
 
-func (m *MagickWand) Combine(channel T.ChannelType) *MagickWand {
+func (m *MagickWand) Combine(channel I.ChannelType) *MagickWand {
 	return CombineImages(m, channel)
 }
 
@@ -273,45 +280,45 @@ var CommentImage func(m *MagickWand, comment string) bool
 
 func (m *MagickWand) Comment(comment string) bool { return CommentImage(m, comment) }
 
-var CompareImageChannels func(m *MagickWand, reference *MagickWand, channel T.ChannelType, metric T.MetricType, distortion *float64) *MagickWand
+var CompareImageChannels func(m *MagickWand, reference *MagickWand, channel I.ChannelType, metric I.MetricType, distortion *float64) *MagickWand
 
-func (m *MagickWand) CompareChannels(reference *MagickWand, channel T.ChannelType, metric T.MetricType, distortion *float64) *MagickWand {
+func (m *MagickWand) CompareChannels(reference *MagickWand, channel I.ChannelType, metric I.MetricType, distortion *float64) *MagickWand {
 	return CompareImageChannels(m, reference, channel, metric, distortion)
 }
 
-var CompareImageLayers func(m *MagickWand, method T.ImageLayerMethod) *MagickWand
+var CompareImageLayers func(m *MagickWand, method I.ImageLayerMethod) *MagickWand
 
-func (m *MagickWand) CompareLayers(method T.ImageLayerMethod) *MagickWand {
+func (m *MagickWand) CompareLayers(method I.ImageLayerMethod) *MagickWand {
 	return CompareImageLayers(m, method)
 }
 
-var CompareImages func(m *MagickWand, reference *MagickWand, metric T.MetricType, distortion *float64) *MagickWand
+var CompareImages func(m *MagickWand, reference *MagickWand, metric I.MetricType, distortion *float64) *MagickWand
 
-func (m *MagickWand) Compare(reference *MagickWand, metric T.MetricType, distortion *float64) *MagickWand {
+func (m *MagickWand) Compare(reference *MagickWand, metric I.MetricType, distortion *float64) *MagickWand {
 	return CompareImages(m, reference, metric, distortion)
 }
 
-var CompositeImage func(m *MagickWand, sourceWand *MagickWand, compose T.CompositeOperator, x, y int32) bool
+var CompositeImage func(m *MagickWand, sourceWand *MagickWand, compose I.CompositeOperator, x, y int32) bool
 
-func (m *MagickWand) Composite(sourceWand *MagickWand, compose T.CompositeOperator, x, y int32) bool {
+func (m *MagickWand) Composite(sourceWand *MagickWand, compose I.CompositeOperator, x, y int32) bool {
 	return CompositeImage(m, sourceWand, compose, x, y)
 }
 
-var CompositeImageChannel func(m *MagickWand, channel T.ChannelType, compositeWand *MagickWand, compose T.CompositeOperator, x, y int32) bool
+var CompositeImageChannel func(m *MagickWand, channel I.ChannelType, compositeWand *MagickWand, compose I.CompositeOperator, x, y int32) bool
 
-func (m *MagickWand) CompositeChannel(channel T.ChannelType, compositeWand *MagickWand, compose T.CompositeOperator, x, y int32) bool {
+func (m *MagickWand) CompositeChannel(channel I.ChannelType, compositeWand *MagickWand, compose I.CompositeOperator, x, y int32) bool {
 	return CompositeImageChannel(m, channel, compositeWand, compose, x, y)
 }
 
-var CompositeLayers func(m *MagickWand, sourceWand *MagickWand, compose T.CompositeOperator, x, y int32) bool
+var CompositeLayers func(m *MagickWand, sourceWand *MagickWand, compose I.CompositeOperator, x, y int32) bool
 
-func (m *MagickWand) CompositeLayers(sourceWand *MagickWand, compose T.CompositeOperator, x, y int32) bool {
+func (m *MagickWand) CompositeLayers(sourceWand *MagickWand, compose I.CompositeOperator, x, y int32) bool {
 	return CompositeLayers(m, sourceWand, compose, x, y)
 }
 
-var ConstituteImage func(m *MagickWand, columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool
+var ConstituteImage func(m *MagickWand, columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool
 
-func (m *MagickWand) Constitute(columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool {
+func (m *MagickWand) Constitute(columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool {
 	return ConstituteImage(m, columns, rows, map_, storage, pixels)
 }
 
@@ -325,9 +332,9 @@ func (m *MagickWand) ContrastStretch(blackPoint, whitePoint float64) bool {
 	return ContrastStretchImage(m, blackPoint, whitePoint)
 }
 
-var ContrastStretchImageChannel func(m *MagickWand, channel T.ChannelType, blackPoint, whitePoint float64) bool
+var ContrastStretchImageChannel func(m *MagickWand, channel I.ChannelType, blackPoint, whitePoint float64) bool
 
-func (m *MagickWand) ContrastStretchChannel(channel T.ChannelType, blackPoint, whitePoint float64) bool {
+func (m *MagickWand) ContrastStretchChannel(channel I.ChannelType, blackPoint, whitePoint float64) bool {
 	return ContrastStretchImageChannel(m, channel, blackPoint, whitePoint)
 }
 
@@ -337,9 +344,9 @@ func (m *MagickWand) Convolve(order uint32, kernel []float64) bool {
 	return ConvolveImage(m, order, kernel)
 }
 
-var ConvolveImageChannel func(m *MagickWand, channel T.ChannelType, order uint32, kernel *float64) bool
+var ConvolveImageChannel func(m *MagickWand, channel I.ChannelType, order uint32, kernel *float64) bool
 
-func (m *MagickWand) ConvolveChannel(channel T.ChannelType, order uint32, kernel *float64) bool {
+func (m *MagickWand) ConvolveChannel(channel I.ChannelType, order uint32, kernel *float64) bool {
 	return ConvolveImageChannel(m, channel, order, kernel)
 }
 
@@ -397,9 +404,9 @@ func (m *MagickWand) DisplayImages(xServerName string) bool {
 	return DisplayImages(m, xServerName)
 }
 
-var DistortImage func(m *MagickWand, method T.DistortImageMethod, numberArguments uint32, arguments *float64, bestfit bool) bool
+var DistortImage func(m *MagickWand, method I.DistortImageMethod, numberArguments uint32, arguments *float64, bestfit bool) bool
 
-func (m *MagickWand) Distort(method T.DistortImageMethod, numberArguments uint32, arguments *float64, bestfit bool) bool {
+func (m *MagickWand) Distort(method I.DistortImageMethod, numberArguments uint32, arguments *float64, bestfit bool) bool {
 	return DistortImage(m, method, numberArguments, arguments, bestfit)
 }
 
@@ -429,33 +436,33 @@ var EqualizeImage func(m *MagickWand) bool
 
 func (m *MagickWand) Equalize() bool { return EqualizeImage(m) }
 
-var EqualizeImageChannel func(m *MagickWand, channel T.ChannelType) bool
+var EqualizeImageChannel func(m *MagickWand, channel I.ChannelType) bool
 
-func (m *MagickWand) EqualizeChannel(channel T.ChannelType) bool {
+func (m *MagickWand) EqualizeChannel(channel I.ChannelType) bool {
 	return EqualizeImageChannel(m, channel)
 }
 
-var EvaluateImage func(m *MagickWand, operator T.MagickEvaluateOperator, value float64) bool
+var EvaluateImage func(m *MagickWand, operator I.MagickEvaluateOperator, value float64) bool
 
-func (m *MagickWand) Evaluate(operator T.MagickEvaluateOperator, value float64) bool {
+func (m *MagickWand) Evaluate(operator I.MagickEvaluateOperator, value float64) bool {
 	return EvaluateImage(m, operator, value)
 }
 
-var EvaluateImageChannel func(m *MagickWand, channel T.ChannelType, op T.MagickEvaluateOperator, value float64) bool
+var EvaluateImageChannel func(m *MagickWand, channel I.ChannelType, op I.MagickEvaluateOperator, value float64) bool
 
-func (m *MagickWand) EvaluateChannel(channel T.ChannelType, op T.MagickEvaluateOperator, value float64) bool {
+func (m *MagickWand) EvaluateChannel(channel I.ChannelType, op I.MagickEvaluateOperator, value float64) bool {
 	return EvaluateImageChannel(m, channel, op, value)
 }
 
-var EvaluateImages func(m *MagickWand, operator T.MagickEvaluateOperator) bool
+var EvaluateImages func(m *MagickWand, operator I.MagickEvaluateOperator) bool
 
-func (m *MagickWand) EvaluateImages(operator T.MagickEvaluateOperator) bool {
+func (m *MagickWand) EvaluateImages(operator I.MagickEvaluateOperator) bool {
 	return EvaluateImages(m, operator)
 }
 
-var ExportImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool
+var ExportImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool
 
-func (m *MagickWand) ExportPixels(x, y int32, columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool {
+func (m *MagickWand) ExportPixels(x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool {
 	return ExportImagePixels(m, x, y, columns, rows, map_, storage, pixels)
 }
 
@@ -465,13 +472,13 @@ func (m *MagickWand) Extent(width, height uint32, x, y int32) bool {
 	return ExtentImage(m, width, height, x, y)
 }
 
-var FilterImage func(m *MagickWand, kernel *T.KernelInfo) bool
+var FilterImage func(m *MagickWand, kernel *I.KernelInfo) bool
 
-func (m *MagickWand) Filter(kernel *T.KernelInfo) bool { return FilterImage(m, kernel) }
+func (m *MagickWand) Filter(kernel *I.KernelInfo) bool { return FilterImage(m, kernel) }
 
-var FilterImageChannel func(m *MagickWand, channel T.ChannelType, kernel *T.KernelInfo) bool
+var FilterImageChannel func(m *MagickWand, channel I.ChannelType, kernel *I.KernelInfo) bool
 
-func (m *MagickWand) FilterChannel(channel T.ChannelType, kernel *T.KernelInfo) bool {
+func (m *MagickWand) FilterChannel(channel I.ChannelType, kernel *I.KernelInfo) bool {
 	return FilterImageChannel(m, channel, kernel)
 }
 
@@ -479,9 +486,9 @@ var FlipImage func(m *MagickWand) bool
 
 func (m *MagickWand) Flip() bool { return FlipImage(m) }
 
-var FloodfillPaintImage func(m *MagickWand, channel T.ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32, invert bool) bool
+var FloodfillPaintImage func(m *MagickWand, channel I.ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32, invert bool) bool
 
-func (m *MagickWand) FloodfillPaint(channel T.ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32, invert bool) bool {
+func (m *MagickWand) FloodfillPaint(channel I.ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32, invert bool) bool {
 	return FloodfillPaintImage(m, channel, fill, fuzz, bordercolor, x, y, invert)
 }
 
@@ -501,15 +508,15 @@ func (m *MagickWand) Frame(matteColor *PixelWand, width, height uint32, innerBev
 	return FrameImage(m, matteColor, width, height, innerBevel, outerBevel)
 }
 
-var FunctionImage func(m *MagickWand, function T.MagickFunction, numberArguments uint32, arguments *float64) bool
+var FunctionImage func(m *MagickWand, function I.MagickFunction, numberArguments uint32, arguments *float64) bool
 
-func (m *MagickWand) Function(function T.MagickFunction, numberArguments uint32, arguments *float64) bool {
+func (m *MagickWand) Function(function I.MagickFunction, numberArguments uint32, arguments *float64) bool {
 	return FunctionImage(m, function, numberArguments, arguments)
 }
 
-var FunctionImageChannel func(m *MagickWand, channel T.ChannelType, function T.MagickFunction, numberArguments uint32, arguments *float64) bool
+var FunctionImageChannel func(m *MagickWand, channel I.ChannelType, function I.MagickFunction, numberArguments uint32, arguments *float64) bool
 
-func (m *MagickWand) FunctionChannel(channel T.ChannelType, function T.MagickFunction, numberArguments uint32, arguments *float64) bool {
+func (m *MagickWand) FunctionChannel(channel I.ChannelType, function I.MagickFunction, numberArguments uint32, arguments *float64) bool {
 	return FunctionImageChannel(m, channel, function, numberArguments, arguments)
 }
 
@@ -517,9 +524,9 @@ var FxImage func(m *MagickWand, expression string) *MagickWand
 
 func (m *MagickWand) Fx(expression string) *MagickWand { return FxImage(m, expression) }
 
-var FxImageChannel func(m *MagickWand, channel T.ChannelType, expression string) *MagickWand
+var FxImageChannel func(m *MagickWand, channel I.ChannelType, expression string) *MagickWand
 
-func (m *MagickWand) FxChannel(channel T.ChannelType, expression string) *MagickWand {
+func (m *MagickWand) FxChannel(channel I.ChannelType, expression string) *MagickWand {
 	return FxImageChannel(m, channel, expression)
 }
 
@@ -527,9 +534,9 @@ var GammaImage func(m *MagickWand, gamma float64) bool
 
 func (m *MagickWand) Gamma(gamma float64) bool { return GammaImage(m, gamma) }
 
-var GammaImageChannel func(m *MagickWand, channel T.ChannelType, gamma float64) bool
+var GammaImageChannel func(m *MagickWand, channel I.ChannelType, gamma float64) bool
 
-func (m *MagickWand) GammaChannel(channel T.ChannelType, gamma float64) bool {
+func (m *MagickWand) GammaChannel(channel I.ChannelType, gamma float64) bool {
 	return GammaImageChannel(m, channel, gamma)
 }
 
@@ -539,9 +546,9 @@ func (m *MagickWand) GaussianBlur(radius, sigma float64) bool {
 	return GaussianBlurImage(m, radius, sigma)
 }
 
-var GaussianBlurImageChannel func(m *MagickWand, channel T.ChannelType, radius, sigma float64) bool
+var GaussianBlurImageChannel func(m *MagickWand, channel I.ChannelType, radius, sigma float64) bool
 
-func (m *MagickWand) GaussianBlurChannel(channel T.ChannelType, radius, sigma float64) bool {
+func (m *MagickWand) GaussianBlurChannel(channel I.ChannelType, radius, sigma float64) bool {
 	return GaussianBlurImageChannel(m, channel, radius, sigma)
 }
 
@@ -553,27 +560,27 @@ var GetBackgroundColor func(m *MagickWand) *PixelWand
 
 func (m *MagickWand) BackgroundColor() *PixelWand { return GetBackgroundColor(m) }
 
-var GetColorspace func(m *MagickWand) T.ColorspaceType
+var GetColorspace func(m *MagickWand) I.ColorspaceType
 
-func (m *MagickWand) Colorspace() T.ColorspaceType { return GetColorspace(m) }
+func (m *MagickWand) Colorspace() I.ColorspaceType { return GetColorspace(m) }
 
-var GetCompression func(m *MagickWand) T.CompressionType
+var GetCompression func(m *MagickWand) I.CompressionType
 
-func (m *MagickWand) Compression() T.CompressionType { return GetCompression(m) }
+func (m *MagickWand) Compression() I.CompressionType { return GetCompression(m) }
 
 var GetCompressionQuality func(m *MagickWand) uint32
 
 func (m *MagickWand) CompressionQuality() uint32 { return GetCompressionQuality(m) }
 
-var GetException func(m *MagickWand, severity *T.ExceptionType) string
+var GetException func(m *MagickWand, severity *I.ExceptionType) string
 
-func (m *MagickWand) Exception(severity *T.ExceptionType) string {
+func (m *MagickWand) Exception(severity *I.ExceptionType) string {
 	return GetException(m, severity)
 }
 
-var GetExceptionType func(m *MagickWand) T.ExceptionType
+var GetExceptionType func(m *MagickWand) I.ExceptionType
 
-func (m *MagickWand) ExceptionType() T.ExceptionType { return GetExceptionType(m) }
+func (m *MagickWand) ExceptionType() I.ExceptionType { return GetExceptionType(m) }
 
 var GetFilename func(m *MagickWand) string
 
@@ -587,9 +594,9 @@ var GetFormat func(m *MagickWand) string
 
 func (m *MagickWand) Format() string { return GetFormat(m) }
 
-var GetGravity func(m *MagickWand) T.GravityType
+var GetGravity func(m *MagickWand) I.GravityType
 
-func (m *MagickWand) Gravity() T.GravityType { return GetGravity(m) }
+func (m *MagickWand) Gravity() I.GravityType { return GetGravity(m) }
 
 var GetImage func(m *MagickWand) *MagickWand
 
@@ -629,51 +636,51 @@ func (m *MagickWand) BorderColor(borderColor *PixelWand) bool {
 	return GetImageBorderColor(m, borderColor)
 }
 
-var GetImageChannelDepth func(m *MagickWand, channel T.ChannelType) uint32
+var GetImageChannelDepth func(m *MagickWand, channel I.ChannelType) uint32
 
-func (m *MagickWand) ChannelDepth(channel T.ChannelType) uint32 {
+func (m *MagickWand) ChannelDepth(channel I.ChannelType) uint32 {
 	return GetImageChannelDepth(m, channel)
 }
 
-var GetImageChannelDistortion func(m *MagickWand, reference *MagickWand, channel T.ChannelType, metric T.MetricType, distortion *float64) bool
+var GetImageChannelDistortion func(m *MagickWand, reference *MagickWand, channel I.ChannelType, metric I.MetricType, distortion *float64) bool
 
-func (m *MagickWand) ChannelDistortion(reference *MagickWand, channel T.ChannelType, metric T.MetricType, distortion *float64) bool {
+func (m *MagickWand) ChannelDistortion(reference *MagickWand, channel I.ChannelType, metric I.MetricType, distortion *float64) bool {
 	return GetImageChannelDistortion(m, reference, channel, metric, distortion)
 }
 
-var GetImageChannelDistortions func(m *MagickWand, reference *MagickWand, metric T.MetricType) []float64
+var GetImageChannelDistortions func(m *MagickWand, reference *MagickWand, metric I.MetricType) []float64
 
-func (m *MagickWand) ChannelDistortions(reference *MagickWand, metric T.MetricType) []float64 {
+func (m *MagickWand) ChannelDistortions(reference *MagickWand, metric I.MetricType) []float64 {
 	return GetImageChannelDistortions(m, reference, metric)
 }
 
-var GetImageChannelFeatures func(m *MagickWand, distance uint32) []T.ChannelFeatures
+var GetImageChannelFeatures func(m *MagickWand, distance uint32) []I.ChannelFeatures
 
-func (m *MagickWand) ChannelFeatures(distance uint32) []T.ChannelFeatures {
+func (m *MagickWand) ChannelFeatures(distance uint32) []I.ChannelFeatures {
 	return GetImageChannelFeatures(m, distance)
 }
 
-var GetImageChannelKurtosis func(m *MagickWand, channel T.ChannelType, kurtosis, skewness *float64) bool
+var GetImageChannelKurtosis func(m *MagickWand, channel I.ChannelType, kurtosis, skewness *float64) bool
 
-func (m *MagickWand) ChannelKurtosis(channel T.ChannelType, kurtosis, skewness *float64) bool {
+func (m *MagickWand) ChannelKurtosis(channel I.ChannelType, kurtosis, skewness *float64) bool {
 	return GetImageChannelKurtosis(m, channel, kurtosis, skewness)
 }
 
-var GetImageChannelMean func(m *MagickWand, channel T.ChannelType, mean, standardDeviation *float64) bool
+var GetImageChannelMean func(m *MagickWand, channel I.ChannelType, mean, standardDeviation *float64) bool
 
-func (m *MagickWand) ChannelMean(channel T.ChannelType, mean, standardDeviation *float64) bool {
+func (m *MagickWand) ChannelMean(channel I.ChannelType, mean, standardDeviation *float64) bool {
 	return GetImageChannelMean(m, channel, mean, standardDeviation)
 }
 
-var GetImageChannelRange func(m *MagickWand, channel T.ChannelType, minima, maxima *float64) bool
+var GetImageChannelRange func(m *MagickWand, channel I.ChannelType, minima, maxima *float64) bool
 
-func (m *MagickWand) ChannelRange(channel T.ChannelType, minima, maxima *float64) bool {
+func (m *MagickWand) ChannelRange(channel I.ChannelType, minima, maxima *float64) bool {
 	return GetImageChannelRange(m, channel, minima, maxima)
 }
 
-var GetImageChannelStatistics func(m *MagickWand) []T.ChannelStatistics
+var GetImageChannelStatistics func(m *MagickWand) []I.ChannelStatistics
 
-func (m *MagickWand) ChannelStatistics() []T.ChannelStatistics {
+func (m *MagickWand) ChannelStatistics() []I.ChannelStatistics {
 	return GetImageChannelStatistics(m)
 }
 
@@ -691,17 +698,17 @@ var GetImageColors func(m *MagickWand) uint32
 
 func (m *MagickWand) Colors() uint32 { return GetImageColors(m) }
 
-var GetImageColorspace func(m *MagickWand) T.ColorspaceType
+var GetImageColorspace func(m *MagickWand) I.ColorspaceType
 
-func (m *MagickWand) ImageColorspace() T.ColorspaceType { return GetImageColorspace(m) }
+func (m *MagickWand) ImageColorspace() I.ColorspaceType { return GetImageColorspace(m) }
 
-var GetImageCompose func(m *MagickWand) T.CompositeOperator
+var GetImageCompose func(m *MagickWand) I.CompositeOperator
 
-func (m *MagickWand) Compose() T.CompositeOperator { return GetImageCompose(m) }
+func (m *MagickWand) Compose() I.CompositeOperator { return GetImageCompose(m) }
 
-var GetImageCompression func(m *MagickWand) T.CompressionType
+var GetImageCompression func(m *MagickWand) I.CompressionType
 
-func (m *MagickWand) ImageCompression() T.CompressionType { return GetImageCompression(m) }
+func (m *MagickWand) ImageCompression() I.CompressionType { return GetImageCompression(m) }
 
 var GetImageCompressionQuality func(m *MagickWand) uint32
 
@@ -715,13 +722,13 @@ var GetImageDepth func(m *MagickWand) uint32
 
 func (m *MagickWand) Depth() uint32 { return GetImageDepth(m) }
 
-var GetImageDispose func(m *MagickWand) T.DisposeType
+var GetImageDispose func(m *MagickWand) I.DisposeType
 
-func (m *MagickWand) Dispose() T.DisposeType { return GetImageDispose(m) }
+func (m *MagickWand) Dispose() I.DisposeType { return GetImageDispose(m) }
 
-var GetImageDistortion func(m *MagickWand, reference *MagickWand, metric T.MetricType, distortion *float64) bool
+var GetImageDistortion func(m *MagickWand, reference *MagickWand, metric I.MetricType, distortion *float64) bool
 
-func (m *MagickWand) Distortion(reference *MagickWand, metric T.MetricType, distortion *float64) bool {
+func (m *MagickWand) Distortion(reference *MagickWand, metric I.MetricType, distortion *float64) bool {
 	return GetImageDistortion(m, reference, metric, distortion)
 }
 
@@ -741,9 +748,9 @@ var GetImageGamma func(m *MagickWand) float64
 
 func (m *MagickWand) ImageGamma() float64 { return GetImageGamma(m) }
 
-var GetImageGravity func(m *MagickWand) T.GravityType
+var GetImageGravity func(m *MagickWand) I.GravityType
 
-func (m *MagickWand) ImageGravity() T.GravityType { return GetImageGravity(m) }
+func (m *MagickWand) ImageGravity() I.GravityType { return GetImageGravity(m) }
 
 var GetImageGreenPrimary func(m *MagickWand, x, y *float64) bool
 
@@ -759,13 +766,13 @@ func (m *MagickWand) Histogram(numberColors *uint32) []*PixelWand {
 	return GetImageHistogram(m, numberColors)
 }
 
-var GetImageInterlaceScheme func(m *MagickWand) T.InterlaceType
+var GetImageInterlaceScheme func(m *MagickWand) I.InterlaceType
 
-func (m *MagickWand) ImageInterlaceScheme() T.InterlaceType { return GetImageInterlaceScheme(m) }
+func (m *MagickWand) ImageInterlaceScheme() I.InterlaceType { return GetImageInterlaceScheme(m) }
 
-var GetImageInterpolateMethod func(m *MagickWand) T.InterpolatePixelMethod
+var GetImageInterpolateMethod func(m *MagickWand) I.InterpolatePixelMethod
 
-func (m *MagickWand) ImageInterpolateMethod() T.InterpolatePixelMethod {
+func (m *MagickWand) ImageInterpolateMethod() I.InterpolatePixelMethod {
 	return GetImageInterpolateMethod(m)
 }
 
@@ -773,9 +780,9 @@ var GetImageIterations func(m *MagickWand) uint32
 
 func (m *MagickWand) Iterations() uint32 { return GetImageIterations(m) }
 
-var GetImageLength func(m *MagickWand, length *T.MagickSizeType) bool
+var GetImageLength func(m *MagickWand, length *I.MagickSizeType) bool
 
-func (m *MagickWand) Length(length *T.MagickSizeType) bool {
+func (m *MagickWand) Length(length *I.MagickSizeType) bool {
 	return GetImageLength(m, length)
 }
 
@@ -785,9 +792,9 @@ func (m *MagickWand) MatteColor(matteColor *PixelWand) bool {
 	return GetImageMatteColor(m, matteColor)
 }
 
-var GetImageOrientation func(m *MagickWand) T.OrientationType
+var GetImageOrientation func(m *MagickWand) I.OrientationType
 
-func (m *MagickWand) ImageOrientation() T.OrientationType { return GetImageOrientation(m) }
+func (m *MagickWand) ImageOrientation() I.OrientationType { return GetImageOrientation(m) }
 
 var GetImagePage func(m *MagickWand, width, height *uint32, x, y *int32) bool
 
@@ -833,9 +840,9 @@ func (m *MagickWand) Region(width, height uint32, x, y int32) *MagickWand {
 	return GetImageRegion(m, width, height, x, y)
 }
 
-var GetImageRenderingIntent func(m *MagickWand) T.RenderingIntent
+var GetImageRenderingIntent func(m *MagickWand) I.RenderingIntent
 
-func (m *MagickWand) RenderingIntent() T.RenderingIntent { return GetImageRenderingIntent(m) }
+func (m *MagickWand) RenderingIntent() I.RenderingIntent { return GetImageRenderingIntent(m) }
 
 var GetImageResolution func(m *MagickWand, x, y *float64) bool
 
@@ -861,17 +868,17 @@ var GetImageTotalInkDensity func(m *MagickWand) float64
 
 func (m *MagickWand) TotalInkDensity() float64 { return GetImageTotalInkDensity(m) }
 
-var GetImageType func(m *MagickWand) T.ImageType
+var GetImageType func(m *MagickWand) I.ImageType
 
-func (m *MagickWand) ImageType() T.ImageType { return GetImageType(m) }
+func (m *MagickWand) ImageType() I.ImageType { return GetImageType(m) }
 
-var GetImageUnits func(m *MagickWand) T.ResolutionType
+var GetImageUnits func(m *MagickWand) I.ResolutionType
 
-func (m *MagickWand) ImageUnits() T.ResolutionType { return GetImageUnits(m) }
+func (m *MagickWand) ImageUnits() I.ResolutionType { return GetImageUnits(m) }
 
-var GetImageVirtualPixelMethod func(m *MagickWand) T.VirtualPixelMethod
+var GetImageVirtualPixelMethod func(m *MagickWand) I.VirtualPixelMethod
 
-func (m *MagickWand) ImageVirtualPixelMethod() T.VirtualPixelMethod {
+func (m *MagickWand) ImageVirtualPixelMethod() I.VirtualPixelMethod {
 	return GetImageVirtualPixelMethod(m)
 }
 
@@ -883,13 +890,13 @@ var GetImageWidth func(m *MagickWand) uint32
 
 func (m *MagickWand) ImageWidth() uint32 { return GetImageWidth(m) }
 
-var GetInterlaceScheme func(m *MagickWand) T.InterlaceType
+var GetInterlaceScheme func(m *MagickWand) I.InterlaceType
 
-func (m *MagickWand) InterlaceScheme() T.InterlaceType { return GetInterlaceScheme(m) }
+func (m *MagickWand) InterlaceScheme() I.InterlaceType { return GetInterlaceScheme(m) }
 
-var GetInterpolateMethod func(m *MagickWand) T.InterpolatePixelMethod
+var GetInterpolateMethod func(m *MagickWand) I.InterpolatePixelMethod
 
-func (m *MagickWand) InterpolateMethod() T.InterpolatePixelMethod {
+func (m *MagickWand) InterpolateMethod() I.InterpolatePixelMethod {
 	return GetInterpolateMethod(m)
 }
 
@@ -911,9 +918,9 @@ func (m *MagickWand) Options(pattern, numberOptions *uint32) string {
 	return GetOptions(m, pattern, numberOptions)
 }
 
-var GetOrientation func(m *MagickWand) T.OrientationType
+var GetOrientation func(m *MagickWand) I.OrientationType
 
-func (m *MagickWand) Orientation() T.OrientationType { return GetOrientation(m) }
+func (m *MagickWand) Orientation() I.OrientationType { return GetOrientation(m) }
 
 var GetPage func(m *MagickWand, width, height *uint32, x, y *int32) bool
 
@@ -943,9 +950,9 @@ var GetSizeOffset func(m *MagickWand, offset *int32) bool
 
 func (m *MagickWand) SizeOffset(offset *int32) bool { return GetSizeOffset(m, offset) }
 
-var GetType func(m *MagickWand) T.ImageType
+var GetType func(m *MagickWand) I.ImageType
 
-func (m *MagickWand) Type() T.ImageType { return GetType(m) }
+func (m *MagickWand) Type() I.ImageType { return GetType(m) }
 
 var HaldClutImage func(m *MagickWand, haldWand *MagickWand) bool
 
@@ -953,9 +960,9 @@ func (m *MagickWand) HaldClut(haldWand *MagickWand) bool {
 	return HaldClutImage(m, haldWand)
 }
 
-var HaldClutImageChannel func(m *MagickWand, channel T.ChannelType, haldWand *MagickWand) bool
+var HaldClutImageChannel func(m *MagickWand, channel I.ChannelType, haldWand *MagickWand) bool
 
-func (m *MagickWand) HaldClutChannel(channel T.ChannelType, haldWand *MagickWand) bool {
+func (m *MagickWand) HaldClutChannel(channel I.ChannelType, haldWand *MagickWand) bool {
 	return HaldClutImageChannel(m, channel, haldWand)
 }
 
@@ -975,9 +982,9 @@ var ImplodeImage func(m *MagickWand, radius float64) bool
 
 func (m *MagickWand) Implode(radius float64) bool { return ImplodeImage(m, radius) }
 
-var ImportImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool
+var ImportImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool
 
-func (m *MagickWand) ImportPixels(x, y int32, columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool {
+func (m *MagickWand) ImportPixels(x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool {
 	return ImportImagePixels(m, x, y, columns, rows, map_, storage, pixels)
 }
 
@@ -997,9 +1004,9 @@ func (m *MagickWand) Level(blackPoint, gamma, whitePoint float64) bool {
 	return LevelImage(m, blackPoint, gamma, whitePoint)
 }
 
-var LevelImageChannel func(m *MagickWand, channel T.ChannelType, blackPoint, gamma, whitePoint float64) bool
+var LevelImageChannel func(m *MagickWand, channel I.ChannelType, blackPoint, gamma, whitePoint float64) bool
 
-func (m *MagickWand) LevelChannel(channel T.ChannelType, blackPoint, gamma, whitePoint float64) bool {
+func (m *MagickWand) LevelChannel(channel I.ChannelType, blackPoint, gamma, whitePoint float64) bool {
 	return LevelImageChannel(m, channel, blackPoint, gamma, whitePoint)
 }
 
@@ -1019,9 +1026,9 @@ func (m *MagickWand) Map(mapWand *MagickWand, dither bool) bool {
 	return MapImage(m, mapWand, dither)
 }
 
-var MergeImageLayers func(m *MagickWand, method T.ImageLayerMethod) *MagickWand
+var MergeImageLayers func(m *MagickWand, method I.ImageLayerMethod) *MagickWand
 
-func (m *MagickWand) MergeLayers(method T.ImageLayerMethod) *MagickWand {
+func (m *MagickWand) MergeLayers(method I.ImageLayerMethod) *MagickWand {
 	return MergeImageLayers(m, method)
 }
 
@@ -1035,9 +1042,9 @@ func (m *MagickWand) Modulate(brightness, saturation, hue float64) bool {
 	return ModulateImage(m, brightness, saturation, hue)
 }
 
-var MontageImage func(m *MagickWand, drawingWand DrawingWand, tileGeometry, thumbnailGeometry string, mode T.MontageMode, frame string) *MagickWand
+var MontageImage func(m *MagickWand, drawingWand DrawingWand, tileGeometry, thumbnailGeometry string, mode I.MontageMode, frame string) *MagickWand
 
-func (m *MagickWand) Montage(drawingWand DrawingWand, tileGeometry, thumbnailGeometry string, mode T.MontageMode, frame string) *MagickWand {
+func (m *MagickWand) Montage(drawingWand DrawingWand, tileGeometry, thumbnailGeometry string, mode I.MontageMode, frame string) *MagickWand {
 	return MontageImage(m, drawingWand, tileGeometry, thumbnailGeometry, mode, frame)
 }
 
@@ -1047,15 +1054,15 @@ func (m *MagickWand) Morph(numberFrames uint32) *MagickWand {
 	return MorphImages(m, numberFrames)
 }
 
-var MorphologyImage func(m *MagickWand, method T.MorphologyMethod, iterations int32, kernel *T.KernelInfo) bool
+var MorphologyImage func(m *MagickWand, method I.MorphologyMethod, iterations int32, kernel *I.KernelInfo) bool
 
-func (m *MagickWand) Morphology(method T.MorphologyMethod, iterations int32, kernel *T.KernelInfo) bool {
+func (m *MagickWand) Morphology(method I.MorphologyMethod, iterations int32, kernel *I.KernelInfo) bool {
 	return MorphologyImage(m, method, iterations, kernel)
 }
 
-var MorphologyImageChannel func(m *MagickWand, channel T.ChannelType, method T.MorphologyMethod, iterations int32, kernel *T.KernelInfo) bool
+var MorphologyImageChannel func(m *MagickWand, channel I.ChannelType, method I.MorphologyMethod, iterations int32, kernel *I.KernelInfo) bool
 
-func (m *MagickWand) MorphologyChannel(channel T.ChannelType, method T.MorphologyMethod, iterations int32, kernel *T.KernelInfo) bool {
+func (m *MagickWand) MorphologyChannel(channel I.ChannelType, method I.MorphologyMethod, iterations int32, kernel *I.KernelInfo) bool {
 	return MorphologyImageChannel(m, channel, method, iterations, kernel)
 }
 
@@ -1065,9 +1072,9 @@ func (m *MagickWand) MotionBlur(radius, sigma, angle float64) bool {
 	return MotionBlurImage(m, radius, sigma, angle)
 }
 
-var MotionBlurImageChannel func(m *MagickWand, channel T.ChannelType, radius, sigma, angle float64) bool
+var MotionBlurImageChannel func(m *MagickWand, channel I.ChannelType, radius, sigma, angle float64) bool
 
-func (m *MagickWand) MotionBlurChannel(channel T.ChannelType, radius, sigma, angle float64) bool {
+func (m *MagickWand) MotionBlurChannel(channel I.ChannelType, radius, sigma, angle float64) bool {
 	return MotionBlurImageChannel(m, channel, radius, sigma, angle)
 }
 
@@ -1075,9 +1082,9 @@ var NegateImage func(m *MagickWand, gray bool) bool
 
 func (m *MagickWand) Negate(gray bool) bool { return NegateImage(m, gray) }
 
-var NegateImageChannel func(m *MagickWand, channel T.ChannelType, gray bool) bool
+var NegateImageChannel func(m *MagickWand, channel I.ChannelType, gray bool) bool
 
-func (m *MagickWand) NegateChannel(channel T.ChannelType, gray bool) bool {
+func (m *MagickWand) NegateChannel(channel I.ChannelType, gray bool) bool {
 	return NegateImageChannel(m, channel, gray)
 }
 
@@ -1095,9 +1102,9 @@ var NormalizeImage func(m *MagickWand) bool
 
 func (m *MagickWand) Normalize() bool { return NormalizeImage(m) }
 
-var NormalizeImageChannel func(m *MagickWand, channel T.ChannelType) bool
+var NormalizeImageChannel func(m *MagickWand, channel I.ChannelType) bool
 
-func (m *MagickWand) NormalizeChannel(channel T.ChannelType) bool {
+func (m *MagickWand) NormalizeChannel(channel I.ChannelType) bool {
 	return NormalizeImageChannel(m, channel)
 }
 
@@ -1111,9 +1118,9 @@ func (m *MagickWand) OpaquePaint(target, fill *PixelWand, fuzz float64, invert b
 	return OpaquePaintImage(m, target, fill, fuzz, invert)
 }
 
-var OpaquePaintImageChannel func(m *MagickWand, channel T.ChannelType, target, fill *PixelWand, fuzz float64, invert bool) bool
+var OpaquePaintImageChannel func(m *MagickWand, channel I.ChannelType, target, fill *PixelWand, fuzz float64, invert bool) bool
 
-func (m *MagickWand) OpaquePaintChannel(channel T.ChannelType, target, fill *PixelWand, fuzz float64, invert bool) bool {
+func (m *MagickWand) OpaquePaintChannel(channel I.ChannelType, target, fill *PixelWand, fuzz float64, invert bool) bool {
 	return OpaquePaintImageChannel(m, channel, target, fill, fuzz, invert)
 }
 
@@ -1127,15 +1134,15 @@ func (m *MagickWand) OrderedPosterize(thresholdMap string) bool {
 	return OrderedPosterizeImage(m, thresholdMap)
 }
 
-var OrderedPosterizeImageChannel func(m *MagickWand, channel T.ChannelType, thresholdMap string) bool
+var OrderedPosterizeImageChannel func(m *MagickWand, channel I.ChannelType, thresholdMap string) bool
 
-func (m *MagickWand) OrderedPosterizeChannel(channel T.ChannelType, thresholdMap string) bool {
+func (m *MagickWand) OrderedPosterizeChannel(channel I.ChannelType, thresholdMap string) bool {
 	return OrderedPosterizeImageChannel(m, channel, thresholdMap)
 }
 
-var PaintOpaqueImageChannel func(m *MagickWand, channel T.ChannelType, target, fill *PixelWand, fuzz float64) bool
+var PaintOpaqueImageChannel func(m *MagickWand, channel I.ChannelType, target, fill *PixelWand, fuzz float64) bool
 
-func (m *MagickWand) PaintOpaqueChannel(channel T.ChannelType, target, fill *PixelWand, fuzz float64) bool {
+func (m *MagickWand) PaintOpaqueChannel(channel I.ChannelType, target, fill *PixelWand, fuzz float64) bool {
 	return PaintOpaqueImageChannel(m, channel, target, fill, fuzz)
 }
 
@@ -1143,9 +1150,9 @@ var PingImage func(m *MagickWand, filename string) bool
 
 func (m *MagickWand) Ping(filename string) bool { return PingImage(m, filename) }
 
-var PingImageBlob func(m *MagickWand, blob *T.Void, length uint32) bool
+var PingImageBlob func(m *MagickWand, blob *I.Void, length uint32) bool
 
-func (m *MagickWand) PingBlob(blob *T.Void, length uint32) bool {
+func (m *MagickWand) PingBlob(blob *I.Void, length uint32) bool {
 	return PingImageBlob(m, blob, length)
 }
 
@@ -1165,9 +1172,9 @@ func (m *MagickWand) Posterize(levels uint32, dither bool) bool {
 	return PosterizeImage(m, levels, dither)
 }
 
-var PreviewImages func(m *MagickWand, preview T.PreviewType) *MagickWand
+var PreviewImages func(m *MagickWand, preview I.PreviewType) *MagickWand
 
-func (m *MagickWand) PreviewImages(preview T.PreviewType) *MagickWand {
+func (m *MagickWand) PreviewImages(preview I.PreviewType) *MagickWand {
 	return PreviewImages(m, preview)
 }
 
@@ -1175,21 +1182,21 @@ var PreviousImage func(m *MagickWand) bool
 
 func (m *MagickWand) Previous() bool { return PreviousImage(m) }
 
-var ProfileImage func(m *MagickWand, name string, profile *T.Void, length uint32) bool
+var ProfileImage func(m *MagickWand, name string, profile *I.Void, length uint32) bool
 
-func (m *MagickWand) ProfileImage(name string, profile *T.Void, length uint32) bool {
+func (m *MagickWand) ProfileImage(name string, profile *I.Void, length uint32) bool {
 	return ProfileImage(m, name, profile, length)
 }
 
-var QuantizeImage func(m *MagickWand, numberColors uint32, colorspace T.ColorspaceType, treedepth uint32, dither, measureError bool) bool
+var QuantizeImage func(m *MagickWand, numberColors uint32, colorspace I.ColorspaceType, treedepth uint32, dither, measureError bool) bool
 
-func (m *MagickWand) Quantize(numberColors uint32, colorspace T.ColorspaceType, treedepth uint32, dither, measureError bool) bool {
+func (m *MagickWand) Quantize(numberColors uint32, colorspace I.ColorspaceType, treedepth uint32, dither, measureError bool) bool {
 	return QuantizeImage(m, numberColors, colorspace, treedepth, dither, measureError)
 }
 
-var QuantizeImages func(m *MagickWand, numberColors uint32, colorspace T.ColorspaceType, treedepth uint32, dither, measureError bool) bool
+var QuantizeImages func(m *MagickWand, numberColors uint32, colorspace I.ColorspaceType, treedepth uint32, dither, measureError bool) bool
 
-func (m *MagickWand) QuantizeImages(numberColors uint32, colorspace T.ColorspaceType, treedepth uint32, dither, measureError bool) bool {
+func (m *MagickWand) QuantizeImages(numberColors uint32, colorspace I.ColorspaceType, treedepth uint32, dither, measureError bool) bool {
 	return QuantizeImages(m, numberColors, colorspace, treedepth, dither, measureError)
 }
 
@@ -1209,9 +1216,9 @@ var RadialBlurImage func(m *MagickWand, angle float64) bool
 
 func (m *MagickWand) RadialBlur(angle float64) bool { return RadialBlurImage(m, angle) }
 
-var RadialBlurImageChannel func(m *MagickWand, channel T.ChannelType, angle float64) bool
+var RadialBlurImageChannel func(m *MagickWand, channel I.ChannelType, angle float64) bool
 
-func (m *MagickWand) RadialBlurChannel(channel T.ChannelType, angle float64) bool {
+func (m *MagickWand) RadialBlurChannel(channel I.ChannelType, angle float64) bool {
 	return RadialBlurImageChannel(m, channel, angle)
 }
 
@@ -1227,9 +1234,9 @@ func (m *MagickWand) RandomThreshold(low, high float64) bool {
 	return RandomThresholdImage(m, low, high)
 }
 
-var RandomThresholdImageChannel func(m *MagickWand, channel T.ChannelType, low, high float64) bool
+var RandomThresholdImageChannel func(m *MagickWand, channel I.ChannelType, low, high float64) bool
 
-func (m *MagickWand) RandomThresholdChannel(channel T.ChannelType, low, high float64) bool {
+func (m *MagickWand) RandomThresholdChannel(channel I.ChannelType, low, high float64) bool {
 	return RandomThresholdImageChannel(m, channel, low, high)
 }
 
@@ -1247,9 +1254,9 @@ var ReadImageFile func(m *MagickWand, file *FILE) bool
 
 func (m *MagickWand) ReadFile(file *FILE) bool { return ReadImageFile(m, file) }
 
-var RemapImage func(m *MagickWand, remapWand *MagickWand, method T.DitherMethod) bool
+var RemapImage func(m *MagickWand, remapWand *MagickWand, method I.DitherMethod) bool
 
-func (m *MagickWand) Remap(remapWand *MagickWand, method T.DitherMethod) bool {
+func (m *MagickWand) Remap(remapWand *MagickWand, method I.DitherMethod) bool {
 	return RemapImage(m, remapWand, method)
 }
 
@@ -1263,9 +1270,9 @@ func (m *MagickWand) RemoveProfile(name string, length *uint32) []byte {
 	return RemoveImageProfile(m, name, length)
 }
 
-var ResampleImage func(m *MagickWand, xResolution, yResolution float64, filter T.FilterTypes, blur float64) bool
+var ResampleImage func(m *MagickWand, xResolution, yResolution float64, filter I.FilterTypes, blur float64) bool
 
-func (m *MagickWand) Resample(xResolution, yResolution float64, filter T.FilterTypes, blur float64) bool {
+func (m *MagickWand) Resample(xResolution, yResolution float64, filter I.FilterTypes, blur float64) bool {
 	return ResampleImage(m, xResolution, yResolution, filter, blur)
 }
 
@@ -1277,9 +1284,9 @@ var ResetIterator func(m *MagickWand)
 
 func (m *MagickWand) ResetIterator() { ResetIterator(m) }
 
-var ResizeImage func(m *MagickWand, columns, rows uint32, filter T.FilterTypes, blur float64) bool
+var ResizeImage func(m *MagickWand, columns, rows uint32, filter I.FilterTypes, blur float64) bool
 
-func (m *MagickWand) Resize(columns, rows uint32, filter T.FilterTypes, blur float64) bool {
+func (m *MagickWand) Resize(columns, rows uint32, filter I.FilterTypes, blur float64) bool {
 	return ResizeImage(m, columns, rows, filter, blur)
 }
 
@@ -1303,9 +1310,9 @@ var ScaleImage func(m *MagickWand, columns, rows uint32) bool
 
 func (m *MagickWand) Scale(columns, rows uint32) bool { return ScaleImage(m, columns, rows) }
 
-var SegmentImage func(m *MagickWand, colorspace T.ColorspaceType, verbose bool, clusterThreshold, smoothThreshold float64) bool
+var SegmentImage func(m *MagickWand, colorspace I.ColorspaceType, verbose bool, clusterThreshold, smoothThreshold float64) bool
 
-func (m *MagickWand) Segment(colorspace T.ColorspaceType, verbose bool, clusterThreshold, smoothThreshold float64) bool {
+func (m *MagickWand) Segment(colorspace I.ColorspaceType, verbose bool, clusterThreshold, smoothThreshold float64) bool {
 	return SegmentImage(m, colorspace, verbose, clusterThreshold, smoothThreshold)
 }
 
@@ -1315,15 +1322,15 @@ func (m *MagickWand) SelectiveBlur(radius, sigma, threshold float64) bool {
 	return SelectiveBlurImage(m, radius, sigma, threshold)
 }
 
-var SelectiveBlurImageChannel func(m *MagickWand, channel T.ChannelType, radius, sigma, threshold float64) bool
+var SelectiveBlurImageChannel func(m *MagickWand, channel I.ChannelType, radius, sigma, threshold float64) bool
 
-func (m *MagickWand) SelectiveBlurChannel(channel T.ChannelType, radius, sigma, threshold float64) bool {
+func (m *MagickWand) SelectiveBlurChannel(channel I.ChannelType, radius, sigma, threshold float64) bool {
 	return SelectiveBlurImageChannel(m, channel, radius, sigma, threshold)
 }
 
-var SeparateImageChannel func(m *MagickWand, channel T.ChannelType) bool
+var SeparateImageChannel func(m *MagickWand, channel I.ChannelType) bool
 
-func (m *MagickWand) SeparateChannel(channel T.ChannelType) bool {
+func (m *MagickWand) SeparateChannel(channel I.ChannelType) bool {
 	return SeparateImageChannel(m, channel)
 }
 
@@ -1343,15 +1350,15 @@ func (m *MagickWand) SetBackgroundColor(background *PixelWand) bool {
 	return SetBackgroundColor(m, background)
 }
 
-var SetColorspace func(m *MagickWand, colorspace T.ColorspaceType) bool
+var SetColorspace func(m *MagickWand, colorspace I.ColorspaceType) bool
 
-func (m *MagickWand) SetColorspace(colorspace T.ColorspaceType) bool {
+func (m *MagickWand) SetColorspace(colorspace I.ColorspaceType) bool {
 	return SetColorspace(m, colorspace)
 }
 
-var SetCompression func(m *MagickWand, compression T.CompressionType) bool
+var SetCompression func(m *MagickWand, compression I.CompressionType) bool
 
-func (m *MagickWand) SetCompression(compression T.CompressionType) bool {
+func (m *MagickWand) SetCompression(compression I.CompressionType) bool {
 	return SetCompression(m, compression)
 }
 
@@ -1385,17 +1392,17 @@ var SetFormat func(m *MagickWand, format string) bool
 
 func (m *MagickWand) SetFormat(format string) bool { return SetFormat(m, format) }
 
-var SetGravity func(m *MagickWand, type_ T.GravityType) bool
+var SetGravity func(m *MagickWand, type_ I.GravityType) bool
 
-func (m *MagickWand) SetGravity(type_ T.GravityType) bool { return SetGravity(m, type_) }
+func (m *MagickWand) SetGravity(type_ I.GravityType) bool { return SetGravity(m, type_) }
 
 var SetImage func(m *MagickWand, setWand *MagickWand) bool
 
 func (m *MagickWand) SetImage(setWand *MagickWand) bool { return SetImage(m, setWand) }
 
-var SetImageAlphaChannel func(m *MagickWand, alphaType T.AlphaChannelType) bool
+var SetImageAlphaChannel func(m *MagickWand, alphaType I.AlphaChannelType) bool
 
-func (m *MagickWand) SetAlphaChannel(alphaType T.AlphaChannelType) bool {
+func (m *MagickWand) SetAlphaChannel(alphaType I.AlphaChannelType) bool {
 	return SetImageAlphaChannel(m, alphaType)
 }
 
@@ -1427,9 +1434,9 @@ func (m *MagickWand) SetBorderColor(border *PixelWand) bool {
 	return SetImageBorderColor(m, border)
 }
 
-var SetImageChannelDepth func(m *MagickWand, channel T.ChannelType, depth uint32) bool
+var SetImageChannelDepth func(m *MagickWand, channel I.ChannelType, depth uint32) bool
 
-func (m *MagickWand) SetChannelDepth(channel T.ChannelType, depth uint32) bool {
+func (m *MagickWand) SetChannelDepth(channel I.ChannelType, depth uint32) bool {
 	return SetImageChannelDepth(m, channel, depth)
 }
 
@@ -1449,21 +1456,21 @@ func (m *MagickWand) SetColormapColor(index uint32, color *PixelWand) bool {
 	return SetImageColormapColor(m, index, color)
 }
 
-var SetImageColorspace func(m *MagickWand, colorspace T.ColorspaceType) bool
+var SetImageColorspace func(m *MagickWand, colorspace I.ColorspaceType) bool
 
-func (m *MagickWand) SetImageColorspace(colorspace T.ColorspaceType) bool {
+func (m *MagickWand) SetImageColorspace(colorspace I.ColorspaceType) bool {
 	return SetImageColorspace(m, colorspace)
 }
 
-var SetImageCompose func(m *MagickWand, compose T.CompositeOperator) bool
+var SetImageCompose func(m *MagickWand, compose I.CompositeOperator) bool
 
-func (m *MagickWand) SetCompose(compose T.CompositeOperator) bool {
+func (m *MagickWand) SetCompose(compose I.CompositeOperator) bool {
 	return SetImageCompose(m, compose)
 }
 
-var SetImageCompression func(m *MagickWand, compression T.CompressionType) bool
+var SetImageCompression func(m *MagickWand, compression I.CompressionType) bool
 
-func (m *MagickWand) SetImageCompression(compression T.CompressionType) bool {
+func (m *MagickWand) SetImageCompression(compression I.CompressionType) bool {
 	return SetImageCompression(m, compression)
 }
 
@@ -1481,15 +1488,15 @@ var SetImageDepth func(m *MagickWand, depth uint32) bool
 
 func (m *MagickWand) SetImageDepth(depth uint32) bool { return SetImageDepth(m, depth) }
 
-var SetImageDispose func(m *MagickWand, dispose T.DisposeType) bool
+var SetImageDispose func(m *MagickWand, dispose I.DisposeType) bool
 
-func (m *MagickWand) SetDispose(dispose T.DisposeType) bool {
+func (m *MagickWand) SetDispose(dispose I.DisposeType) bool {
 	return SetImageDispose(m, dispose)
 }
 
-var SetImageEndian func(m *MagickWand, endian T.EndianType) bool
+var SetImageEndian func(m *MagickWand, endian I.EndianType) bool
 
-func (m *MagickWand) SetEndian(endian T.EndianType) bool { return SetImageEndian(m, endian) }
+func (m *MagickWand) SetEndian(endian I.EndianType) bool { return SetImageEndian(m, endian) }
 
 var SetImageExtent func(m *MagickWand, columns uint32, rows uint) bool
 
@@ -1515,9 +1522,9 @@ var SetImageGamma func(m *MagickWand, gamma float64) bool
 
 func (m *MagickWand) SetGamma(gamma float64) bool { return SetImageGamma(m, gamma) }
 
-var SetImageGravity func(m *MagickWand, gravity T.GravityType) bool
+var SetImageGravity func(m *MagickWand, gravity I.GravityType) bool
 
-func (m *MagickWand) SetImageGravity(gravity T.GravityType) bool {
+func (m *MagickWand) SetImageGravity(gravity I.GravityType) bool {
 	return SetImageGravity(m, gravity)
 }
 
@@ -1527,15 +1534,15 @@ func (m *MagickWand) SetGreenPrimary(x, y float64) bool {
 	return SetImageGreenPrimary(m, x, y)
 }
 
-var SetImageInterlaceScheme func(m *MagickWand, interlace T.InterlaceType) bool
+var SetImageInterlaceScheme func(m *MagickWand, interlace I.InterlaceType) bool
 
-func (m *MagickWand) SetImageInterlaceScheme(interlace T.InterlaceType) bool {
+func (m *MagickWand) SetImageInterlaceScheme(interlace I.InterlaceType) bool {
 	return SetImageInterlaceScheme(m, interlace)
 }
 
-var SetImageInterpolateMethod func(m *MagickWand, method T.InterpolatePixelMethod) bool
+var SetImageInterpolateMethod func(m *MagickWand, method I.InterpolatePixelMethod) bool
 
-func (m *MagickWand) SetImageInterpolateMethod(method T.InterpolatePixelMethod) bool {
+func (m *MagickWand) SetImageInterpolateMethod(method I.InterpolatePixelMethod) bool {
 	return SetImageInterpolateMethod(m, method)
 }
 
@@ -1559,9 +1566,9 @@ var SetImageOpacity func(m *MagickWand, alpha float64) bool
 
 func (m *MagickWand) SetOpacity(alpha float64) bool { return SetImageOpacity(m, alpha) }
 
-var SetImageOrientation func(m *MagickWand, orientation T.OrientationType) bool
+var SetImageOrientation func(m *MagickWand, orientation I.OrientationType) bool
 
-func (m *MagickWand) SetImageOrientation(orientation T.OrientationType) bool {
+func (m *MagickWand) SetImageOrientation(orientation I.OrientationType) bool {
 	return SetImageOrientation(m, orientation)
 }
 
@@ -1571,15 +1578,15 @@ func (m *MagickWand) SetImagePage(width, height uint32, x, y int32) bool {
 	return SetImagePage(m, width, height, x, y)
 }
 
-var SetImageProfile func(m *MagickWand, name string, profile *T.Void, length uint32) bool
+var SetImageProfile func(m *MagickWand, name string, profile *I.Void, length uint32) bool
 
-func (m *MagickWand) SetImageProfile(name string, profile *T.Void, length uint32) bool {
+func (m *MagickWand) SetImageProfile(name string, profile *I.Void, length uint32) bool {
 	return SetImageProfile(m, name, profile, length)
 }
 
-var SetImageProgressMonitor func(m *MagickWand, progressMonitor, clientData *T.Void) T.MagickProgressMonitor
+var SetImageProgressMonitor func(m *MagickWand, progressMonitor, clientData *I.Void) I.MagickProgressMonitor
 
-func (m *MagickWand) SetImageProgressMonitor(progressMonitor, clientData *T.Void) T.MagickProgressMonitor {
+func (m *MagickWand) SetImageProgressMonitor(progressMonitor, clientData *I.Void) I.MagickProgressMonitor {
 	return SetImageProgressMonitor(m, progressMonitor, clientData)
 }
 
@@ -1593,9 +1600,9 @@ var SetImageRedPrimary func(m *MagickWand, x, y float64) bool
 
 func (m *MagickWand) SetRedPrimary(x, y float64) bool { return SetImageRedPrimary(m, x, y) }
 
-var SetImageRenderingIntent func(m *MagickWand, renderingIntent T.RenderingIntent) bool
+var SetImageRenderingIntent func(m *MagickWand, renderingIntent I.RenderingIntent) bool
 
-func (m *MagickWand) SetRenderingIntent(renderingIntent T.RenderingIntent) bool {
+func (m *MagickWand) SetRenderingIntent(renderingIntent I.RenderingIntent) bool {
 	return SetImageRenderingIntent(m, renderingIntent)
 }
 
@@ -1615,19 +1622,19 @@ func (m *MagickWand) SetImageTicksPerSecond(ticksPerSecond int32) bool {
 	return SetImageTicksPerSecond(m, ticksPerSecond)
 }
 
-var SetImageType func(m *MagickWand, imageType T.ImageType) bool
+var SetImageType func(m *MagickWand, imageType I.ImageType) bool
 
-func (m *MagickWand) SetImageType(imageType T.ImageType) bool {
+func (m *MagickWand) SetImageType(imageType I.ImageType) bool {
 	return SetImageType(m, imageType)
 }
 
-var SetImageUnits func(m *MagickWand, units T.ResolutionType) bool
+var SetImageUnits func(m *MagickWand, units I.ResolutionType) bool
 
-func (m *MagickWand) SetUnits(units T.ResolutionType) bool { return SetImageUnits(m, units) }
+func (m *MagickWand) SetUnits(units I.ResolutionType) bool { return SetImageUnits(m, units) }
 
-var SetImageVirtualPixelMethod func(m *MagickWand, method T.VirtualPixelMethod) T.VirtualPixelMethod
+var SetImageVirtualPixelMethod func(m *MagickWand, method I.VirtualPixelMethod) I.VirtualPixelMethod
 
-func (m *MagickWand) SetVirtualPixelMethod(method T.VirtualPixelMethod) T.VirtualPixelMethod {
+func (m *MagickWand) SetVirtualPixelMethod(method I.VirtualPixelMethod) I.VirtualPixelMethod {
 	return SetImageVirtualPixelMethod(m, method)
 }
 
@@ -1635,15 +1642,15 @@ var SetImageWhitePoint func(m *MagickWand, x, y float64) bool
 
 func (m *MagickWand) SetImageWhitePoint(x, y float64) bool { return SetImageWhitePoint(m, x, y) }
 
-var SetInterlaceScheme func(m *MagickWand, interlaceScheme T.InterlaceType) bool
+var SetInterlaceScheme func(m *MagickWand, interlaceScheme I.InterlaceType) bool
 
-func (m *MagickWand) SetInterlaceScheme(interlaceScheme T.InterlaceType) bool {
+func (m *MagickWand) SetInterlaceScheme(interlaceScheme I.InterlaceType) bool {
 	return SetInterlaceScheme(m, interlaceScheme)
 }
 
-var SetInterpolateMethod func(m *MagickWand, method T.InterpolatePixelMethod) bool
+var SetInterpolateMethod func(m *MagickWand, method I.InterpolatePixelMethod) bool
 
-func (m *MagickWand) SetInterpolateMethod(method T.InterpolatePixelMethod) bool {
+func (m *MagickWand) SetInterpolateMethod(method I.InterpolatePixelMethod) bool {
 	return SetInterpolateMethod(m, method)
 }
 
@@ -1659,9 +1666,9 @@ var SetOption func(m *MagickWand, key, value string) bool
 
 func (m *MagickWand) SetOption(key, value string) bool { return SetOption(m, key, value) }
 
-var SetOrientation func(m *MagickWand, orientation T.OrientationType) bool
+var SetOrientation func(m *MagickWand, orientation I.OrientationType) bool
 
-func (m *MagickWand) SetOrientation(orientation T.OrientationType) bool {
+func (m *MagickWand) SetOrientation(orientation I.OrientationType) bool {
 	return SetOrientation(m, orientation)
 }
 
@@ -1679,9 +1686,9 @@ var SetPointsize func(m *MagickWand, pointsize float64) bool
 
 func (m *MagickWand) SetPointsize(pointsize float64) bool { return SetPointsize(m, pointsize) }
 
-var SetProgressMonitor func(m *MagickWand, progressMonitor, clientData *T.Void) T.MagickProgressMonitor
+var SetProgressMonitor func(m *MagickWand, progressMonitor, clientData *I.Void) I.MagickProgressMonitor
 
-func (m *MagickWand) SetProgressMonitor(progressMonitor, clientData *T.Void) T.MagickProgressMonitor {
+func (m *MagickWand) SetProgressMonitor(progressMonitor, clientData *I.Void) I.MagickProgressMonitor {
 	return SetProgressMonitor(m, progressMonitor, clientData)
 }
 
@@ -1707,9 +1714,9 @@ func (m *MagickWand) SetSizeOffset(columns, rows uint32, offset int32) bool {
 	return SetSizeOffset(m, columns, rows, offset)
 }
 
-var SetType func(m *MagickWand, imageType T.ImageType) bool
+var SetType func(m *MagickWand, imageType I.ImageType) bool
 
-func (m *MagickWand) SetType(imageType T.ImageType) bool { return SetType(m, imageType) }
+func (m *MagickWand) SetType(imageType I.ImageType) bool { return SetType(m, imageType) }
 
 var ShadeImage func(m *MagickWand, gray bool, azimuth, elevation float64) bool
 
@@ -1729,9 +1736,9 @@ func (m *MagickWand) Sharpen(radius, sigma float64) bool {
 	return SharpenImage(m, radius, sigma)
 }
 
-var SharpenImageChannel func(m *MagickWand, channel T.ChannelType, radius, sigma float64) bool
+var SharpenImageChannel func(m *MagickWand, channel I.ChannelType, radius, sigma float64) bool
 
-func (m *MagickWand) SharpenChannel(channel T.ChannelType, radius, sigma float64) bool {
+func (m *MagickWand) SharpenChannel(channel I.ChannelType, radius, sigma float64) bool {
 	return SharpenImageChannel(m, channel, radius, sigma)
 }
 
@@ -1751,15 +1758,15 @@ func (m *MagickWand) SigmoidalContrastImage(sharpen bool, alpha, beta float64) b
 	return SigmoidalContrastImage(m, sharpen, alpha, beta)
 }
 
-var SigmoidalContrastImageChannel func(m *MagickWand, channel T.ChannelType, sharpen bool, alpha, beta float64) bool
+var SigmoidalContrastImageChannel func(m *MagickWand, channel I.ChannelType, sharpen bool, alpha, beta float64) bool
 
-func (m *MagickWand) SigmoidalContrastImageChannel(channel T.ChannelType, sharpen bool, alpha, beta float64) bool {
+func (m *MagickWand) SigmoidalContrastImageChannel(channel I.ChannelType, sharpen bool, alpha, beta float64) bool {
 	return SigmoidalContrastImageChannel(m, channel, sharpen, alpha, beta)
 }
 
-var SimilarityImage func(m *MagickWand, reference *MagickWand, offset *T.RectangleInfo, similarity *float64) *MagickWand
+var SimilarityImage func(m *MagickWand, reference *MagickWand, offset *I.RectangleInfo, similarity *float64) *MagickWand
 
-func (m *MagickWand) SimilarityImage(reference *MagickWand, offset *T.RectangleInfo, similarity *float64) *MagickWand {
+func (m *MagickWand) SimilarityImage(reference *MagickWand, offset *I.RectangleInfo, similarity *float64) *MagickWand {
 	return SimilarityImage(m, reference, offset, similarity)
 }
 
@@ -1779,9 +1786,9 @@ var SolarizeImage func(m *MagickWand, threshold float64) bool
 
 func (m *MagickWand) Solarize(threshold float64) bool { return SolarizeImage(m, threshold) }
 
-var SparseColorImage func(m *MagickWand, channel T.ChannelType, method T.SparseColorMethod, numberArguments uint32, arguments *float64) bool
+var SparseColorImage func(m *MagickWand, channel I.ChannelType, method I.SparseColorMethod, numberArguments uint32, arguments *float64) bool
 
-func (m *MagickWand) SparseColor(channel T.ChannelType, method T.SparseColorMethod, numberArguments uint32, arguments *float64) bool {
+func (m *MagickWand) SparseColor(channel I.ChannelType, method I.SparseColorMethod, numberArguments uint32, arguments *float64) bool {
 	return SparseColorImage(m, channel, method, numberArguments, arguments)
 }
 
@@ -1795,9 +1802,9 @@ var SpreadImage func(m *MagickWand, radius float64) bool
 
 func (m *MagickWand) Spread(radius float64) bool { return SpreadImage(m, radius) }
 
-var StatisticImage func(m *MagickWand, type_ T.StatisticType, width float64, height uint32) bool
+var StatisticImage func(m *MagickWand, type_ I.StatisticType, width float64, height uint32) bool
 
-func (m *MagickWand) StatisticImage(type_ T.StatisticType, width float64, height uint32) bool {
+func (m *MagickWand) StatisticImage(type_ I.StatisticType, width float64, height uint32) bool {
 	return StatisticImage(m, type_, width, height)
 }
 
@@ -1833,9 +1840,9 @@ func (m *MagickWand) Threshold(threshold float64) bool {
 	return ThresholdImage(m, threshold)
 }
 
-var ThresholdImageChannel func(m *MagickWand, channel T.ChannelType, threshold float64) bool
+var ThresholdImageChannel func(m *MagickWand, channel I.ChannelType, threshold float64) bool
 
-func (m *MagickWand) ThresholdChannel(channel T.ChannelType, threshold float64) bool {
+func (m *MagickWand) ThresholdChannel(channel I.ChannelType, threshold float64) bool {
 	return ThresholdImageChannel(m, channel, threshold)
 }
 
@@ -1857,9 +1864,9 @@ func (m *MagickWand) Transform(crop, geometry string) *MagickWand {
 	return TransformImage(m, crop, geometry)
 }
 
-var TransformImageColorspace func(m *MagickWand, colorspace T.ColorspaceType) bool
+var TransformImageColorspace func(m *MagickWand, colorspace I.ColorspaceType) bool
 
-func (m *MagickWand) TransformColorspace(colorspace T.ColorspaceType) bool {
+func (m *MagickWand) TransformColorspace(colorspace I.ColorspaceType) bool {
 	return TransformImageColorspace(m, colorspace)
 }
 
@@ -1889,9 +1896,9 @@ func (m *MagickWand) UnsharpMask(radius, sigma, amount, threshold float64) bool 
 	return UnsharpMaskImage(m, radius, sigma, amount, threshold)
 }
 
-var UnsharpMaskImageChannel func(m *MagickWand, channel T.ChannelType, radius, sigma, amount, threshold float64) bool
+var UnsharpMaskImageChannel func(m *MagickWand, channel I.ChannelType, radius, sigma, amount, threshold float64) bool
 
-func (m *MagickWand) UnsharpMaskChannel(channel T.ChannelType, radius, sigma, amount, threshold float64) bool {
+func (m *MagickWand) UnsharpMaskChannel(channel I.ChannelType, radius, sigma, amount, threshold float64) bool {
 	return UnsharpMaskImageChannel(m, channel, radius, sigma, amount, threshold)
 }
 
@@ -1961,9 +1968,9 @@ var PushDrawingWand func(d *DrawingWand) bool
 
 func (d *DrawingWand) Push() bool { return PushDrawingWand(d) }
 
-var DrawAffine func(d *DrawingWand, affine *T.AffineMatrix)
+var DrawAffine func(d *DrawingWand, affine *I.AffineMatrix)
 
-func (d *DrawingWand) Affine(affine *T.AffineMatrix) { DrawAffine(d, affine) }
+func (d *DrawingWand) Affine(affine *I.AffineMatrix) { DrawAffine(d, affine) }
 
 var DrawAnnotation func(d *DrawingWand, x, y float64, text *uint8)
 
@@ -1973,9 +1980,9 @@ var DrawArc func(d *DrawingWand, sx, sy, ex, ey, sd, ed float64)
 
 func (d *DrawingWand) Arc(sx, sy, ex, ey, sd, ed float64) { DrawArc(d, sx, sy, ex, ey, sd, ed) }
 
-var DrawBezier func(d *DrawingWand, numberCoordinates uint32, coordinates *T.PointInfo)
+var DrawBezier func(d *DrawingWand, numberCoordinates uint32, coordinates *I.PointInfo)
 
-func (d *DrawingWand) Bezier(numberCoordinates uint32, coordinates *T.PointInfo) {
+func (d *DrawingWand) Bezier(numberCoordinates uint32, coordinates *I.PointInfo) {
 	DrawBezier(d, numberCoordinates, coordinates)
 }
 
@@ -1987,9 +1994,9 @@ var DrawClearException func(d *DrawingWand) bool
 
 func (d *DrawingWand) ClearException() bool { return DrawClearException(d) }
 
-var DrawColor func(d *DrawingWand, x, y float64, paintMethod T.PaintMethod)
+var DrawColor func(d *DrawingWand, x, y float64, paintMethod I.PaintMethod)
 
-func (d *DrawingWand) Color(x, y float64, paintMethod T.PaintMethod) {
+func (d *DrawingWand) Color(x, y float64, paintMethod I.PaintMethod) {
 	DrawColor(d, x, y, paintMethod)
 }
 
@@ -1997,9 +2004,9 @@ var DrawComment func(d *DrawingWand, comment string)
 
 func (d *DrawingWand) Comment(comment string) { DrawComment(d, comment) }
 
-var DrawComposite func(d *DrawingWand, compose T.CompositeOperator, x, y, width, height float64, magickWand *MagickWand) bool
+var DrawComposite func(d *DrawingWand, compose I.CompositeOperator, x, y, width, height float64, magickWand *MagickWand) bool
 
-func (d *DrawingWand) Composite(compose T.CompositeOperator, x, y, width, height float64, magickWand *MagickWand) bool {
+func (d *DrawingWand) Composite(compose I.CompositeOperator, x, y, width, height float64, magickWand *MagickWand) bool {
 	return DrawComposite(d, compose, x, y, width, height, magickWand)
 }
 
@@ -2017,19 +2024,19 @@ var DrawGetClipPath func(d *DrawingWand) string
 
 func (d *DrawingWand) ClipPath() string { return DrawGetClipPath(d) }
 
-var DrawGetClipUnits func(d *DrawingWand) T.ClipPathUnits
+var DrawGetClipUnits func(d *DrawingWand) I.ClipPathUnits
 
-func (d *DrawingWand) ClipUnits() T.ClipPathUnits { return DrawGetClipUnits(d) }
+func (d *DrawingWand) ClipUnits() I.ClipPathUnits { return DrawGetClipUnits(d) }
 
-var DrawGetException func(d *DrawingWand, severity *T.ExceptionType) string
+var DrawGetException func(d *DrawingWand, severity *I.ExceptionType) string
 
-func (d *DrawingWand) Exception(severity *T.ExceptionType) string {
+func (d *DrawingWand) Exception(severity *I.ExceptionType) string {
 	return DrawGetException(d, severity)
 }
 
-var DrawGetExceptionType func(d *DrawingWand) T.ExceptionType
+var DrawGetExceptionType func(d *DrawingWand) I.ExceptionType
 
-func (d *DrawingWand) ExceptionType() T.ExceptionType { return DrawGetExceptionType(d) }
+func (d *DrawingWand) ExceptionType() I.ExceptionType { return DrawGetExceptionType(d) }
 
 var DrawGetFillColor func(d *DrawingWand, fillColor *PixelWand)
 
@@ -2039,9 +2046,9 @@ var DrawGetFillOpacity func(d *DrawingWand) float64
 
 func (d *DrawingWand) FillOpacity() float64 { return DrawGetFillOpacity(d) }
 
-var DrawGetFillRule func(d *DrawingWand) T.FillRule
+var DrawGetFillRule func(d *DrawingWand) I.FillRule
 
-func (d *DrawingWand) FillRule() T.FillRule { return DrawGetFillRule(d) }
+func (d *DrawingWand) FillRule() I.FillRule { return DrawGetFillRule(d) }
 
 var DrawGetFont func(d *DrawingWand) string
 
@@ -2061,21 +2068,21 @@ var DrawGetFontSize func(d *DrawingWand) float64
 
 func (d *DrawingWand) FontSize() float64 { return DrawGetFontSize(d) }
 
-var DrawGetFontStretch func(d *DrawingWand) T.StretchType
+var DrawGetFontStretch func(d *DrawingWand) I.StretchType
 
-func (d *DrawingWand) FontStretch() T.StretchType { return DrawGetFontStretch(d) }
+func (d *DrawingWand) FontStretch() I.StretchType { return DrawGetFontStretch(d) }
 
-var DrawGetFontStyle func(d *DrawingWand) T.StyleType
+var DrawGetFontStyle func(d *DrawingWand) I.StyleType
 
-func (d *DrawingWand) FontStyle() T.StyleType { return DrawGetFontStyle(d) }
+func (d *DrawingWand) FontStyle() I.StyleType { return DrawGetFontStyle(d) }
 
 var DrawGetFontWeight func(d *DrawingWand) uint32
 
 func (d *DrawingWand) FontWeight() uint32 { return DrawGetFontWeight(d) }
 
-var DrawGetGravity func(d *DrawingWand) T.GravityType
+var DrawGetGravity func(d *DrawingWand) I.GravityType
 
-func (d *DrawingWand) Gravity() T.GravityType { return DrawGetGravity(d) }
+func (d *DrawingWand) Gravity() I.GravityType { return DrawGetGravity(d) }
 
 var DrawGetOpacity func(d *DrawingWand) float64
 
@@ -2099,13 +2106,13 @@ var DrawGetStrokeDashOffset func(d *DrawingWand) float64
 
 func (d *DrawingWand) StrokeDashOffset() float64 { return DrawGetStrokeDashOffset(d) }
 
-var DrawGetStrokeLineCap func(d *DrawingWand) T.LineCap
+var DrawGetStrokeLineCap func(d *DrawingWand) I.LineCap
 
-func (d *DrawingWand) StrokeLineCap() T.LineCap { return DrawGetStrokeLineCap(d) }
+func (d *DrawingWand) StrokeLineCap() I.LineCap { return DrawGetStrokeLineCap(d) }
 
-var DrawGetStrokeLineJoin func(d *DrawingWand) T.LineJoin
+var DrawGetStrokeLineJoin func(d *DrawingWand) I.LineJoin
 
-func (d *DrawingWand) StrokeLineJoin() T.LineJoin { return DrawGetStrokeLineJoin(d) }
+func (d *DrawingWand) StrokeLineJoin() I.LineJoin { return DrawGetStrokeLineJoin(d) }
 
 var DrawGetStrokeMiterLimit func(d *DrawingWand) uint32
 
@@ -2119,17 +2126,17 @@ var DrawGetStrokeWidth func(d *DrawingWand) float64
 
 func (d *DrawingWand) StrokeWidth() float64 { return DrawGetStrokeWidth(d) }
 
-var DrawGetTextAlignment func(d *DrawingWand) T.AlignType
+var DrawGetTextAlignment func(d *DrawingWand) I.AlignType
 
-func (d *DrawingWand) TextAlignment() T.AlignType { return DrawGetTextAlignment(d) }
+func (d *DrawingWand) TextAlignment() I.AlignType { return DrawGetTextAlignment(d) }
 
 var DrawGetTextAntialias func(d *DrawingWand) bool
 
 func (d *DrawingWand) TextAntialias() bool { return DrawGetTextAntialias(d) }
 
-var DrawGetTextDecoration func(d *DrawingWand) T.DecorationType
+var DrawGetTextDecoration func(d *DrawingWand) I.DecorationType
 
-func (d *DrawingWand) TextDecoration() T.DecorationType { return DrawGetTextDecoration(d) }
+func (d *DrawingWand) TextDecoration() I.DecorationType { return DrawGetTextDecoration(d) }
 
 var DrawGetTextEncoding func(d *DrawingWand) string
 
@@ -2155,9 +2162,9 @@ var DrawLine func(d *DrawingWand, sx, sy, ex, ey float64)
 
 func (d *DrawingWand) Line(sx, sy, ex, ey float64) { DrawLine(d, sx, sy, ex, ey) }
 
-var DrawMatte func(d *DrawingWand, x, y float64, paintMethod T.PaintMethod)
+var DrawMatte func(d *DrawingWand, x, y float64, paintMethod I.PaintMethod)
 
-func (d *DrawingWand) Matte(x, y float64, paintMethod T.PaintMethod) {
+func (d *DrawingWand) Matte(x, y float64, paintMethod I.PaintMethod) {
 	DrawMatte(d, x, y, paintMethod)
 }
 
@@ -2273,15 +2280,15 @@ var DrawPoint func(d *DrawingWand, x, y float64)
 
 func (d *DrawingWand) Point(x, y float64) { DrawPoint(d, x, y) }
 
-var DrawPolygon func(d *DrawingWand, numberCoordinates uint32, coordinates *T.PointInfo)
+var DrawPolygon func(d *DrawingWand, numberCoordinates uint32, coordinates *I.PointInfo)
 
-func (d *DrawingWand) Polygon(numberCoordinates uint32, coordinates *T.PointInfo) {
+func (d *DrawingWand) Polygon(numberCoordinates uint32, coordinates *I.PointInfo) {
 	DrawPolygon(d, numberCoordinates, coordinates)
 }
 
-var DrawPolyline func(d *DrawingWand, numberCoordinates uint32, coordinates *T.PointInfo)
+var DrawPolyline func(d *DrawingWand, numberCoordinates uint32, coordinates *I.PointInfo)
 
-func (d *DrawingWand) Polyline(numberCoordinates uint32, coordinates *T.PointInfo) {
+func (d *DrawingWand) Polyline(numberCoordinates uint32, coordinates *I.PointInfo) {
 	DrawPolyline(d, numberCoordinates, coordinates)
 }
 
@@ -2341,13 +2348,13 @@ var DrawSetClipPath func(d *DrawingWand, clipMask string) bool
 
 func (d *DrawingWand) SetClipPath(clipMask string) bool { return DrawSetClipPath(d, clipMask) }
 
-var DrawSetClipRule func(d *DrawingWand, fillRule T.FillRule)
+var DrawSetClipRule func(d *DrawingWand, fillRule I.FillRule)
 
-func (d *DrawingWand) SetClipRule(fillRule T.FillRule) { DrawSetClipRule(d, fillRule) }
+func (d *DrawingWand) SetClipRule(fillRule I.FillRule) { DrawSetClipRule(d, fillRule) }
 
-var DrawSetClipUnits func(d *DrawingWand, clipUnits T.ClipPathUnits)
+var DrawSetClipUnits func(d *DrawingWand, clipUnits I.ClipPathUnits)
 
-func (d *DrawingWand) SetClipUnits(clipUnits T.ClipPathUnits) { DrawSetClipUnits(d, clipUnits) }
+func (d *DrawingWand) SetClipUnits(clipUnits I.ClipPathUnits) { DrawSetClipUnits(d, clipUnits) }
 
 var DrawSetFillColor func(d *DrawingWand, fillWand *PixelWand)
 
@@ -2363,9 +2370,9 @@ func (d *DrawingWand) SetFillPatternURL(fillUrl string) bool {
 	return DrawSetFillPatternURL(d, fillUrl)
 }
 
-var DrawSetFillRule func(d *DrawingWand, fillRule T.FillRule)
+var DrawSetFillRule func(d *DrawingWand, fillRule I.FillRule)
 
-func (d *DrawingWand) SetFillRule(fillRule T.FillRule) { DrawSetFillRule(d, fillRule) }
+func (d *DrawingWand) SetFillRule(fillRule I.FillRule) { DrawSetFillRule(d, fillRule) }
 
 var DrawSetFont func(d *DrawingWand, fontName string) bool
 
@@ -2387,21 +2394,21 @@ var DrawSetFontSize func(d *DrawingWand, pointsize float64)
 
 func (d *DrawingWand) SetFontSize(pointsize float64) { DrawSetFontSize(d, pointsize) }
 
-var DrawSetFontStretch func(d *DrawingWand, fontStretch T.StretchType)
+var DrawSetFontStretch func(d *DrawingWand, fontStretch I.StretchType)
 
-func (d *DrawingWand) SetFontStretch(fontStretch T.StretchType) { DrawSetFontStretch(d, fontStretch) }
+func (d *DrawingWand) SetFontStretch(fontStretch I.StretchType) { DrawSetFontStretch(d, fontStretch) }
 
-var DrawSetFontStyle func(d *DrawingWand, style T.StyleType)
+var DrawSetFontStyle func(d *DrawingWand, style I.StyleType)
 
-func (d *DrawingWand) SetFontStyle(style T.StyleType) { DrawSetFontStyle(d, style) }
+func (d *DrawingWand) SetFontStyle(style I.StyleType) { DrawSetFontStyle(d, style) }
 
 var DrawSetFontWeight func(d *DrawingWand, fontWeight uint32)
 
 func (d *DrawingWand) SetFontWeight(fontWeight uint32) { DrawSetFontWeight(d, fontWeight) }
 
-var DrawSetGravity func(d *DrawingWand, gravity T.GravityType)
+var DrawSetGravity func(d *DrawingWand, gravity I.GravityType)
 
-func (d *DrawingWand) SetGravity(gravity T.GravityType) { DrawSetGravity(d, gravity) }
+func (d *DrawingWand) SetGravity(gravity I.GravityType) { DrawSetGravity(d, gravity) }
 
 var DrawSetOpacity func(d *DrawingWand, opacity float64)
 
@@ -2429,13 +2436,13 @@ func (d *DrawingWand) SetStrokeDashOffset(dashOffset float64) {
 	DrawSetStrokeDashOffset(d, dashOffset)
 }
 
-var DrawSetStrokeLineCap func(d *DrawingWand, linecap T.LineCap)
+var DrawSetStrokeLineCap func(d *DrawingWand, linecap I.LineCap)
 
-func (d *DrawingWand) SetStrokeLineCap(linecap T.LineCap) { DrawSetStrokeLineCap(d, linecap) }
+func (d *DrawingWand) SetStrokeLineCap(linecap I.LineCap) { DrawSetStrokeLineCap(d, linecap) }
 
-var DrawSetStrokeLineJoin func(d *DrawingWand, linejoin T.LineJoin)
+var DrawSetStrokeLineJoin func(d *DrawingWand, linejoin I.LineJoin)
 
-func (d *DrawingWand) SetStrokeLineJoin(linejoin T.LineJoin) { DrawSetStrokeLineJoin(d, linejoin) }
+func (d *DrawingWand) SetStrokeLineJoin(linejoin I.LineJoin) { DrawSetStrokeLineJoin(d, linejoin) }
 
 var DrawSetStrokeMiterLimit func(d *DrawingWand, miterlimit uint32)
 
@@ -2457,17 +2464,17 @@ var DrawSetStrokeWidth func(d *DrawingWand, strokeWidth float64)
 
 func (d *DrawingWand) SetStrokeWidth(strokeWidth float64) { DrawSetStrokeWidth(d, strokeWidth) }
 
-var DrawSetTextAlignment func(d *DrawingWand, alignment T.AlignType)
+var DrawSetTextAlignment func(d *DrawingWand, alignment I.AlignType)
 
-func (d *DrawingWand) SetTextAlignment(alignment T.AlignType) { DrawSetTextAlignment(d, alignment) }
+func (d *DrawingWand) SetTextAlignment(alignment I.AlignType) { DrawSetTextAlignment(d, alignment) }
 
 var DrawSetTextAntialias func(d *DrawingWand, textAntialias bool)
 
 func (d *DrawingWand) SetTextAntialias(textAntialias bool) { DrawSetTextAntialias(d, textAntialias) }
 
-var DrawSetTextDecoration func(d *DrawingWand, decoration T.DecorationType)
+var DrawSetTextDecoration func(d *DrawingWand, decoration I.DecorationType)
 
-func (d *DrawingWand) SetTextDecoration(decoration T.DecorationType) {
+func (d *DrawingWand) SetTextDecoration(decoration I.DecorationType) {
 	DrawSetTextDecoration(d, decoration)
 }
 
@@ -2553,25 +2560,25 @@ var PixelGetAlpha func(p *PixelWand) float64
 
 func (p *PixelWand) Alpha() float64 { return PixelGetAlpha(p) }
 
-var PixelGetAlphaQuantum func(p *PixelWand) T.Quantum
+var PixelGetAlphaQuantum func(p *PixelWand) I.Quantum
 
-func (p *PixelWand) AlphaQuantum() T.Quantum { return PixelGetAlphaQuantum(p) }
+func (p *PixelWand) AlphaQuantum() I.Quantum { return PixelGetAlphaQuantum(p) }
 
 var PixelGetBlack func(p *PixelWand) float64
 
 func (p *PixelWand) Black() float64 { return PixelGetBlack(p) }
 
-var PixelGetBlackQuantum func(p *PixelWand) T.Quantum
+var PixelGetBlackQuantum func(p *PixelWand) I.Quantum
 
-func (p *PixelWand) BlackQuantum() T.Quantum { return PixelGetBlackQuantum(p) }
+func (p *PixelWand) BlackQuantum() I.Quantum { return PixelGetBlackQuantum(p) }
 
 var PixelGetBlue func(p *PixelWand) float64
 
 func (p *PixelWand) Blue() float64 { return PixelGetBlue(p) }
 
-var PixelGetBlueQuantum func(p *PixelWand) T.Quantum
+var PixelGetBlueQuantum func(p *PixelWand) I.Quantum
 
-func (p *PixelWand) BlueQuantum() T.Quantum { return PixelGetBlueQuantum(p) }
+func (p *PixelWand) BlueQuantum() I.Quantum { return PixelGetBlueQuantum(p) }
 
 var PixelGetColorAsNormalizedString func(p *PixelWand) string
 
@@ -2589,17 +2596,17 @@ var PixelGetCyan func(p *PixelWand) float64
 
 func (p *PixelWand) Cyan() float64 { return PixelGetCyan(p) }
 
-var PixelGetCyanQuantum func(p *PixelWand) T.Quantum
+var PixelGetCyanQuantum func(p *PixelWand) I.Quantum
 
-func (p *PixelWand) CyanQuantum() T.Quantum { return PixelGetCyanQuantum(p) }
+func (p *PixelWand) CyanQuantum() I.Quantum { return PixelGetCyanQuantum(p) }
 
-var PixelGetException func(p *PixelWand, severity *T.ExceptionType) string
+var PixelGetException func(p *PixelWand, severity *I.ExceptionType) string
 
-func (p *PixelWand) Exception(severity *T.ExceptionType) string { return PixelGetException(p, severity) }
+func (p *PixelWand) Exception(severity *I.ExceptionType) string { return PixelGetException(p, severity) }
 
-var PixelGetExceptionType func(p *PixelWand) T.ExceptionType
+var PixelGetExceptionType func(p *PixelWand) I.ExceptionType
 
-func (p *PixelWand) ExceptionType() T.ExceptionType { return PixelGetExceptionType(p) }
+func (p *PixelWand) ExceptionType() I.ExceptionType { return PixelGetExceptionType(p) }
 
 var PixelGetFuzz func(p *PixelWand) float64
 
@@ -2609,9 +2616,9 @@ var PixelGetGreen func(p *PixelWand) float64
 
 func (p *PixelWand) Green() float64 { return PixelGetGreen(p) }
 
-var PixelGetGreenQuantum func(p *PixelWand) T.Quantum
+var PixelGetGreenQuantum func(p *PixelWand) I.Quantum
 
-func (p *PixelWand) GreenQuantum() T.Quantum { return PixelGetGreenQuantum(p) }
+func (p *PixelWand) GreenQuantum() I.Quantum { return PixelGetGreenQuantum(p) }
 
 var PixelGetHSL func(p *PixelWand, hue, saturation, lightness *float64)
 
@@ -2619,17 +2626,17 @@ func (p *PixelWand) HSL(hue, saturation, lightness *float64) {
 	PixelGetHSL(p, hue, saturation, lightness)
 }
 
-var PixelGetIndex func(p *PixelWand) T.IndexPacket
+var PixelGetIndex func(p *PixelWand) I.IndexPacket
 
-func (p *PixelWand) Index() T.IndexPacket { return PixelGetIndex(p) }
+func (p *PixelWand) Index() I.IndexPacket { return PixelGetIndex(p) }
 
 var PixelGetMagenta func(p *PixelWand) float64
 
 func (p *PixelWand) Magenta() float64 { return PixelGetMagenta(p) }
 
-var PixelGetMagentaQuantum func(p *PixelWand) T.Quantum
+var PixelGetMagentaQuantum func(p *PixelWand) I.Quantum
 
-func (p *PixelWand) MagentaQuantum() T.Quantum { return PixelGetMagentaQuantum(p) }
+func (p *PixelWand) MagentaQuantum() I.Quantum { return PixelGetMagentaQuantum(p) }
 
 var PixelGetMagickColor func(p *PixelWand, color *MagickPixelPacket)
 
@@ -2639,53 +2646,53 @@ var PixelGetOpacity func(p *PixelWand) float64
 
 func (p *PixelWand) Opacity() float64 { return PixelGetOpacity(p) }
 
-var PixelGetOpacityQuantum func(p *PixelWand) T.Quantum
+var PixelGetOpacityQuantum func(p *PixelWand) I.Quantum
 
-func (p *PixelWand) OpacityQuantum() T.Quantum { return PixelGetOpacityQuantum(p) }
+func (p *PixelWand) OpacityQuantum() I.Quantum { return PixelGetOpacityQuantum(p) }
 
-var PixelGetQuantumColor func(p *PixelWand, color *T.PixelPacket)
+var PixelGetQuantumColor func(p *PixelWand, color *I.PixelPacket)
 
-func (p *PixelWand) QuantumColor(color *T.PixelPacket) { PixelGetQuantumColor(p, color) }
+func (p *PixelWand) QuantumColor(color *I.PixelPacket) { PixelGetQuantumColor(p, color) }
 
 var PixelGetRed func(p *PixelWand) float64
 
 func (p *PixelWand) Red() float64 { return PixelGetRed(p) }
 
-var PixelGetRedQuantum func(p *PixelWand) T.Quantum
+var PixelGetRedQuantum func(p *PixelWand) I.Quantum
 
-func (p *PixelWand) RedQuantum() T.Quantum { return PixelGetRedQuantum(p) }
+func (p *PixelWand) RedQuantum() I.Quantum { return PixelGetRedQuantum(p) }
 
 var PixelGetYellow func(p *PixelWand) float64
 
 func (p *PixelWand) Yellow() float64 { return PixelGetYellow(p) }
 
-var PixelGetYellowQuantum func(p *PixelWand) T.Quantum
+var PixelGetYellowQuantum func(p *PixelWand) I.Quantum
 
-func (p *PixelWand) YellowQuantum() T.Quantum { return PixelGetYellowQuantum(p) }
+func (p *PixelWand) YellowQuantum() I.Quantum { return PixelGetYellowQuantum(p) }
 
 var PixelSetAlpha func(p *PixelWand, alpha float64)
 
 func (p *PixelWand) SetAlpha(alpha float64) { PixelSetAlpha(p, alpha) }
 
-var PixelSetAlphaQuantum func(p *PixelWand, opacity T.Quantum)
+var PixelSetAlphaQuantum func(p *PixelWand, opacity I.Quantum)
 
-func (p *PixelWand) SetAlphaQuantum(opacity T.Quantum) { PixelSetAlphaQuantum(p, opacity) }
+func (p *PixelWand) SetAlphaQuantum(opacity I.Quantum) { PixelSetAlphaQuantum(p, opacity) }
 
 var PixelSetBlack func(p *PixelWand, black float64)
 
 func (p *PixelWand) SetBlack(black float64) { PixelSetBlack(p, black) }
 
-var PixelSetBlackQuantum func(p *PixelWand, black T.Quantum)
+var PixelSetBlackQuantum func(p *PixelWand, black I.Quantum)
 
-func (p *PixelWand) SetBlackQuantum(black T.Quantum) { PixelSetBlackQuantum(p, black) }
+func (p *PixelWand) SetBlackQuantum(black I.Quantum) { PixelSetBlackQuantum(p, black) }
 
 var PixelSetBlue func(p *PixelWand, blue float64)
 
 func (p *PixelWand) SetBlue(blue float64) { PixelSetBlue(p, blue) }
 
-var PixelSetBlueQuantum func(p *PixelWand, blue T.Quantum)
+var PixelSetBlueQuantum func(p *PixelWand, blue I.Quantum)
 
-func (p *PixelWand) SetBlueQuantum(blue T.Quantum) { PixelSetBlueQuantum(p, blue) }
+func (p *PixelWand) SetBlueQuantum(blue I.Quantum) { PixelSetBlueQuantum(p, blue) }
 
 var PixelSetColor func(p *PixelWand, color string) bool
 
@@ -2703,9 +2710,9 @@ var PixelSetCyan func(p *PixelWand, cyan float64)
 
 func (p *PixelWand) SetCyan(cyan float64) { PixelSetCyan(p, cyan) }
 
-var PixelSetCyanQuantum func(p *PixelWand, cyan T.Quantum)
+var PixelSetCyanQuantum func(p *PixelWand, cyan I.Quantum)
 
-func (p *PixelWand) SetCyanQuantum(cyan T.Quantum) { PixelSetCyanQuantum(p, cyan) }
+func (p *PixelWand) SetCyanQuantum(cyan I.Quantum) { PixelSetCyanQuantum(p, cyan) }
 
 var PixelSetFuzz func(p *PixelWand, fuzz float64)
 
@@ -2715,9 +2722,9 @@ var PixelSetGreen func(p *PixelWand, green float64)
 
 func (p *PixelWand) SetGreen(green float64) { PixelSetGreen(p, green) }
 
-var PixelSetGreenQuantum func(p *PixelWand, green T.Quantum)
+var PixelSetGreenQuantum func(p *PixelWand, green I.Quantum)
 
-func (p *PixelWand) SetGreenQuantum(green T.Quantum) { PixelSetGreenQuantum(p, green) }
+func (p *PixelWand) SetGreenQuantum(green I.Quantum) { PixelSetGreenQuantum(p, green) }
 
 var PixelSetHSL func(p *PixelWand, hue, saturation, lightness float64)
 
@@ -2725,17 +2732,17 @@ func (p *PixelWand) SetHSL(hue, saturation, lightness float64) {
 	PixelSetHSL(p, hue, saturation, lightness)
 }
 
-var PixelSetIndex func(p *PixelWand, index T.IndexPacket)
+var PixelSetIndex func(p *PixelWand, index I.IndexPacket)
 
-func (p *PixelWand) SetIndex(index T.IndexPacket) { PixelSetIndex(p, index) }
+func (p *PixelWand) SetIndex(index I.IndexPacket) { PixelSetIndex(p, index) }
 
 var PixelSetMagenta func(p *PixelWand, magenta float64)
 
 func (p *PixelWand) SetMagenta(magenta float64) { PixelSetMagenta(p, magenta) }
 
-var PixelSetMagentaQuantum func(p *PixelWand, magenta T.Quantum)
+var PixelSetMagentaQuantum func(p *PixelWand, magenta I.Quantum)
 
-func (p *PixelWand) SetMagentaQuantum(magenta T.Quantum) { PixelSetMagentaQuantum(p, magenta) }
+func (p *PixelWand) SetMagentaQuantum(magenta I.Quantum) { PixelSetMagentaQuantum(p, magenta) }
 
 var PixelSetMagickColor func(p *PixelWand, color *MagickPixelPacket)
 
@@ -2745,29 +2752,29 @@ var PixelSetOpacity func(p *PixelWand, opacity float64)
 
 func (p *PixelWand) SetOpacity(opacity float64) { PixelSetOpacity(p, opacity) }
 
-var PixelSetOpacityQuantum func(p *PixelWand, opacity T.Quantum)
+var PixelSetOpacityQuantum func(p *PixelWand, opacity I.Quantum)
 
-func (p *PixelWand) SetOpacityQuantum(opacity T.Quantum) { PixelSetOpacityQuantum(p, opacity) }
+func (p *PixelWand) SetOpacityQuantum(opacity I.Quantum) { PixelSetOpacityQuantum(p, opacity) }
 
-var PixelSetQuantumColor func(p *PixelWand, color *T.PixelPacket)
+var PixelSetQuantumColor func(p *PixelWand, color *I.PixelPacket)
 
-func (p *PixelWand) SetQuantumColor(color *T.PixelPacket) { PixelSetQuantumColor(p, color) }
+func (p *PixelWand) SetQuantumColor(color *I.PixelPacket) { PixelSetQuantumColor(p, color) }
 
 var PixelSetRed func(p *PixelWand, red float64)
 
 func (p *PixelWand) SetRed(red float64) { PixelSetRed(p, red) }
 
-var PixelSetRedQuantum func(p *PixelWand, red T.Quantum)
+var PixelSetRedQuantum func(p *PixelWand, red I.Quantum)
 
-func (p *PixelWand) SetRedQuantum(red T.Quantum) { PixelSetRedQuantum(p, red) }
+func (p *PixelWand) SetRedQuantum(red I.Quantum) { PixelSetRedQuantum(p, red) }
 
 var PixelSetYellow func(p *PixelWand, yellow float64)
 
 func (p *PixelWand) SetYellow(yellow float64) { PixelSetYellow(p, yellow) }
 
-var PixelSetYellowQuantum func(p *PixelWand, yellow T.Quantum)
+var PixelSetYellowQuantum func(p *PixelWand, yellow I.Quantum)
 
-func (p *PixelWand) SetYellowQuantum(yellow T.Quantum) { PixelSetYellowQuantum(p, yellow) }
+func (p *PixelWand) SetYellowQuantum(yellow I.Quantum) { PixelSetYellowQuantum(p, yellow) }
 
 var ClearPixelIterator func(p *PixelIterator)
 
@@ -2791,15 +2798,15 @@ func (p *PixelIterator) CurrentRow(numberWands *uint32) []*PixelWand {
 	return PixelGetCurrentIteratorRow(p, numberWands)
 }
 
-var PixelGetIteratorException func(p *PixelIterator, severity *T.ExceptionType) string
+var PixelGetIteratorException func(p *PixelIterator, severity *I.ExceptionType) string
 
-func (p *PixelIterator) IteratoException(severity *T.ExceptionType) string {
+func (p *PixelIterator) IteratoException(severity *I.ExceptionType) string {
 	return PixelGetIteratorException(p, severity)
 }
 
-var PixelGetIteratorExceptionType func(p *PixelIterator) T.ExceptionType
+var PixelGetIteratorExceptionType func(p *PixelIterator) I.ExceptionType
 
-func (p *PixelIterator) ExceptionType() T.ExceptionType {
+func (p *PixelIterator) ExceptionType() I.ExceptionType {
 	return PixelGetIteratorExceptionType(p)
 }
 
@@ -2851,25 +2858,25 @@ var DestroyWandView func(w *WandView) *WandView
 
 func (w *WandView) Destroy() *WandView { return DestroyWandView(w) }
 
-var DuplexTransferWandViewIterator func(w *WandView, duplex, destination *WandView, transfer T.DuplexTransferWandViewMethod, context *T.Void) bool
+var DuplexTransferWandViewIterator func(w *WandView, duplex, destination *WandView, transfer I.DuplexTransferWandViewMethod, context *I.Void) bool
 
-func (w *WandView) DuplexTransferIterator(duplex, destination *WandView, transfer T.DuplexTransferWandViewMethod, context *T.Void) bool {
+func (w *WandView) DuplexTransferIterator(duplex, destination *WandView, transfer I.DuplexTransferWandViewMethod, context *I.Void) bool {
 	return DuplexTransferWandViewIterator(w, duplex, destination, transfer, context)
 }
 
-var GetWandViewException func(w *WandView, severity *T.ExceptionType) string
+var GetWandViewException func(w *WandView, severity *I.ExceptionType) string
 
-func (w *WandView) Exception(severity *T.ExceptionType) string {
+func (w *WandView) Exception(severity *I.ExceptionType) string {
 	return GetWandViewException(w, severity)
 }
 
-var GetWandViewExtent func(w *WandView) T.RectangleInfo
+var GetWandViewExtent func(w *WandView) I.RectangleInfo
 
-func (w *WandView) Extent() T.RectangleInfo { return GetWandViewExtent(w) }
+func (w *WandView) Extent() I.RectangleInfo { return GetWandViewExtent(w) }
 
-var GetWandViewIterator func(w *WandView, get T.GetWandViewMethod, context *T.Void) bool
+var GetWandViewIterator func(w *WandView, get GetWandViewMethod, context *I.Void) bool
 
-func (w *WandView) Iterator(get T.GetWandViewMethod, context *T.Void) bool {
+func (w *WandView) Iterator(get GetWandViewMethod, context *I.Void) bool {
 	return GetWandViewIterator(w, get, context)
 }
 
@@ -2889,9 +2896,9 @@ var SetWandViewDescription func(w *WandView, description string)
 
 func (w *WandView) SetDescription(description string) { SetWandViewDescription(w, description) }
 
-var SetWandViewIterator func(w *WandView, set T.SetWandViewMethod, context *T.Void) bool
+var SetWandViewIterator func(w *WandView, set SetWandViewMethod, context *I.Void) bool
 
-func (w *WandView) SetIterator(set T.SetWandViewMethod, context *T.Void) bool {
+func (w *WandView) SetIterator(set SetWandViewMethod, context *I.Void) bool {
 	return SetWandViewIterator(w, set, context)
 }
 
@@ -2899,20 +2906,20 @@ var SetWandViewThreads func(w *WandView, numberThreads uint32)
 
 func (w *WandView) SetThreads(numberThreads uint32) { SetWandViewThreads(w, numberThreads) }
 
-var TransferWandViewIterator func(w *WandView, destination *WandView, transfer T.TransferWandViewMethod, context *T.Void) bool
+var TransferWandViewIterator func(w *WandView, destination *WandView, transfer I.TransferWandViewMethod, context *I.Void) bool
 
-func (w *WandView) TransferIterator(destination *WandView, transfer T.TransferWandViewMethod, context *T.Void) bool {
+func (w *WandView) TransferIterator(destination *WandView, transfer I.TransferWandViewMethod, context *I.Void) bool {
 	return TransferWandViewIterator(w, destination, transfer, context)
 }
 
-var UpdateWandViewIterator func(w *WandView, update T.UpdateWandViewMethod, context *T.Void) bool
+var UpdateWandViewIterator func(w *WandView, update I.UpdateWandViewMethod, context *I.Void) bool
 
-func (w *WandView) UpdateIterator(update T.UpdateWandViewMethod, context *T.Void) bool {
+func (w *WandView) UpdateIterator(update I.UpdateWandViewMethod, context *I.Void) bool {
 	return UpdateWandViewIterator(w, update, context)
 }
 
 var AnimateImageCommand func(i *ImageInfo, argc int, argv, metadata []string, e *ExceptionInfo) bool
-var CommandGenesis func(i *ImageInfo, command T.MagickCommand, argc int, argv, metadata []string, exception *ExceptionInfo) bool
+var CommandGenesis func(i *ImageInfo, command I.MagickCommand, argc int, argv, metadata []string, exception *ExceptionInfo) bool
 var CompareImageCommand func(i *ImageInfo, argc int, argv, metadata []string, e *ExceptionInfo) bool
 var CompositeImageCommand func(i *ImageInfo, argc int, argv, metadata []string, e *ExceptionInfo) bool
 var ConjureImageCommand func(i *ImageInfo, argc int, argv, metadata []string, e *ExceptionInfo) bool
@@ -2931,7 +2938,7 @@ var StreamImageCommand func(i *ImageInfo, argc int, argv, metadata []string, e *
 func (i *ImageInfo) AnimateImageCommand(argc int, argv, metadata []string, e *ExceptionInfo) bool {
 	return AnimateImageCommand(i, argc, argv, metadata, e)
 }
-func (i *ImageInfo) CommandGenesis(command T.MagickCommand, argc int, argv, metadata []string, exception *ExceptionInfo) bool {
+func (i *ImageInfo) CommandGenesis(command I.MagickCommand, argc int, argv, metadata []string, exception *ExceptionInfo) bool {
 	return CommandGenesis(i, command, argc, argv, metadata, exception)
 }
 func (i *ImageInfo) CompareImageCommand(argc int, argv, metadata []string, e *ExceptionInfo) bool {
@@ -2977,11 +2984,11 @@ func (i *ImageInfo) StreamImageCommand(argc int, argv, metadata []string, e *Exc
 	return StreamImageCommand(i, argc, argv, metadata, e)
 }
 
-var Resource func(r T.ResourceType) T.MagickSizeType
+var Resource func(r I.ResourceType) I.MagickSizeType
 
-var ResourceLimit func(r T.ResourceType) T.MagickSizeType
+var ResourceLimit func(r I.ResourceType) I.MagickSizeType
 
-var SetResourceLimit func(r T.ResourceType, limit T.MagickSizeType) bool
+var SetResourceLimit func(r I.ResourceType, limit I.MagickSizeType) bool
 
 var DestroyImage func(i *Image) *Image
 
@@ -3009,7 +3016,7 @@ var QueryFonts func(pattern string, numberFonts *uint32) []string
 
 var QueryFormats func(pattern string, numberFormats *uint32) []string
 
-var RelinquishMemory func(resource *T.Void) *T.Void
+var RelinquishMemory func(resource *I.Void) *I.Void
 
 var WandGenesis func()
 
@@ -3025,21 +3032,21 @@ var DestroyWandIds func()
 
 var DrawAllocateWand func(*DrawInfo, *Image) *DrawingWand
 
-var DrawGetClipRule func(d *DrawingWand) T.FillRule
+var DrawGetClipRule func(d *DrawingWand) I.FillRule
 var DrawGetTextInterlineSpacing func(d *DrawingWand) float64
 var DrawRender func(d *DrawingWand) bool
 
-func (d *DrawingWand) ClipRule() T.FillRule          { return DrawGetClipRule(d) }
+func (d *DrawingWand) ClipRule() I.FillRule          { return DrawGetClipRule(d) }
 func (d *DrawingWand) TextInterlineSpacing() float64 { return DrawGetTextInterlineSpacing(d) }
 func (d *DrawingWand) Render() bool                  { return DrawRender(d) }
 
-var GetImageChannelExtrema func(m *MagickWand, c T.ChannelType, minima, maxima *uint32) bool
+var GetImageChannelExtrema func(m *MagickWand, c I.ChannelType, minima, maxima *uint32) bool
 
-func (m *MagickWand) GetImageChannelExtrema(c T.ChannelType, minima, maxima *uint32) bool {
+func (m *MagickWand) GetImageChannelExtrema(c I.ChannelType, minima, maxima *uint32) bool {
 	return GetImageChannelExtrema(m, c, minima, maxima)
 }
 
-var GetImageEndian func(*MagickWand) T.EndianType
+var GetImageEndian func(*MagickWand) I.EndianType
 
 var GetImageExtrema func(m *MagickWand, min, max *uint32) bool
 
@@ -3059,7 +3066,7 @@ func (m *MagickWand) LiquidRescaleImage(columns, rows uint32, deltaX, rigidity f
 
 var OptimizeImageTransparency func(*MagickWand) bool
 
-var SolarizeImageChannel func(*MagickWand, T.ChannelType, float64) bool
+var SolarizeImageChannel func(*MagickWand, I.ChannelType, float64) bool
 
 var RelinquishWandId func(uint32)
 
@@ -3808,18 +3815,18 @@ func (m *MagickWand) Attribute(property string) string {
 }
 
 // Deprecated.
-var GetImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool
+var GetImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool
 
 // Deprecated.
-func (m *MagickWand) Pixels(x, y int32, columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool {
+func (m *MagickWand) Pixels(x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool {
 	return GetImagePixels(m, x, y, columns, rows, map_, storage, pixels)
 }
 
 // Deprecated.
-var GetImageSize func(m *MagickWand, length *T.MagickSizeType) bool
+var GetImageSize func(m *MagickWand, length *I.MagickSizeType) bool
 
 // Deprecated.
-func (m *MagickWand) ImageSize(length *T.MagickSizeType) bool { return GetImageSize(m, length) }
+func (m *MagickWand) ImageSize(length *I.MagickSizeType) bool { return GetImageSize(m, length) }
 
 // Deprecated.
 var MatteFloodfillImage func(m *MagickWand, alpha, fuzz float64, bordercolor *PixelWand, x, y int32) bool
@@ -3872,10 +3879,10 @@ var SetImageIndex func(m *MagickWand, index int32) bool
 func (m *MagickWand) SetIndex(index int32) bool { return SetImageIndex(m, index) }
 
 // Deprecated.
-var SetImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool
+var SetImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool
 
 // Deprecated.
-func (m *MagickWand) SetImagePixels(x, y int32, columns, rows uint32, map_ string, storage T.StorageType, pixels *T.Void) bool {
+func (m *MagickWand) SetImagePixels(x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *I.Void) bool {
 	return SetImagePixels(m, x, y, columns, rows, map_, storage, pixels)
 }
 
@@ -3934,10 +3941,10 @@ var ModeImage func(m *MagickWand, radius float64) bool
 func (m *MagickWand) Mode(radius float64) bool { return ModeImage(m, radius) }
 
 // Deprecated.
-var PaintFloodfillImage func(m *MagickWand, channel T.ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32) bool
+var PaintFloodfillImage func(m *MagickWand, channel I.ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32) bool
 
 // Deprecated.
-func (m *MagickWand) PaintFloodfill(channel T.ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32) bool {
+func (m *MagickWand) PaintFloodfill(channel I.ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32) bool {
 	return PaintFloodfillImage(m, channel, fill, fuzz, bordercolor, x, y)
 }
 
@@ -4016,10 +4023,10 @@ var DrawSetStrokeAlpha func(d *DrawingWand, strokeAlpha float64)
 func (d *DrawingWand) SetStrokeAlpha(strokeAlpha float64) { DrawSetStrokeAlpha(d, strokeAlpha) }
 
 // Deprecated.
-var GetPixelViewException func(p *PixelWand, severity *T.ExceptionType) string
+var GetPixelViewException func(p *PixelWand, severity *I.ExceptionType) string
 
 // Deprecated.
-func (p *PixelWand) PixelViewException(severity *T.ExceptionType) string {
+func (p *PixelWand) PixelViewException(severity *I.ExceptionType) string {
 	return GetPixelViewException(p, severity)
 }
 
@@ -4030,10 +4037,10 @@ var ClonePixelView func(pixelView *PixelView) *PixelView
 var DestroyPixelView func(pixelView *PixelView, numberWands, numberThreads uint32) *PixelView
 
 // Deprecated.
-var DuplexTransferPixelViewIterator func(source, duplex, destination *PixelView, transfer T.DuplexTransferPixelViewMethod, context *T.Void) bool
+var DuplexTransferPixelViewIterator func(source, duplex, destination *PixelView, transfer I.DuplexTransferPixelViewMethod, context *I.Void) bool
 
 // Deprecated.
-func (p *PixelView) DuplexTransferIterator(duplex, destination *PixelView, transfer T.DuplexTransferPixelViewMethod, context *T.Void) bool {
+func (p *PixelView) DuplexTransferIterator(duplex, destination *PixelView, transfer I.DuplexTransferPixelViewMethod, context *I.Void) bool {
 	return DuplexTransferPixelViewIterator(p, duplex, destination, transfer, context)
 }
 
@@ -4044,10 +4051,10 @@ var GetPixelViewHeight func(pixelView *PixelView) uint32
 func (p *PixelView) Height() uint32 { return GetPixelViewHeight(p) }
 
 // Deprecated.
-var GetPixelViewIterator func(source *PixelView, get T.GetPixelViewMethod, context *T.Void) bool
+var GetPixelViewIterator func(source *PixelView, get GetPixelViewMethod, context *I.Void) bool
 
 // Deprecated.
-func (p *PixelView) Iterator(get T.GetPixelViewMethod, context *T.Void) bool {
+func (p *PixelView) Iterator(get GetPixelViewMethod, context *I.Void) bool {
 	return GetPixelViewIterator(p, get, context)
 }
 
@@ -4088,26 +4095,26 @@ var IsPixelView func(pixelView *PixelView) bool
 func (p *PixelView) IsPixelView() bool { return IsPixelView(p) }
 
 // Deprecated.
-var SetPixelViewIterator func(destination *PixelView, set T.SetPixelViewMethod, context *T.Void) bool
+var SetPixelViewIterator func(destination *PixelView, set SetPixelViewMethod, context *I.Void) bool
 
 // Deprecated.
-func (p *PixelView) SetIterator(set T.SetPixelViewMethod, context *T.Void) bool {
+func (p *PixelView) SetIterator(set SetPixelViewMethod, context *I.Void) bool {
 	return SetPixelViewIterator(p, set, context)
 }
 
 // Deprecated.
-var TransferPixelViewIterator func(source, destination *PixelView, transfer T.TransferPixelViewMethod, context *T.Void) bool
+var TransferPixelViewIterator func(source, destination *PixelView, transfer I.TransferPixelViewMethod, context *I.Void) bool
 
 // Deprecated.
-func (p *PixelView) TransIterator(destination *PixelView, transfer T.TransferPixelViewMethod, context *T.Void) bool {
+func (p *PixelView) TransIterator(destination *PixelView, transfer I.TransferPixelViewMethod, context *I.Void) bool {
 	return TransferPixelViewIterator(p, destination, transfer, context)
 }
 
 // Deprecated.
-var UpdatePixelViewIterator func(source *PixelView, update T.UpdatePixelViewMethod, context *T.Void) bool
+var UpdatePixelViewIterator func(source *PixelView, update I.UpdatePixelViewMethod, context *I.Void) bool
 
 // Deprecated.
-func (p *PixelView) UpdateIterator(update T.UpdatePixelViewMethod, context *T.Void) bool {
+func (p *PixelView) UpdateIterator(update I.UpdatePixelViewMethod, context *I.Void) bool {
 	return UpdatePixelViewIterator(p, update, context)
 }
 
@@ -4120,10 +4127,10 @@ func (p *PixelIterator) GetNextRow(numberWands *uint32) []*PixelWand {
 }
 
 // Deprecated.
-var PixelIteratorGetException func(p *PixelIterator, severity *T.ExceptionType) string
+var PixelIteratorGetException func(p *PixelIterator, severity *I.ExceptionType) string
 
 // Deprecated.
-func (p *PixelIterator) Exception(severity *T.ExceptionType) string {
+func (p *PixelIterator) Exception(severity *I.ExceptionType) string {
 	return PixelIteratorGetException(p, severity)
 }
 

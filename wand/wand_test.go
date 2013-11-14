@@ -1,11 +1,11 @@
 package wand
 
 import (
-	T "github.com/tHinqa/outside-imagemagick/types"
+	I "github.com/tHinqa/outside-imagemagick"
 	"testing"
 )
 
-func aTestInit(t *testing.T) {
+func TestInit(t *testing.T) {
 	var w *MagickWand
 	t.Log(QueryConfigureOption("NAME"),
 		QueryConfigureOption("VERSION"))
@@ -26,7 +26,7 @@ func aTestInit(t *testing.T) {
 	t.Log(GetHomeURL())
 }
 
-func aTestQuery(t *testing.T) {
+func TestQuery(t *testing.T) {
 	var n uint32
 	t.Log(n, QueryFonts("*", &n))
 	t.Log(n, QueryFormats("*", &n))
@@ -37,12 +37,12 @@ func aTestQuery(t *testing.T) {
 	}
 }
 
-func aTestMagickWand(t *testing.T) {
+func TestMagickWand(t *testing.T) {
 	w := NewMagickWand()
 	defer w.Destroy()
 	if w.New(1, 1, w.BackgroundColor()) {
 		w.Resize(200, 200, 0, 0)
-		w.AddNoise(T.GaussianNoise)
+		w.AddNoise(I.GaussianNoise)
 		w.Edge(0)
 		w.Enhance()
 		w.Despeckle()

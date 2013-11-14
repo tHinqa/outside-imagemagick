@@ -7,132 +7,124 @@ package core
 
 import (
 	. "github.com/tHinqa/outside"
-	T "github.com/tHinqa/outside-imagemagick/types"
 	. "github.com/tHinqa/outside/types"
 )
 
-//Opaque types
+type Quantum uint16 // byte uint16 uint32
+
+type MagickRealType float32 // float64
+
+const (
+	MaxNumberFonts = 11
+	MaxNumberPens  = 11
+	MaxTextExtent  = 4096
+)
+
 type (
+	CompositeMethod      Fixme
+	DIR                  Fixme
+	Dirent               Fixme
+	FILE                 Fixme
+	PixelIntensityMethod Fixme
+	Stat                 Fixme
+	Time                 Fixme // time_t
+	Timeval              Fixme
+	Timezone             Fixme
+	WString              Fixme
+)
+
+// X
+type (
+	Atom              UnsignedLong
+	Colormap          UnsignedLong
+	Cursor            UnsignedLong
+	Display           struct{}
+	LinkedListInfo    struct{}
+	Pixmap            UnsignedLong
+	PolicyInfo        struct{}
+	Status            int
+	Visual            struct{}
+	Window            UnsignedLong
+	XClassHint        struct{}
+	XColor            struct{}
+	XErrorEvent       struct{}
+	XEvent            struct{} // union
+	XFontStruct       struct{}
+	XImage            struct{}
+	XPoint            struct{ x, y Short }
+	XrmDatabase       struct{} // *struct{} in X - we make
+	XSegment          struct{ x1, y1, x2, y2 Short }
+	XStandardColormap struct{}
+	XVisualInfo       struct{}
+	XWMHints          struct{}
+)
+
+type (
+	// Placeholder type to be rectified.
+	Fixme uintptr
+
+	Char             int8
+	Enum             int
+	IndexPacket      Quantum
+	Long             int    // TODO(t):long on gcc vs msc 32 vs 64
+	MagickOffsetType int64  // TODO(t):size on gcc vs msc 32 vs 64
+	MagickSizeType   uint64 // TODO(t):size on gcc vs msc 32 vs 64
+	MagickStatusType uint
+	Off              Long
+	Short            uint16 // TODO(t):short on gcc vs msc 32 vs 64
+	Size             uint   // TODO(t):size_t on gcc vs msc 32 vs 64
+	SSize            int    // TODO(t):ssize_t on gcc vs msc 32 vs 64
+	UnsignedShort    uint16 // TODO(t):unsigned short on gcc vs msc 32 vs 64
+	UnsignedLong     uint   // TODO(t):unsigned long on gcc vs msc 32 vs 64
+	MagickThreadKey  *Size
+)
+
+// Opaque types
+type (
+	Ascii85Info    struct{}
+	BlobInfo       struct{}
+	Cache          *struct{}
+	CacheView      struct{}
+	FxInfo         struct{}
+	GC             *struct{}
+	HashmapInfo    struct{}
+	ImageView      struct{}
 	LogInfo        struct{}
 	MimeInfo       struct{}
+	PixelView      struct{}
+	RandomInfo     struct{}
 	ResampleFilter struct{}
+	ResizeFilter   struct{}
+	SemaphoreInfo  struct{}
 	SignatureInfo  struct{}
 	SplayTreeInfo  struct{}
 	StreamInfo     struct{}
+	ThresholdMap   struct{}
+	TokenInfo      struct{}
+	Void           struct{}
+	WandView       struct{}
+	XMLTreeInfo    struct{}
 )
 
-// Func types
 type (
-	AcquireMemoryHandler func(T.Size) *T.Void
-	DestroyMemoryHandler func(*T.Void)
-	ErrorHandler         func(T.ExceptionType, string, string)
-	FatalErrorHandler    func(T.ExceptionType, string, string)
-	ResizeMemoryHandler  func(*T.Void, T.Size) *T.Void
-	SetImageViewMethod   func(*ImageView, T.SSize, int, *T.Void) T.MagickBooleanType
-	SetPixelViewMethod   func(*T.PixelView, *T.Void) bool
-	SetWandViewMethod    func(*T.WandView, T.SSize, int, *T.Void) bool
-	WarningHandler       func(T.ExceptionType, string, string)
-)
-type (
-	fix int
-
-	dirent   fix
-	off_t    fix // system-dep 32/64
-	stat     fix
-	time_t   fix
-	timeval  fix
-	timezone fix
-	wchar_t  fix
-	char     int8
-
-	BitStreamReadHandle               fix
-	BitStreamWriteHandle              fix
-	BlobInfo                          T.BlobInfo
-	Cache                             fix
-	CacheInfo                         fix // same as Cache?
-	CacheView                         T.CacheView
-	CommandOption                     T.CommandOption
-	CompositeOptions_t                fix
-	ConfirmAccessHandler              fix
-	ConfirmAccessMode                 fix
-	DelegateInfo                      fix
-	DifferenceImageOptions            fix
-	DifferenceStatistics              fix
-	Display                           fix
-	DrawContext                       fix
-	DrawInfo                          T.DrawInfo
-	DrawingWand                       fix
-	ExceptionInfo                     T.ExceptionInfo
-	ExportPixelAreaInfo               fix
-	ExportPixelAreaOptions            fix
-	FILE                              T.FILE
-	FileIOMode                        fix
-	fp_16bits                         [2]byte
-	fp_24bits                         [3]byte
-	FxInfo                            T.FxInfo
-	HashmapInfo                       struct{}
-	HighlightStyle                    fix
-	HistogramColorPacket              fix
-	Image                             T.Image
-	ImageCharacteristics              fix
-	ImageInfo                         T.ImageInfo
-	ImageProfileIterator              fix
-	ImageStatistics                   fix
-	ImageView                         struct{}
-	ImportPixelAreaInfo               fix
-	ImportPixelAreaOptions            fix
-	LinkedListInfo                    struct{}
-	magick_off_t                      fix // system-dep 32/64?
-	MagickFreeFunc                    fix
-	MagickInfo                        fix
-	MagickMallocFunc                  fix
-	MagickMap                         fix
-	MagickMapIterator                 fix
-	MagickMapObjectClone              fix
-	MagickMapObjectDeallocator        fix
-	MagickPixelPacket                 T.MagickPixelPacket
-	MagickRandomKernel                fix
-	MagickReallocFunc                 fix
-	MagickTextTranslate               fix
-	MagickThreadKey                   fix
-	MagickTsdKey_t                    fix
-	PixelIteratorDualModifyCallback   fix
-	PixelIteratorDualNewCallback      fix
-	PixelIteratorDualReadCallback     fix
-	PixelIteratorMonoModifyCallback   fix
-	PixelIteratorMonoReadCallback     fix
-	PixelIteratorOptions              fix
-	PixelIteratorTripleModifyCallback fix
-	PixelIteratorTripleNewCallback    fix
-	PolicyInfo                        struct{}
-	QuantizeInfo                      T.QuantizeInfo
-	QuantumAlphaType                  fix
-	QuantumOperator                   fix
-	QuantumSampleType                 fix
-	ResizeFilter                      struct{}
-	ResourceType                      T.ResourceType
-	SemaphoreInfo                     T.SemaphoreInfo
-	StringInfo                        T.StringInfo
-	ThreadViewDataSet                 fix
-	ThreadViewSetPtr                  fix
-	TimerInfo                         T.TimerInfo
-	TokenInfo                         struct{}
-	ViewInfo                          fix
-	void                              T.Void
-	WordStreamReadFunc                fix
-	WordStreamReadHandle              fix
-	WordStreamWriteFunc               fix
-	WordStreamWriteHandle             fix
-	WriteByteHook                     fix
-	XMLTreeInfo                       fix
-	XrmDatabase                       fix
+	AcquireMemoryHandler func(Size) *Void
+	DecodeImageHandler   func(*ImageInfo, *ExceptionInfo) *Image
+	DestroyMemoryHandler func(*Void)
+	EncodeImageHandler   func(*ImageInfo, *Image) bool
+	ErrorHandler         func(ExceptionType, string, string)
+	FatalErrorHandler    func(ExceptionType, string, string)
+	GetImageViewMethod   func(*ImageView, SSize, int, *Void) MagickBooleanType
+	IsImageFormatHandler func(*byte, Size) MagickBooleanType
+	ResizeMemoryHandler  func(*Void, Size) *Void
+	SetImageViewMethod   func(*ImageView, SSize, int, *Void) MagickBooleanType
+	WarningHandler       func(ExceptionType, string, string)
 )
 
 // TODO(t): image *Image; images *Image; images **Image distinctions
 
-var AccelerateConvolveImage func(*Image, *T.KernelInfo, *Image, *ExceptionInfo) bool
+var AccelerateConvolveImage func(*Image, *KernelInfo, *Image, *ExceptionInfo) bool
 
-func (i *Image) AccelerateConvolve(k *T.KernelInfo, i2 *Image, e *ExceptionInfo) bool {
+func (i *Image) AccelerateConvolve(k *KernelInfo, i2 *Image, e *ExceptionInfo) bool {
 	return AccelerateConvolveImage(i, k, i2, e)
 }
 
@@ -140,31 +132,31 @@ var AcquireFxInfo func(i *Image, expression string) *FxInfo
 
 func (i *Image) AcquireFxInfo(expression string) *FxInfo { return AcquireFxInfo(i, expression) }
 
-var AcquireImagePixels func(i *Image, x, y T.Long, columns, rows T.Size, exception *ExceptionInfo) *T.PixelPacket
+var AcquireImagePixels func(i *Image, x, y Long, columns, rows Size, exception *ExceptionInfo) *PixelPacket
 
-func (i *Image) AcquireImagePixels(x, y T.Long, columns, rows T.Size, exception *ExceptionInfo) *T.PixelPacket {
+func (i *Image) AcquireImagePixels(x, y Long, columns, rows Size, exception *ExceptionInfo) *PixelPacket {
 	return AcquireImagePixels(i, x, y, columns, rows, exception)
 }
 
-var AcquireIndexes func(i *Image) *T.IndexPacket
+var AcquireIndexes func(i *Image) *IndexPacket
 
-func (i *Image) AcquireIndexes() *T.IndexPacket { return AcquireIndexes(i) }
+func (i *Image) AcquireIndexes() *IndexPacket { return AcquireIndexes(i) }
 
-var AcquireOneMagickPixel func(i *Image, x, y T.Long, exception *ExceptionInfo) MagickPixelPacket
+var AcquireOneMagickPixel func(i *Image, x, y Long, exception *ExceptionInfo) MagickPixelPacket
 
-func (i *Image) AcquireOneMagickPixel(x, y T.Long, exception *ExceptionInfo) MagickPixelPacket {
+func (i *Image) AcquireOneMagickPixel(x, y Long, exception *ExceptionInfo) MagickPixelPacket {
 	return AcquireOneMagickPixel(i, x, y, exception)
 }
 
-var AcquireOnePixel func(i *Image, x, y T.Long, exception *ExceptionInfo) T.PixelPacket
+var AcquireOnePixel func(i *Image, x, y Long, exception *ExceptionInfo) PixelPacket
 
-func (i *Image) AcquireOnePixel(x, y T.Long, exception *ExceptionInfo) T.PixelPacket {
+func (i *Image) AcquireOnePixel(x, y Long, exception *ExceptionInfo) PixelPacket {
 	return AcquireOnePixel(i, x, y, exception)
 }
 
-var AcquireOneVirtualPixel func(i *Image, virtualPixelMethod T.VirtualPixelMethod, x, y T.Long, exception *ExceptionInfo) T.PixelPacket
+var AcquireOneVirtualPixel func(i *Image, virtualPixelMethod VirtualPixelMethod, x, y Long, exception *ExceptionInfo) PixelPacket
 
-func (i *Image) AcquireOneVirtualPixel(virtualPixelMethod T.VirtualPixelMethod, x, y T.Long, exception *ExceptionInfo) T.PixelPacket {
+func (i *Image) AcquireOneVirtualPixel(virtualPixelMethod VirtualPixelMethod, x, y Long, exception *ExceptionInfo) PixelPacket {
 	return AcquireOneVirtualPixel(i, virtualPixelMethod, x, y, exception)
 }
 
@@ -174,9 +166,9 @@ func (i *Image) AcquireResampleFilter(exception *ExceptionInfo) *ResampleFilter 
 	return AcquireResampleFilter(i, exception)
 }
 
-var AcquireResizeFilter func(i *Image, filter T.FilterTypes, blur T.MagickRealType, cylindrical bool, exception *ExceptionInfo) *ResizeFilter
+var AcquireResizeFilter func(i *Image, filter FilterTypes, blur MagickRealType, cylindrical bool, exception *ExceptionInfo) *ResizeFilter
 
-func (i *Image) AcquireResizeFilter(filter T.FilterTypes, blur T.MagickRealType, cylindrical bool, exception *ExceptionInfo) *ResizeFilter {
+func (i *Image) AcquireResizeFilter(filter FilterTypes, blur MagickRealType, cylindrical bool, exception *ExceptionInfo) *ResizeFilter {
 	return AcquireResizeFilter(i, filter, blur, cylindrical, exception)
 }
 
@@ -186,15 +178,15 @@ func (i *Image) AdaptiveBlur(radius, sigma float64, exception *ExceptionInfo) *I
 	return AdaptiveBlurImage(i, radius, sigma, exception)
 }
 
-var AdaptiveBlurImageChannel func(i *Image, channel T.ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image
+var AdaptiveBlurImageChannel func(i *Image, channel ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image
 
-func (i *Image) AdaptiveBlurChannel(channel T.ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image {
+func (i *Image) AdaptiveBlurChannel(channel ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image {
 	return AdaptiveBlurImageChannel(i, channel, radius, sigma, exception)
 }
 
-var AdaptiveResizeImage func(i *Image, columns, rows T.Size, exception *ExceptionInfo) *Image
+var AdaptiveResizeImage func(i *Image, columns, rows Size, exception *ExceptionInfo) *Image
 
-func (i *Image) AdaptiveResize(columns, rows T.Size, exception *ExceptionInfo) *Image {
+func (i *Image) AdaptiveResize(columns, rows Size, exception *ExceptionInfo) *Image {
 	return AdaptiveResizeImage(i, columns, rows, exception)
 }
 
@@ -204,39 +196,39 @@ func (i *Image) AdaptiveSharpen(radius, sigma float64, exception *ExceptionInfo)
 	return AdaptiveSharpenImage(i, radius, sigma, exception)
 }
 
-var AdaptiveSharpenImageChannel func(i *Image, channel T.ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image
+var AdaptiveSharpenImageChannel func(i *Image, channel ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image
 
-func (i *Image) AdaptiveSharpenChannel(channel T.ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image {
+func (i *Image) AdaptiveSharpenChannel(channel ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image {
 	return AdaptiveSharpenImageChannel(i, channel, radius, sigma, exception)
 }
 
-var AdaptiveThresholdImage func(i *Image, width, height T.Size, offset T.Long, exception *ExceptionInfo) *Image
+var AdaptiveThresholdImage func(i *Image, width, height Size, offset Long, exception *ExceptionInfo) *Image
 
-func (i *Image) AdaptiveThreshold(width, height T.Size, offset T.Long, exception *ExceptionInfo) *Image {
+func (i *Image) AdaptiveThreshold(width, height Size, offset Long, exception *ExceptionInfo) *Image {
 	return AdaptiveThresholdImage(i, width, height, offset, exception)
 }
 
-var AddNoiseImage func(i *Image, noiseType T.NoiseType, exception *ExceptionInfo) *Image
+var AddNoiseImage func(i *Image, noiseType NoiseType, exception *ExceptionInfo) *Image
 
-func (i *Image) AddNoise(noiseType T.NoiseType, exception *ExceptionInfo) *Image {
+func (i *Image) AddNoise(noiseType NoiseType, exception *ExceptionInfo) *Image {
 	return AddNoiseImage(i, noiseType, exception)
 }
 
-var AddNoiseImageChannel func(i *Image, channel T.ChannelType, noiseType T.NoiseType, exception *ExceptionInfo) *Image
+var AddNoiseImageChannel func(i *Image, channel ChannelType, noiseType NoiseType, exception *ExceptionInfo) *Image
 
-func (i *Image) AddNoiseChannel(channel T.ChannelType, noiseType T.NoiseType, exception *ExceptionInfo) *Image {
+func (i *Image) AddNoiseChannel(channel ChannelType, noiseType NoiseType, exception *ExceptionInfo) *Image {
 	return AddNoiseImageChannel(i, channel, noiseType, exception)
 }
 
-var AffineTransformImage func(i *Image, affineMatrix *T.AffineMatrix, exception *ExceptionInfo) *Image
+var AffineTransformImage func(i *Image, affineMatrix *AffineMatrix, exception *ExceptionInfo) *Image
 
-func (i *Image) AffineTransform(affineMatrix *T.AffineMatrix, exception *ExceptionInfo) *Image {
+func (i *Image) AffineTransform(affineMatrix *AffineMatrix, exception *ExceptionInfo) *Image {
 	return AffineTransformImage(i, affineMatrix, exception)
 }
 
-var AllocateImageColormap func(i *Image, colors T.Size) bool
+var AllocateImageColormap func(i *Image, colors Size) bool
 
-func (i *Image) AllocateColormap(colors T.Size) bool {
+func (i *Image) AllocateColormap(colors Size) bool {
 	return AllocateImageColormap(i, colors)
 }
 
@@ -262,7 +254,7 @@ func (i *Image) AverageImages(exception *ExceptionInfo) *Image { return AverageI
 
 func (i *Image) Bilevel(threshold float64) bool { return BilevelImage(i, threshold) }
 
-func (i *Image) BilevelChannel(channel T.ChannelType, threshold float64) bool {
+func (i *Image) BilevelChannel(channel ChannelType, threshold float64) bool {
 	return BilevelImageChannel(i, channel, threshold)
 }
 
@@ -272,11 +264,11 @@ func (i *Image) Blur(radius, sigma float64, exception *ExceptionInfo) *Image {
 	return BlurImage(i, radius, sigma, exception)
 }
 
-func (i *Image) BlurChannel(channel T.ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image {
+func (i *Image) BlurChannel(channel ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image {
 	return BlurImageChannel(i, channel, radius, sigma, exception)
 }
 
-func (i *Image) Border(borderInfo *T.RectangleInfo, exception *ExceptionInfo) *Image {
+func (i *Image) Border(borderInfo *RectangleInfo, exception *ExceptionInfo) *Image {
 	return BorderImage(i, borderInfo, exception)
 }
 
@@ -288,25 +280,25 @@ var AverageImages func(i *Image, exception *ExceptionInfo) *Image
 
 var BilevelImage func(i *Image, threshold float64) bool
 
-var BilevelImageChannel func(i *Image, channel T.ChannelType, threshold float64) bool
+var BilevelImageChannel func(i *Image, channel ChannelType, threshold float64) bool
 
 var BlackThresholdImage func(i *Image, threshold string) bool
 
 var BlurImage func(i *Image, radius, sigma float64, exception *ExceptionInfo) *Image
 
-var BlurImageChannel func(i *Image, channel T.ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image
+var BlurImageChannel func(i *Image, channel ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image
 
-var BorderImage func(i *Image, borderInfo *T.RectangleInfo, exception *ExceptionInfo) *Image
+var BorderImage func(i *Image, borderInfo *RectangleInfo, exception *ExceptionInfo) *Image
 
-var CatchImageException func(i *Image) T.ExceptionType
+var CatchImageException func(i *Image) ExceptionType
 
-var ChannelImage func(i *Image, channel T.ChannelType) uint
+var ChannelImage func(i *Image, channel ChannelType) uint
 
 var ChannelThresholdImage func(i *Image, level string) uint
 
 var CharcoalImage func(i *Image, radius, sigma float64, exception *ExceptionInfo) *Image
 
-var ChopImage func(i *Image, chopInfo *T.RectangleInfo, exception *ExceptionInfo) *Image
+var ChopImage func(i *Image, chopInfo *RectangleInfo, exception *ExceptionInfo) *Image
 
 var ClipImage func(i *Image) bool
 
@@ -314,7 +306,7 @@ var ClipImagePath func(i *Image, pathname string, inside bool) bool
 
 var ClipPathImage func(i *Image, pathname string, inside bool) bool
 
-var CloneImage func(i *Image, columns, rows T.Size, orphan bool, exception *ExceptionInfo) *Image
+var CloneImage func(i *Image, columns, rows Size, orphan bool, exception *ExceptionInfo) *Image
 
 var CloneImageArtifacts func(i *Image, cloneImage *Image) bool
 
@@ -328,27 +320,27 @@ var CloseBlob func(i *Image) bool
 
 var ClutImage func(i *Image, clutImage *Image) bool
 
-var ClutImageChannel func(i *Image, channel T.ChannelType, clutImage *Image) bool
+var ClutImageChannel func(i *Image, channel ChannelType, clutImage *Image) bool
 
 var CoalesceImages func(i *Image, exception *ExceptionInfo) *Image
 
-var ColorFloodfillImage func(i *Image, drawInfo *DrawInfo, target T.PixelPacket, xOffset, yOffset T.Long, method T.PaintMethod) bool
+var ColorFloodfillImage func(i *Image, drawInfo *DrawInfo, target PixelPacket, xOffset, yOffset Long, method PaintMethod) bool
 
-var ColorizeImage func(i *Image, opacity string, colorize T.PixelPacket, exception *ExceptionInfo) *Image
+var ColorizeImage func(i *Image, opacity string, colorize PixelPacket, exception *ExceptionInfo) *Image
 
-var CombineImages func(i *Image, channel T.ChannelType, exception *ExceptionInfo) *Image
+var CombineImages func(i *Image, channel ChannelType, exception *ExceptionInfo) *Image
 
-var CompareImageChannels func(i *Image, reconstructImage *Image, channel T.ChannelType, metric T.MetricType, distortion *float64, exception *ExceptionInfo) *Image
+var CompareImageChannels func(i *Image, reconstructImage *Image, channel ChannelType, metric MetricType, distortion *float64, exception *ExceptionInfo) *Image
 
-var CompareImageLayers func(i *Image, method T.ImageLayerMethod, exception *ExceptionInfo) *Image
+var CompareImageLayers func(i *Image, method ImageLayerMethod, exception *ExceptionInfo) *Image
 
-var CompareImages func(i *Image, reconstructImage *Image, metric T.MetricType, distortion *float64, exception *ExceptionInfo) *Image
+var CompareImages func(i *Image, reconstructImage *Image, metric MetricType, distortion *float64, exception *ExceptionInfo) *Image
 
-var CompositeImage func(i *Image, compose T.CompositeOperator, compositeImage *Image, xOffset, yOffset T.Long) bool
+var CompositeImage func(i *Image, compose CompositeOperator, compositeImage *Image, xOffset, yOffset Long) bool
 
-var CompositeImageChannel func(i *Image, channel T.ChannelType, compose T.CompositeOperator, compositeImage *Image, xOffset, yOffset T.Long) bool
+var CompositeImageChannel func(i *Image, channel ChannelType, compose CompositeOperator, compositeImage *Image, xOffset, yOffset Long) bool
 
-var CompositeLayers func(i *Image, compose T.CompositeOperator, source *Image, xOffset, yOffset T.Long, exception *ExceptionInfo)
+var CompositeLayers func(i *Image, compose CompositeOperator, source *Image, xOffset, yOffset Long, exception *ExceptionInfo)
 
 var CompressImageColormap func(i *Image)
 
@@ -356,15 +348,15 @@ var ContrastImage func(i *Image, sharpen bool) bool
 
 var ContrastStretchImage func(i *Image, levels string) bool
 
-var ContrastStretchImageChannel func(i *Image, channel T.ChannelType, blackPoint, whitePoint float64) bool
+var ContrastStretchImageChannel func(i *Image, channel ChannelType, blackPoint, whitePoint float64) bool
 
-var ConvolveImage func(i *Image, order T.Size, kernel *float64, exception *ExceptionInfo) *Image
+var ConvolveImage func(i *Image, order Size, kernel *float64, exception *ExceptionInfo) *Image
 
-var ConvolveImageChannel func(i *Image, channel T.ChannelType, order T.Size, kernel *float64, exception *ExceptionInfo) *Image
+var ConvolveImageChannel func(i *Image, channel ChannelType, order Size, kernel *float64, exception *ExceptionInfo) *Image
 
-var CropImage func(i *Image, geometry *T.RectangleInfo, exception *ExceptionInfo) *Image
+var CropImage func(i *Image, geometry *RectangleInfo, exception *ExceptionInfo) *Image
 
-var CycleColormapImage func(i *Image, displace T.Long) bool
+var CycleColormapImage func(i *Image, displace Long) bool
 
 var DefineImageArtifact func(i *Image, artifact string) bool
 
@@ -400,13 +392,13 @@ var DestroyImages func(i *Image)
 
 var DisassociateImageStream func(i *Image)
 
-var DispatchImage func(i *Image, xOffset, yOffset T.Long, columns, rows T.Size, map_ string, type_ T.StorageType, pixels *T.Void, exception *ExceptionInfo) uint
+var DispatchImage func(i *Image, xOffset, yOffset Long, columns, rows Size, map_ string, type_ StorageType, pixels *Void, exception *ExceptionInfo) uint
 
 var DisposeImages func(i *Image, exception *ExceptionInfo) *Image
 
-var DistortImage func(i *Image, method T.DistortImageMethod, numberArguments T.Size, arguments *float64, bestfit bool, exception *ExceptionInfo) *Image
+var DistortImage func(i *Image, method DistortImageMethod, numberArguments Size, arguments *float64, bestfit bool, exception *ExceptionInfo) *Image
 
-var DrawAffineImage func(i *Image, source *Image, affine *T.AffineMatrix) bool
+var DrawAffineImage func(i *Image, source *Image, affine *AffineMatrix) bool
 
 var DrawClipPath func(i *Image, drawInfo *DrawInfo, name string) bool
 
@@ -416,7 +408,7 @@ var DrawImage func(i *Image, drawInfo *DrawInfo) bool
 
 var DrawPatternPath func(i *Image, drawInfo *DrawInfo, name string, pattern **Image) bool
 
-var DrawPrimitive func(i *Image, drawInfo *DrawInfo, primitiveInfo *T.PrimitiveInfo) bool
+var DrawPrimitive func(i *Image, drawInfo *DrawInfo, primitiveInfo *PrimitiveInfo) bool
 
 var EdgeImage func(i *Image, radius float64, exception *ExceptionInfo) *Image
 
@@ -428,19 +420,19 @@ var EOFBlob func(i *Image) int
 
 var EqualizeImage func(i *Image) bool
 
-var EqualizeImageChannel func(i *Image, channel T.ChannelType) bool
+var EqualizeImageChannel func(i *Image, channel ChannelType) bool
 
-var EvaluateImage func(i *Image, op T.MagickEvaluateOperator, value float64, exception *ExceptionInfo) bool
+var EvaluateImage func(i *Image, op MagickEvaluateOperator, value float64, exception *ExceptionInfo) bool
 
-var EvaluateImageChannel func(i *Image, channel T.ChannelType, op T.MagickEvaluateOperator, value float64, exception *ExceptionInfo) bool
+var EvaluateImageChannel func(i *Image, channel ChannelType, op MagickEvaluateOperator, value float64, exception *ExceptionInfo) bool
 
-var ExcerptImage func(i *Image, geometry *T.RectangleInfo, exception *ExceptionInfo) *Image
+var ExcerptImage func(i *Image, geometry *RectangleInfo, exception *ExceptionInfo) *Image
 
-var ExportImagePixels func(i *Image, xOffset, yOffset T.Long, columns, rows T.Size, map_ string, type_ T.StorageType, pixels *T.Void, exception *ExceptionInfo) bool
+var ExportImagePixels func(i *Image, xOffset, yOffset Long, columns, rows Size, map_ string, type_ StorageType, pixels *Void, exception *ExceptionInfo) bool
 
-var ExportQuantumPixels func(i *Image, quantumInfo *T.QuantumInfo, quantumType T.QuantumType, pixels *byte) bool
+var ExportQuantumPixels func(i *Image, quantumInfo *QuantumInfo, quantumType QuantumType, pixels *byte) bool
 
-var ExtentImage func(i *Image, geometry *T.RectangleInfo, exception *ExceptionInfo) *Image
+var ExtentImage func(i *Image, geometry *RectangleInfo, exception *ExceptionInfo) *Image
 
 var FileToImage func(i *Image, filename string) bool
 
@@ -448,7 +440,7 @@ var FlattenImages func(i *Image, exception *ExceptionInfo) *Image
 
 var FlipImage func(i *Image, exception *ExceptionInfo) *Image
 
-var FloodfillPaintImage func(i *Image, channel T.ChannelType, drawInfo *DrawInfo, target *MagickPixelPacket, xOffset, yOffset T.Long, invert bool) bool
+var FloodfillPaintImage func(i *Image, channel ChannelType, drawInfo *DrawInfo, target *MagickPixelPacket, xOffset, yOffset Long, invert bool) bool
 
 var FlopImage func(i *Image, exception *ExceptionInfo) *Image
 
@@ -460,77 +452,77 @@ var FormatImageProperty func(i *Image, property, format string, va ...VArg) bool
 
 var FormatImagePropertyList func(i *Image, property, format string, operands VAList) bool
 
-var FormatMagickCaption func(i *Image, drawInfo *DrawInfo, caption string, metrics *T.TypeMetric) T.Long
+var FormatMagickCaption func(i *Image, drawInfo *DrawInfo, caption string, metrics *TypeMetric) Long
 
-var FrameImage func(i *Image, frameInfo *T.FrameInfo, exception *ExceptionInfo) *Image
+var FrameImage func(i *Image, frameInfo *FrameInfo, exception *ExceptionInfo) *Image
 
-var FuzzyColorCompare func(i *Image, p, q *T.PixelPacket) bool
+var FuzzyColorCompare func(i *Image, p, q *PixelPacket) bool
 
-var FuzzyOpacityCompare func(i *Image, p, q *T.PixelPacket) bool
+var FuzzyOpacityCompare func(i *Image, p, q *PixelPacket) bool
 
 var FxImage func(i *Image, expression string, exception *ExceptionInfo) *Image
 
-var FxImageChannel func(i *Image, channel T.ChannelType, expression string, exception *ExceptionInfo) *Image
+var FxImageChannel func(i *Image, channel ChannelType, expression string, exception *ExceptionInfo) *Image
 
 var GammaImage func(i *Image, level string) bool
 
-var GammaImageChannel func(i *Image, channel T.ChannelType, gamma float64) bool
+var GammaImageChannel func(i *Image, channel ChannelType, gamma float64) bool
 
 var GaussianBlurImage func(i *Image, radius, sigma float64, exception *ExceptionInfo) *Image
 
-var GaussianBlurImageChannel func(i *Image, channel T.ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image
+var GaussianBlurImageChannel func(i *Image, channel ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image
 
 var GetBlobError func(i *Image) bool
 
 var GetBlobFileHandle func(i *Image) *FILE
 
-var GetBlobSize func(i *Image) T.MagickSizeType
+var GetBlobSize func(i *Image) MagickSizeType
 
 var GetBlobStreamData func(i *Image) *byte
 
-var GetBlobStreamHandler func(i *Image) T.StreamHandler
+var GetBlobStreamHandler func(i *Image) StreamHandler
 
 var GetImageArtifact func(i *Image, artifact string) string
 
-var GetImageAttribute func(i *Image, key string) *T.ImageAttribute
+var GetImageAttribute func(i *Image, key string) *ImageAttribute
 
-var GetImageBoundingBox func(i *Image, exception *ExceptionInfo) T.RectangleInfo
+var GetImageBoundingBox func(i *Image, exception *ExceptionInfo) RectangleInfo
 
-var GetImageChannelDepth func(i *Image, channel T.ChannelType, exception *ExceptionInfo) T.Size
+var GetImageChannelDepth func(i *Image, channel ChannelType, exception *ExceptionInfo) Size
 
-var GetImageChannelDistortion func(i *Image, reconstructImage *Image, channel T.ChannelType, metric T.MetricType, distortion *float64, exception *ExceptionInfo) bool
+var GetImageChannelDistortion func(i *Image, reconstructImage *Image, channel ChannelType, metric MetricType, distortion *float64, exception *ExceptionInfo) bool
 
-var GetImageChannelExtrema func(i *Image, channel T.ChannelType, minima, maxima *T.Size, exception *ExceptionInfo) bool
+var GetImageChannelExtrema func(i *Image, channel ChannelType, minima, maxima *Size, exception *ExceptionInfo) bool
 
-var GetImageChannelMean func(i *Image, channel T.ChannelType, mean, standardDeviation *float64, exception *ExceptionInfo) bool
+var GetImageChannelMean func(i *Image, channel ChannelType, mean, standardDeviation *float64, exception *ExceptionInfo) bool
 
-var GetImageChannelRange func(i *Image, channel T.ChannelType, minima, maxima *float64, exception *ExceptionInfo) bool
+var GetImageChannelRange func(i *Image, channel ChannelType, minima, maxima *float64, exception *ExceptionInfo) bool
 
-var GetImageChannelStatistics func(i *Image, exception *ExceptionInfo) *T.ChannelStatistics
+var GetImageChannelStatistics func(i *Image, exception *ExceptionInfo) *ChannelStatistics
 
 var GetImageClipMask func(i *Image, exception *ExceptionInfo) *Image
 
-var GetImageClippingPathAttribute func(i *Image) *T.ImageAttribute
+var GetImageClippingPathAttribute func(i *Image) *ImageAttribute
 
-var GetImageDepth func(i *Image, exception *ExceptionInfo) T.Size
+var GetImageDepth func(i *Image, exception *ExceptionInfo) Size
 
-var GetImageDistortion func(i *Image, reconstructImage *Image, metric T.MetricType, distortion *float64, exception *ExceptionInfo) bool
+var GetImageDistortion func(i *Image, reconstructImage *Image, metric MetricType, distortion *float64, exception *ExceptionInfo) bool
 
 var GetImageDynamicThreshold func(i *Image, clusterThreshold, smoothThreshold float64, exception *ExceptionInfo) MagickPixelPacket
 
 var GetImageException func(i *Image, exception *ExceptionInfo)
 
-var GetImageExtrema func(i *Image, minima, maxima *T.Size, exception *ExceptionInfo) bool
+var GetImageExtrema func(i *Image, minima, maxima *Size, exception *ExceptionInfo) bool
 
-var GetImageGeometry func(i *Image, geometry string, sizeToFit uint, regionInfo *T.RectangleInfo) int
+var GetImageGeometry func(i *Image, geometry string, sizeToFit uint, regionInfo *RectangleInfo) int
 
-var GetImageHistogram func(i *Image, numberColors *T.Size, exception *ExceptionInfo) *T.ColorPacket
+var GetImageHistogram func(i *Image, numberColors *Size, exception *ExceptionInfo) *ColorPacket
 
 var GetImageMask func(i *Image, exception *ExceptionInfo) *Image
 
 var GetImageMean func(i *Image, mean, standardDeviation *float64, exception *ExceptionInfo) bool
 
-var GetImagePixels func(i *Image, x, y T.Long, columns, rows T.Size) *T.PixelPacket
+var GetImagePixels func(i *Image, x, y Long, columns, rows Size) *PixelPacket
 
 var GetImageProfile func(i *Image, name string) *StringInfo
 
@@ -538,43 +530,43 @@ var GetImageProperty func(i *Image, property string) string
 
 var GetImageQuantizeError func(i *Image) bool
 
-var GetImageQuantumDepth func(i *Image, constrain bool) T.Size
+var GetImageQuantumDepth func(i *Image, constrain bool) Size
 
 var GetImageRange func(i *Image, minima, maxima *float64, exception *ExceptionInfo) bool
 
 var GetImageTotalInkDensity func(i *Image) float64
 
-var GetImageType func(i *Image, exception *ExceptionInfo) T.ImageType
+var GetImageType func(i *Image, exception *ExceptionInfo) ImageType
 
-var GetImageVirtualPixelMethod func(i *Image) T.VirtualPixelMethod
+var GetImageVirtualPixelMethod func(i *Image) VirtualPixelMethod
 
-var GetIndexes func(i *Image) *T.IndexPacket
+var GetIndexes func(i *Image) *IndexPacket
 
 var GetMagickPixelPacket func(i *Image, pixel *MagickPixelPacket)
 
-var GetMultilineTypeMetrics func(i *Image, drawInfo *DrawInfo, metrics *T.TypeMetric) bool
+var GetMultilineTypeMetrics func(i *Image, drawInfo *DrawInfo, metrics *TypeMetric) bool
 
 var GetNextImageArtifact func(i *Image) string
 
-var GetNextImageAttribute func(i *Image) *T.ImageAttribute
+var GetNextImageAttribute func(i *Image) *ImageAttribute
 
 var GetNextImageProfile func(i *Image) string
 
 var GetNextImageProperty func(i *Image) string
 
-var GetNumberColors func(i *Image, file *FILE, exception *ExceptionInfo) T.Size
+var GetNumberColors func(i *Image, file *FILE, exception *ExceptionInfo) Size
 
 var GetNumberScenes func(i *Image) uint
 
-var GetOnePixel func(i *Image, x, y T.Long) T.PixelPacket
+var GetOnePixel func(i *Image, x, y Long) PixelPacket
 
-var GetPixelCacheArea func(i *Image) T.MagickSizeType
+var GetPixelCacheArea func(i *Image) MagickSizeType
 
-var GetPixels func(i *Image) *T.PixelPacket
+var GetPixels func(i *Image) *PixelPacket
 
-var GetTypeMetrics func(i *Image, drawInfo *DrawInfo, metrics *T.TypeMetric) bool
+var GetTypeMetrics func(i *Image, drawInfo *DrawInfo, metrics *TypeMetric) bool
 
-var GradientImage func(i *Image, startColor, stopColor *T.PixelPacket) bool
+var GradientImage func(i *Image, startColor, stopColor *PixelPacket) bool
 
 var HuffmanDecodeImage func(i *Image) bool
 
@@ -584,11 +576,11 @@ var ImageToFile func(i *Image, filename string, exception *ExceptionInfo) bool
 
 var ImplodeImage func(i *Image, amount float64, exception *ExceptionInfo) *Image
 
-var ImportImagePixels func(i *Image, xOffset, yOffset T.Long, columns, rows T.Size, map_ string, type_ T.StorageType, pixels *T.Void) bool
+var ImportImagePixels func(i *Image, xOffset, yOffset Long, columns, rows Size, map_ string, type_ StorageType, pixels *Void) bool
 
-var ImportQuantumPixels func(i *Image, quantumInfo *T.QuantumInfo, quantumType T.QuantumType, pixels *byte) bool
+var ImportQuantumPixels func(i *Image, quantumInfo *QuantumInfo, quantumType QuantumType, pixels *byte) bool
 
-var InterpolatePixelColor func(i *Image, imageView *CacheView, method T.InterpolatePixelMethod, x, y float64, exception *ExceptionInfo) MagickPixelPacket
+var InterpolatePixelColor func(i *Image, imageView *CacheView, method InterpolatePixelMethod, x, y float64, exception *ExceptionInfo) MagickPixelPacket
 
 var IsBlobExempt func(i *Image) bool
 
@@ -596,7 +588,7 @@ var IsBlobSeekable func(i *Image) bool
 
 var IsBlobTemporary func(i *Image) bool
 
-var IsColorSimilar func(i *Image, p, q *T.PixelPacket) bool
+var IsColorSimilar func(i *Image, p, q *PixelPacket) bool
 
 var IsGrayImage func(i *Image, exception *ExceptionInfo) bool
 
@@ -608,11 +600,11 @@ var IsImageObject func(i *Image) bool
 
 var IsImagesEqual func(i *Image, reconstructImage *Image) bool
 
-var IsImageSimilar func(i *Image, targetImage *Image, xOffset, yOffset *T.Long, exception *ExceptionInfo) bool
+var IsImageSimilar func(i *Image, targetImage *Image, xOffset, yOffset *Long, exception *ExceptionInfo) bool
 
 var IsMonochromeImage func(i *Image, exception *ExceptionInfo) bool
 
-var IsOpacitySimilar func(i *Image, p, q *T.PixelPacket) bool
+var IsOpacitySimilar func(i *Image, p, q *PixelPacket) bool
 
 var IsOpaqueImage func(i *Image, exception *ExceptionInfo) bool
 
@@ -622,11 +614,11 @@ var IsTaintImage func(i *Image) bool
 
 var LevelImage func(i *Image, levels string) bool
 
-var LevelImageChannel func(i *Image, channel T.ChannelType, blackPoint, whitePoint, gamma float64) bool
+var LevelImageChannel func(i *Image, channel ChannelType, blackPoint, whitePoint, gamma float64) bool
 
 var LinearStretchImage func(i *Image, blackPoint, whitePoint float64) bool
 
-var LiquidRescaleImage func(i *Image, columns, rows T.Size, deltaX, rigidity float64, exception *ExceptionInfo) *Image
+var LiquidRescaleImage func(i *Image, columns, rows Size, deltaX, rigidity float64, exception *ExceptionInfo) *Image
 
 var LZWEncodeImage func(i *Image, length uint32, pixels *byte) bool
 
@@ -634,17 +626,17 @@ var MagnifyImage func(i *Image, exception *ExceptionInfo) *Image
 
 var MapImage func(i *Image, mapImage *Image, dither bool) bool
 
-var MatteFloodfillImage func(i *Image, target T.PixelPacket, opacity T.Quantum, xOffset, yOffset T.Long, method T.PaintMethod) bool
+var MatteFloodfillImage func(i *Image, target PixelPacket, opacity Quantum, xOffset, yOffset Long, method PaintMethod) bool
 
 var MedianFilterImage func(i *Image, radius float64, exception *ExceptionInfo) *Image
 
-var MergeImageLayers func(i *Image, method T.ImageLayerMethod, exception *ExceptionInfo) *Image
+var MergeImageLayers func(i *Image, method ImageLayerMethod, exception *ExceptionInfo) *Image
 
 var MinifyImage func(i *Image, exception *ExceptionInfo) *Image
 
 var ModulateImage func(i *Image, modulate string) bool
 
-var MorphImages func(i *Image, numberFrames T.Size, exception *ExceptionInfo) *Image
+var MorphImages func(i *Image, numberFrames Size, exception *ExceptionInfo) *Image
 
 var MosaicImages func(i *Image, exception *ExceptionInfo) *Image
 
@@ -652,19 +644,19 @@ var MotionBlurImage func(i *Image, radius, sigma, angle float64, exception *Exce
 
 var NegateImage func(i *Image, grayscale bool) bool
 
-var NegateImageChannel func(i *Image, channel T.ChannelType, grayscale bool) bool
+var NegateImageChannel func(i *Image, channel ChannelType, grayscale bool) bool
 
 var NormalizeImage func(i *Image) bool
 
-var NormalizeImageChannel func(i *Image, channel T.ChannelType) bool
+var NormalizeImageChannel func(i *Image, channel ChannelType) bool
 
 var OilPaintImage func(i *Image, radius float64, exception *ExceptionInfo) *Image
 
-var OpaqueImage func(i *Image, target, fill T.PixelPacket) bool
+var OpaqueImage func(i *Image, target, fill PixelPacket) bool
 
 var OpaquePaintImage func(i *Image, target, fill *MagickPixelPacket, invert bool) bool
 
-var OpaquePaintImageChannel func(i *Image, channel T.ChannelType, target, fill *MagickPixelPacket, invert bool) bool
+var OpaquePaintImageChannel func(i *Image, channel ChannelType, target, fill *MagickPixelPacket, invert bool) bool
 
 var OpenCacheView func(i *Image) *CacheView
 
@@ -676,59 +668,59 @@ var OptimizePlusImageLayers func(i *Image, exception *ExceptionInfo) *Image
 
 var OrderedDitherImage func(i *Image) bool
 
-var OrderedDitherImageChannel func(i *Image, channel T.ChannelType, exception *ExceptionInfo) bool
+var OrderedDitherImageChannel func(i *Image, channel ChannelType, exception *ExceptionInfo) bool
 
 var OrderedPosterizeImage func(i *Image, thresholdMap string, exception *ExceptionInfo) bool
 
-var OrderedPosterizeImageChannel func(i *Image, channel T.ChannelType, thresholdMap string, exception *ExceptionInfo) bool
+var OrderedPosterizeImageChannel func(i *Image, channel ChannelType, thresholdMap string, exception *ExceptionInfo) bool
 
 var PackbitsEncodeImage func(i *Image, length uint32, pixels *byte) bool
 
-var PaintFloodfillImage func(i *Image, channel T.ChannelType, target *MagickPixelPacket, x, y T.Long, drawInfo *DrawInfo, method T.PaintMethod) bool
+var PaintFloodfillImage func(i *Image, channel ChannelType, target *MagickPixelPacket, x, y Long, drawInfo *DrawInfo, method PaintMethod) bool
 
 var PaintOpaqueImage func(i *Image, target, fill *MagickPixelPacket) bool
 
-var PaintOpaqueImageChannel func(i *Image, channel T.ChannelType, target, fill *MagickPixelPacket) bool
+var PaintOpaqueImageChannel func(i *Image, channel ChannelType, target, fill *MagickPixelPacket) bool
 
-var PaintTransparentImage func(i *Image, target *MagickPixelPacket, opacity T.Quantum) bool
+var PaintTransparentImage func(i *Image, target *MagickPixelPacket, opacity Quantum) bool
 
-var ParseGravityGeometry func(i *Image, geometry string, regionInfo *T.RectangleInfo) T.MagickStatusType
+var ParseGravityGeometry func(i *Image, geometry string, regionInfo *RectangleInfo) MagickStatusType
 
-var ParsePageGeometry func(i *Image, geometry string, regionInfo *T.RectangleInfo) T.MagickStatusType
+var ParsePageGeometry func(i *Image, geometry string, regionInfo *RectangleInfo) MagickStatusType
 
-var PersistCache func(i *Image, filename string, attach bool, offset *T.MagickOffsetType, exception *ExceptionInfo) bool
+var PersistCache func(i *Image, filename string, attach bool, offset *MagickOffsetType, exception *ExceptionInfo) bool
 
-var PlasmaImage func(i *Image, segment *T.SegmentInfo, attenuate, depth T.Size) bool
+var PlasmaImage func(i *Image, segment *SegmentInfo, attenuate, depth Size) bool
 
 var PolaroidImage func(i *Image, drawInfo *DrawInfo, angle float64, exception *ExceptionInfo) *Image
 
-var PopImagePixels func(i *Image, quantum T.QuantumType, destination *byte) bool
+var PopImagePixels func(i *Image, quantum QuantumType, destination *byte) bool
 
-var PosterizeImage func(i *Image, levels T.Size, dither bool) bool
+var PosterizeImage func(i *Image, levels Size, dither bool) bool
 
-var PreviewImage func(i *Image, preview T.PreviewType, exception *ExceptionInfo) *Image
+var PreviewImage func(i *Image, preview PreviewType, exception *ExceptionInfo) *Image
 
-var ProfileImage func(i *Image, name string, datum *T.Void, length uint32, clone bool) bool
+var ProfileImage func(i *Image, name string, datum *Void, length uint32, clone bool) bool
 
-var PushImagePixels func(i *Image, quantum T.QuantumType, source *byte) bool
+var PushImagePixels func(i *Image, quantum QuantumType, source *byte) bool
 
 var QuantizationError func(i *Image) uint
 
-var QueryColorname func(i *Image, color *T.PixelPacket, compliance T.ComplianceType, name string, exception *ExceptionInfo) bool
+var QueryColorname func(i *Image, color *PixelPacket, compliance ComplianceType, name string, exception *ExceptionInfo) bool
 
-var QueryMagickColorname func(i *Image, color *MagickPixelPacket, compliance T.ComplianceType, hex bool, name string, exception *ExceptionInfo) bool
+var QueryMagickColorname func(i *Image, color *MagickPixelPacket, compliance ComplianceType, hex bool, name string, exception *ExceptionInfo) bool
 
 var RadialBlurImage func(i *Image, angle float64, exception *ExceptionInfo) *Image
 
-var RadialBlurImageChannel func(i *Image, channel T.ChannelType, angle float64, exception *ExceptionInfo) *Image
+var RadialBlurImageChannel func(i *Image, channel ChannelType, angle float64, exception *ExceptionInfo) *Image
 
-var RaiseImage func(i *Image, raiseInfo *T.RectangleInfo, raise bool) bool
+var RaiseImage func(i *Image, raiseInfo *RectangleInfo, raise bool) bool
 
 var RandomChannelThresholdImage func(i *Image, channel, thresholds string, exception *ExceptionInfo) uint
 
 var RandomThresholdImage func(i *Image, thresholds string, exception *ExceptionInfo) bool
 
-var RandomThresholdImageChannel func(i *Image, channel T.ChannelType, thresholds string, exception *ExceptionInfo) bool
+var RandomThresholdImageChannel func(i *Image, channel ChannelType, thresholds string, exception *ExceptionInfo) bool
 
 var ReadBlob func(i *Image, length uint32, data *byte) int32
 
@@ -738,23 +730,23 @@ var ReadBlobDouble func(i *Image) float64
 
 var ReadBlobFloat func(i *Image) float32
 
-var ReadBlobLong func(i *Image) T.Size
+var ReadBlobLong func(i *Image) Size
 
-var ReadBlobLongLong func(i *Image) T.MagickSizeType
+var ReadBlobLongLong func(i *Image) MagickSizeType
 
-var ReadBlobLSBLong func(i *Image) T.Size
+var ReadBlobLSBLong func(i *Image) Size
 
-var ReadBlobLSBShort func(i *Image) T.UnsignedShort
+var ReadBlobLSBShort func(i *Image) UnsignedShort
 
-var ReadBlobMSBLong func(i *Image) T.Size
+var ReadBlobMSBLong func(i *Image) Size
 
-var ReadBlobMSBShort func(i *Image) T.UnsignedShort
+var ReadBlobMSBShort func(i *Image) UnsignedShort
 
-var ReadBlobShort func(i *Image) T.UnsignedShort
+var ReadBlobShort func(i *Image) UnsignedShort
 
 var ReadBlobString func(i *Image, str string) string
 
-var RecolorImage func(i *Image, order T.Size, colorMatrix *float64, exception *ExceptionInfo) *Image
+var RecolorImage func(i *Image, order Size, colorMatrix *float64, exception *ExceptionInfo) *Image
 
 var ReduceNoiseImage func(i *Image, radius float64, exception *ExceptionInfo) *Image
 
@@ -766,7 +758,7 @@ var RemoveImageProfile func(i *Image, name string) *StringInfo
 
 var RemoveImageProperty func(i *Image, property string) string
 
-var ResampleImage func(i *Image, xResolution, yResolution float64, filter T.FilterTypes, blur float64, exception *ExceptionInfo) *Image
+var ResampleImage func(i *Image, xResolution, yResolution float64, filter FilterTypes, blur float64, exception *ExceptionInfo) *Image
 
 var ResetImageArtifactIterator func(i *Image)
 
@@ -778,35 +770,35 @@ var ResetImageProfileIterator func(i *Image)
 
 var ResetImagePropertyIterator func(i *Image)
 
-var ResizeImage func(i *Image, columns, rows T.Size, filter T.FilterTypes, blur float64, exception *ExceptionInfo) *Image
+var ResizeImage func(i *Image, columns, rows Size, filter FilterTypes, blur float64, exception *ExceptionInfo) *Image
 
-var RGBTransformImage func(i *Image, colorspace T.ColorspaceType) bool
+var RGBTransformImage func(i *Image, colorspace ColorspaceType) bool
 
-var RollImage func(i *Image, xOffset, yOffset T.Long, exception *ExceptionInfo) *Image
+var RollImage func(i *Image, xOffset, yOffset Long, exception *ExceptionInfo) *Image
 
 var RotateImage func(i *Image, degrees float64, exception *ExceptionInfo) *Image
 
-var SampleImage func(i *Image, columns, rows T.Size, exception *ExceptionInfo) *Image
+var SampleImage func(i *Image, columns, rows Size, exception *ExceptionInfo) *Image
 
-var ScaleImage func(i *Image, columns, rows T.Size, exception *ExceptionInfo) *Image
+var ScaleImage func(i *Image, columns, rows Size, exception *ExceptionInfo) *Image
 
-var SeekBlob func(i *Image, offset T.MagickOffsetType, whence int) T.MagickOffsetType
+var SeekBlob func(i *Image, offset MagickOffsetType, whence int) MagickOffsetType
 
-var SegmentImage func(i *Image, colorspace T.ColorspaceType, verbose bool, clusterThreshold, smoothThreshold float64) bool
+var SegmentImage func(i *Image, colorspace ColorspaceType, verbose bool, clusterThreshold, smoothThreshold float64) bool
 
-var SeparateImageChannel func(i *Image, channel T.ChannelType) bool
+var SeparateImageChannel func(i *Image, channel ChannelType) bool
 
-var SeparateImages func(i *Image, channel T.ChannelType, exception *ExceptionInfo) *Image
+var SeparateImages func(i *Image, channel ChannelType, exception *ExceptionInfo) *Image
 
 var SepiaToneImage func(i *Image, threshold float64, exception *ExceptionInfo) *Image
 
 var SetBlobExempt func(i *Image, exempt bool)
 
-var SetGeometry func(i *Image, geometry *T.RectangleInfo)
+var SetGeometry func(i *Image, geometry *RectangleInfo)
 
-var SetImage func(i *Image, opacity T.Quantum)
+var SetImage func(i *Image, opacity Quantum)
 
-var SetImageAlphaChannel func(i *Image, alphaType T.AlphaChannelType) bool
+var SetImageAlphaChannel func(i *Image, alphaType AlphaChannelType) bool
 
 var SetImageArtifact func(i *Image, artifact, value string) bool
 
@@ -814,51 +806,51 @@ var SetImageAttribute func(i *Image, key, value string) bool
 
 var SetImageBackgroundColor func(i *Image) bool
 
-var SetImageChannelDepth func(i *Image, channel T.ChannelType, depth T.Size) bool
+var SetImageChannelDepth func(i *Image, channel ChannelType, depth Size) bool
 
 var SetImageClipMask func(i *Image, clipMask *Image) bool
 
-var SetImageDepth func(i *Image, depth T.Size) bool
+var SetImageDepth func(i *Image, depth Size) bool
 
-var SetImageExtent func(i *Image, columns, rows T.Size) bool
+var SetImageExtent func(i *Image, columns, rows Size) bool
 
 var SetImageMask func(i *Image, mask *Image) bool
 
-var SetImageOpacity func(i *Image, opacity T.Quantum) bool
+var SetImageOpacity func(i *Image, opacity Quantum) bool
 
-var SetImagePixels func(i *Image, x, y T.Long, columns, rows T.Size) *T.PixelPacket
+var SetImagePixels func(i *Image, x, y Long, columns, rows Size) *PixelPacket
 
 var SetImageProfile func(i *Image, name string, profile *StringInfo) bool
 
-var SetImageProgressMonitor func(i *Image, progressMonitor T.MagickProgressMonitor, clientData *T.Void) T.MagickProgressMonitor
+var SetImageProgressMonitor func(i *Image, progressMonitor MagickProgressMonitor, clientData *Void) MagickProgressMonitor
 
 var SetImageProperty func(i *Image, property, value string) bool
 
-var SetImageStorageClass func(i *Image, storageClass T.ClassType) bool
+var SetImageStorageClass func(i *Image, storageClass ClassType) bool
 
-var SetImageType func(i *Image, imageType T.ImageType) bool
+var SetImageType func(i *Image, imageType ImageType) bool
 
-var SetImageVirtualPixelMethod func(i *Image, virtualPixelMethod T.VirtualPixelMethod) T.VirtualPixelMethod
+var SetImageVirtualPixelMethod func(i *Image, virtualPixelMethod VirtualPixelMethod) VirtualPixelMethod
 
 var ShadeImage func(i *Image, gray bool, azimuth, elevation float64, exception *ExceptionInfo) *Image
 
-var ShadowImage func(i *Image, opacity, sigma float64, xOffset, yOffset T.Long, exception *ExceptionInfo) *Image
+var ShadowImage func(i *Image, opacity, sigma float64, xOffset, yOffset Long, exception *ExceptionInfo) *Image
 
 var SharpenImage func(i *Image, radius, sigma float64, exception *ExceptionInfo) *Image
 
-var SharpenImageChannel func(i *Image, channel T.ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image
+var SharpenImageChannel func(i *Image, channel ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image
 
-var ShaveImage func(i *Image, shaveInfo *T.RectangleInfo, exception *ExceptionInfo) *Image
+var ShaveImage func(i *Image, shaveInfo *RectangleInfo, exception *ExceptionInfo) *Image
 
 var ShearImage func(i *Image, xShear, yShear float64, exception *ExceptionInfo) *Image
 
 var SigmoidalContrastImage func(i *Image, sharpen bool, levels string) bool
 
-var SigmoidalContrastImageChannel func(i *Image, channel T.ChannelType, sharpen bool, contrast, midpoint float64) bool
+var SigmoidalContrastImageChannel func(i *Image, channel ChannelType, sharpen bool, contrast, midpoint float64) bool
 
 var SignatureImage func(i *Image) bool
 
-var SizeBlob func(i *Image) T.MagickOffsetType
+var SizeBlob func(i *Image) MagickOffsetType
 
 var SketchImage func(i *Image, radius, sigma, angle float64, exception *ExceptionInfo) *Image
 
@@ -866,7 +858,7 @@ var SolarizeImage func(i *Image, threshold float64) bool
 
 var SortColormapByIntensity func(i *Image) bool
 
-var SpliceImage func(i *Image, geometry *T.RectangleInfo, exception *ExceptionInfo) *Image
+var SpliceImage func(i *Image, geometry *RectangleInfo, exception *ExceptionInfo) *Image
 
 var SpreadImage func(i *Image, radius float64, exception *ExceptionInfo) *Image
 
@@ -884,7 +876,7 @@ var SyncImagePixels func(i *Image) bool
 
 var SyncImageProfiles func(i *Image) bool
 
-var TellBlob func(i *Image) T.MagickOffsetType
+var TellBlob func(i *Image) MagickOffsetType
 
 var TextureImage func(i *Image, texture *Image) bool
 
@@ -892,19 +884,19 @@ var ThresholdImage func(i *Image, threshold float64) uint
 
 var ThresholdImageChannel func(i *Image, threshold string) uint
 
-var ThumbnailImage func(i *Image, columns, rows T.Size, exception *ExceptionInfo) *Image
+var ThumbnailImage func(i *Image, columns, rows Size, exception *ExceptionInfo) *Image
 
-var TintImage func(i *Image, opacity string, tint T.PixelPacket, exception *ExceptionInfo) *Image
+var TintImage func(i *Image, opacity string, tint PixelPacket, exception *ExceptionInfo) *Image
 
-var TransformColorspace func(i *Image, colorspace T.ColorspaceType) uint
+var TransformColorspace func(i *Image, colorspace ColorspaceType) uint
 
-var TransformImageColorspace func(i *Image, colorspace T.ColorspaceType) bool
+var TransformImageColorspace func(i *Image, colorspace ColorspaceType) bool
 
-var TransformRGBImage func(i *Image, colorspace T.ColorspaceType) bool
+var TransformRGBImage func(i *Image, colorspace ColorspaceType) bool
 
-var TransparentImage func(i *Image, target T.PixelPacket, opacity T.Quantum) bool
+var TransparentImage func(i *Image, target PixelPacket, opacity Quantum) bool
 
-var TransparentPaintImage func(i *Image, target *MagickPixelPacket, opacity T.Quantum, invert bool) bool
+var TransparentPaintImage func(i *Image, target *MagickPixelPacket, opacity Quantum, invert bool) bool
 
 var TransposeImage func(i *Image, exception *ExceptionInfo) *Image
 
@@ -916,11 +908,11 @@ var UniqueImageColors func(i *Image, exception *ExceptionInfo) *Image
 
 var UnsharpMaskImage func(i *Image, radius, sigma, amount, threshold float64, exception *ExceptionInfo) *Image
 
-var UnsharpMaskImageChannel func(i *Image, channel T.ChannelType, radius, sigma, amount, threshold float64, exception *ExceptionInfo) *Image
+var UnsharpMaskImageChannel func(i *Image, channel ChannelType, radius, sigma, amount, threshold float64, exception *ExceptionInfo) *Image
 
-var ValidateColormapIndex func(i *Image, index T.Size) T.IndexPacket
+var ValidateColormapIndex func(i *Image, index Size) IndexPacket
 
-var VignetteImage func(i *Image, radius, sigma float64, x, y T.Long, exception *ExceptionInfo) *Image
+var VignetteImage func(i *Image, radius, sigma float64, x, y Long, exception *ExceptionInfo) *Image
 
 var WaveImage func(i *Image, amplitude, waveLength float64, exception *ExceptionInfo) *Image
 
@@ -932,23 +924,23 @@ var WriteBlobByte func(i *Image, value byte) int32
 
 var WriteBlobFloat func(i *Image, value float32) int32
 
-var WriteBlobLong func(i *Image, value T.UnsignedLong) int32
+var WriteBlobLong func(i *Image, value UnsignedLong) int32
 
-var WriteBlobLSBLong func(i *Image, value T.UnsignedLong) int32
+var WriteBlobLSBLong func(i *Image, value UnsignedLong) int32
 
-var WriteBlobLSBShort func(i *Image, value T.UnsignedShort) int32
+var WriteBlobLSBShort func(i *Image, value UnsignedShort) int32
 
-var WriteBlobMSBLong func(i *Image, value T.UnsignedLong) int32
+var WriteBlobMSBLong func(i *Image, value UnsignedLong) int32
 
-var WriteBlobMSBShort func(i *Image, value T.UnsignedShort) int32
+var WriteBlobMSBShort func(i *Image, value UnsignedShort) int32
 
-var WriteBlobShort func(i *Image, value T.UnsignedShort) int32
+var WriteBlobShort func(i *Image, value UnsignedShort) int32
 
 var WriteBlobString func(i *Image, str string) int32
 
 var ZLIBEncodeImage func(i *Image, length uint32, pixels *byte) bool
 
-var ZoomImage func(i *Image, columns, rows T.Size, exception *ExceptionInfo) *Image
+var ZoomImage func(i *Image, columns, rows Size, exception *ExceptionInfo) *Image
 
 var AcquireAuthenticCacheView func(i *Image, exception *ExceptionInfo) *CacheView
 
@@ -956,31 +948,31 @@ var AcquireCacheView func(i *Image) *CacheView
 
 var AcquireImageColormap func(i *Image, colors uint32) bool
 
-var AcquirePixelCache func(*Image, T.VirtualPixelMethod, T.Long, T.Long, T.Size, T.Size, *ExceptionInfo) *T.PixelPacket // doc c-static
-var AcquirePixels func(i *Image) *T.PixelPacket                                                                         // doc (image Image)
+var AcquirePixelCache func(*Image, VirtualPixelMethod, Long, Long, Size, Size, *ExceptionInfo) *PixelPacket // doc c-static
+var AcquirePixels func(i *Image) *PixelPacket                                                               // doc (image Image)
 var AcquireVirtualCacheView func(i *Image, exception *ExceptionInfo) *CacheView
 
 var AutoGammaImage func(i *Image) bool
 
-var AutoGammaImageChannel func(i *Image, channel T.ChannelType) bool
+var AutoGammaImageChannel func(i *Image, channel ChannelType) bool
 
 var AutoLevelImage func(i *Image) bool
 
-var AutoLevelImageChannel func(i *Image, channel T.ChannelType) bool
+var AutoLevelImageChannel func(i *Image, channel ChannelType) bool
 
 var BlueShiftImage func(i *Image, factor float64, exception *ExceptionInfo) *Image
 
 var BrightnessContrastImage func(i *Image, brightness, contrast float64) bool
 
-var BrightnessContrastImageChannel func(i *Image, channel T.ChannelType, brightness, contrast float64) bool
+var BrightnessContrastImageChannel func(i *Image, channel ChannelType, brightness, contrast float64) bool
 
 var ColorDecisionListImage func(i *Image, colorCorrectionCollection string) bool
 
-var ColorMatrixImage func(i *Image, colorMatrix *T.KernelInfo, exception *ExceptionInfo) *Image
+var ColorMatrixImage func(i *Image, colorMatrix *KernelInfo, exception *ExceptionInfo) *Image
 
-var CropImageToHBITMAP func(i *Image, r *T.RectangleInfo, e *ExceptionInfo) *T.Void
+var CropImageToHBITMAP func(i *Image, r *RectangleInfo, e *ExceptionInfo) *Void
 
-var CropImageToTiles func(i *Image, cropGeometry *T.RectangleInfo, exception *ExceptionInfo) *Image
+var CropImageToTiles func(i *Image, cropGeometry *RectangleInfo, exception *ExceptionInfo) *Image
 
 var DecipherImage func(i *Image, passphrase string, exception *ExceptionInfo) bool
 
@@ -990,47 +982,47 @@ var EncipherImage func(i *Image, passphrase string, exception *ExceptionInfo) bo
 
 var ExtractSubimageFromImage func(i *Image, reference *Image, exception *ExceptionInfo) *Image
 
-var FilterImage func(i *Image, kernel *T.KernelInfo, exception *ExceptionInfo) *Image
+var FilterImage func(i *Image, kernel *KernelInfo, exception *ExceptionInfo) *Image
 
-var FilterImageChannel func(i *Image, channel T.ChannelType, kernel *T.KernelInfo, exception *ExceptionInfo) *Image
+var FilterImageChannel func(i *Image, channel ChannelType, kernel *KernelInfo, exception *ExceptionInfo) *Image
 
 var ForwardFourierTransformImage func(i *Image, modulus bool, exception *ExceptionInfo) *Image
 
-var FunctionImage func(i *Image, function T.MagickFunction, numberParameters int32, parameters *float64, exception *ExceptionInfo) bool
+var FunctionImage func(i *Image, function MagickFunction, numberParameters int32, parameters *float64, exception *ExceptionInfo) bool
 
-var FunctionImageChannel func(i *Image, channel T.ChannelType, function T.MagickFunction, numberParameters int32, argument *float64, exception *ExceptionInfo) bool
+var FunctionImageChannel func(i *Image, channel ChannelType, function MagickFunction, numberParameters int32, argument *float64, exception *ExceptionInfo) bool
 
-var GetAuthenticIndexQueue func(i *Image) *T.IndexPacket
+var GetAuthenticIndexQueue func(i *Image) *IndexPacket
 
-var GetAuthenticPixelQueue func(i *Image) *T.PixelPacket // doc (image Image)
-var GetAuthenticPixels func(i *Image, x, y int32, columns, rows uint32, exception *ExceptionInfo) *T.PixelPacket
+var GetAuthenticPixelQueue func(i *Image) *PixelPacket // doc (image Image)
+var GetAuthenticPixels func(i *Image, x, y int32, columns, rows uint32, exception *ExceptionInfo) *PixelPacket
 
-var GetBlobProperties func(i *Image) *stat
+var GetBlobProperties func(i *Image) *Stat
 
 var GetImageAlphaChannel func(i *Image) bool
 
-var GetImageChannelDistortions func(i *Image, reconstructImage *Image, metric T.MetricType, exception *ExceptionInfo) *float64
+var GetImageChannelDistortions func(i *Image, reconstructImage *Image, metric MetricType, exception *ExceptionInfo) *float64
 
-var GetImageChannelFeatures func(i *Image, distance uint32, exception *ExceptionInfo) *T.ChannelFeatures
+var GetImageChannelFeatures func(i *Image, distance uint32, exception *ExceptionInfo) *ChannelFeatures
 
-var GetImageChannelKurtosis func(i *Image, channel T.ChannelType, kurtosis, kewness *float64, exception *ExceptionInfo) bool
+var GetImageChannelKurtosis func(i *Image, channel ChannelType, kurtosis, kewness *float64, exception *ExceptionInfo) bool
 
 var GetImageChannels func(i *Image) uint32
 
-var GetOneAuthenticPixel func(i *Image, x, y int32, pixel *T.PixelPacket, exception *ExceptionInfo) bool                                         // doc (image Image)
-var GetOneVirtualMagickPixel func(i *Image, x, y int32, pixel *MagickPixelPacket, exception *ExceptionInfo) bool                                 // doc (image Image...exception ExceptionInfo)
-var GetOneVirtualMethodPixel func(i *Image, virtualPixelMethod T.VirtualPixelMethod, x, y int32, pixel *T.PixelPacket, exception *ExceptionInfo) // doc (image Image...Pixelpacket...exception ExceptionInfo)
-var GetOneVirtualPixel func(i *Image, x, y int32, pixel *T.PixelPacket, exception *ExceptionInfo) bool                                           // doc (image Image...exception ExceptionInfo)
-var GetVirtualIndexQueue func(i *Image) *T.IndexPacket
+var GetOneAuthenticPixel func(i *Image, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool                                       // doc (image Image)
+var GetOneVirtualMagickPixel func(i *Image, x, y int32, pixel *MagickPixelPacket, exception *ExceptionInfo) bool                             // doc (image Image...exception ExceptionInfo)
+var GetOneVirtualMethodPixel func(i *Image, virtualPixelMethod VirtualPixelMethod, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) // doc (image Image...Pixelpacket...exception ExceptionInfo)
+var GetOneVirtualPixel func(i *Image, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool                                         // doc (image Image...exception ExceptionInfo)
+var GetVirtualIndexQueue func(i *Image) *IndexPacket
 
-var GetVirtualPixelQueue func(i *Image) *T.PixelPacket // doc (image Image)
-var GetVirtualPixels func(i *Image, x, y int32, columns, rows uint32, exception *ExceptionInfo) *T.PixelPacket
+var GetVirtualPixelQueue func(i *Image) *PixelPacket // doc (image Image)
+var GetVirtualPixels func(i *Image, x, y int32, columns, rows uint32, exception *ExceptionInfo) *PixelPacket
 
 var HaldClutImage func(i *Image, haldImage *Image) bool
 
-var HaldClutImageChannel func(i *Image, channel T.ChannelType, haldImage *Image) bool
+var HaldClutImageChannel func(i *Image, channel ChannelType, haldImage *Image) bool
 
-var ImageToHBITMAP func(i *Image) **T.Void
+var ImageToHBITMAP func(i *Image) **Void
 
 var IntegralRotateImage func(i *Image, rotations uint32, exception *ExceptionInfo) *Image
 
@@ -1038,61 +1030,61 @@ var InverseFourierTransformImage func(i *Image, phaseImage *Image, modulus bool,
 
 var LevelColorsImage func(i *Image, blackColor, whiteColor *MagickPixelPacket, invert bool) bool
 
-var LevelColorsImageChannel func(i *Image, channel T.ChannelType, blackColor, whiteColor *MagickPixelPacket, invert bool) bool
+var LevelColorsImageChannel func(i *Image, channel ChannelType, blackColor, whiteColor *MagickPixelPacket, invert bool) bool
 
-var LevelImageColors func(i *Image, channel T.ChannelType, blackColor, whiteColor *MagickPixelPacket, invert bool) bool
+var LevelImageColors func(i *Image, channel ChannelType, blackColor, whiteColor *MagickPixelPacket, invert bool) bool
 
 var LevelizeImage func(i *Image, blackPoint, whitePoint, gamma float64) bool
 
-var LevelizeImageChannel func(i *Image, channel T.ChannelType, blackPoint, whitePoint, gamma float64) bool
+var LevelizeImageChannel func(i *Image, channel ChannelType, blackPoint, whitePoint, gamma float64) bool
 
-var MinMaxStretchImage func(i *Image, channel T.ChannelType, blackAdjust, whiteAdjust float64) bool
+var MinMaxStretchImage func(i *Image, channel ChannelType, blackAdjust, whiteAdjust float64) bool
 
 var ModeImage func(i *Image, radius float64, exception *ExceptionInfo) *Image
 
-var MorphologyApply func(i *Image, method T.MorphologyMethod, channel T.ChannelType, iterations int32, kernel *T.KernelInfo, compose T.CompositeMethod, bias float64, exception *ExceptionInfo) *Image
+var MorphologyApply func(i *Image, method MorphologyMethod, channel ChannelType, iterations int32, kernel *KernelInfo, compose CompositeMethod, bias float64, exception *ExceptionInfo) *Image
 
-var MorphologyImage func(i *Image, method T.MorphologyMethod, iterations int32, kernel *T.KernelInfo, exception *ExceptionInfo) *Image
+var MorphologyImage func(i *Image, method MorphologyMethod, iterations int32, kernel *KernelInfo, exception *ExceptionInfo) *Image
 
-var MorphologyImageChannel func(i *Image, channel T.ChannelType, method T.MorphologyMethod, iterations int32, kernel *T.KernelInfo, exception *ExceptionInfo) *Image
+var MorphologyImageChannel func(i *Image, channel ChannelType, method MorphologyMethod, iterations int32, kernel *KernelInfo, exception *ExceptionInfo) *Image
 
-var MotionBlurImageChannel func(i *Image, channel T.ChannelType, radius, sigma, angle float64, exception *ExceptionInfo) *Image
+var MotionBlurImageChannel func(i *Image, channel ChannelType, radius, sigma, angle float64, exception *ExceptionInfo) *Image
 
-var ParseSizeGeometry func(i *Image, geometry string, regionInfo *T.RectangleInfo) T.MagickStatusType // doc RectangeInfo
+var ParseSizeGeometry func(i *Image, geometry string, regionInfo *RectangleInfo) MagickStatusType // doc RectangeInfo
 var PasskeyDecipherImage func(i *Image, passkey *StringInfo, exception *ExceptionInfo) bool
 
 var PasskeyEncipherImage func(i *Image, passkey *StringInfo, exception *ExceptionInfo) bool
 
-var PosterizeImageChannel func(i *Image, channel T.ChannelType, levels uint32, dither bool) bool
+var PosterizeImageChannel func(i *Image, channel ChannelType, levels uint32, dither bool) bool
 
-var QueueAuthenticPixels func(i *Image, x, y int32, columns, rows uint32, exception *ExceptionInfo) *T.PixelPacket
+var QueueAuthenticPixels func(i *Image, x, y int32, columns, rows uint32, exception *ExceptionInfo) *PixelPacket
 
 var SelectiveBlurImage func(i *Image, radius, sigma, threshold float64, exception *ExceptionInfo) *Image
 
-var SelectiveBlurImageChannel func(i *Image, channel T.ChannelType, radius, sigma, threshold float64, exception *ExceptionInfo) *Image
+var SelectiveBlurImageChannel func(i *Image, channel ChannelType, radius, sigma, threshold float64, exception *ExceptionInfo) *Image
 
 var SetImageChannels func(i *Image, channels uint32) bool
 
 var SetImageColor func(i *Image, color *MagickPixelPacket) bool
 
-var SetImageColorspace func(i *Image, colorspace T.ColorspaceType) // return ???
+var SetImageColorspace func(i *Image, colorspace ColorspaceType) // return ???
 var ShearRotateImage func(i *Image, degrees float64, exception *ExceptionInfo) *Image
 
-var SimilarityImage func(i *Image, reference *Image, offset *T.RectangleInfo, similarity *float64, exception *ExceptionInfo) *Image
+var SimilarityImage func(i *Image, reference *Image, offset *RectangleInfo, similarity *float64, exception *ExceptionInfo) *Image
 
-var SparseColorImage func(i *Image, channel T.ChannelType, method T.SparseColorMethod, numberArguments uint32, arguments *float64, exception *ExceptionInfo) *Image
+var SparseColorImage func(i *Image, channel ChannelType, method SparseColorMethod, numberArguments uint32, arguments *float64, exception *ExceptionInfo) *Image
 
-var StatisticImage func(i *Image, type_ T.StatisticType, width, height uint32, exception *ExceptionInfo) *Image
+var StatisticImage func(i *Image, type_ StatisticType, width, height uint32, exception *ExceptionInfo) *Image
 
-var StatisticImageChannel func(i *Image, channel T.ChannelType, type_ T.StatisticType, width, height uint32, exception *ExceptionInfo) *Image
+var StatisticImageChannel func(i *Image, channel ChannelType, type_ StatisticType, width, height uint32, exception *ExceptionInfo) *Image
 
 var StereoAnaglyphImage func(i *Image, rightImage *Image, xOffset, yOffset int32, exception *ExceptionInfo) *Image
 
 var SyncAuthenticPixels func(i *Image, exception *ExceptionInfo) bool
 
-func (i *Image) CatchException() T.ExceptionType { return CatchImageException(i) }
+func (i *Image) CatchException() ExceptionType { return CatchImageException(i) }
 
-func (i *Image) Channel(channel T.ChannelType) uint { return ChannelImage(i, channel) }
+func (i *Image) Channel(channel ChannelType) uint { return ChannelImage(i, channel) }
 
 func (i *Image) ChannelThreshold(level string) uint { return ChannelThresholdImage(i, level) }
 
@@ -1100,7 +1092,7 @@ func (i *Image) Charcoal(radius, sigma float64, exception *ExceptionInfo) *Image
 	return CharcoalImage(i, radius, sigma, exception)
 }
 
-func (i *Image) Chop(chopInfo *T.RectangleInfo, exception *ExceptionInfo) *Image {
+func (i *Image) Chop(chopInfo *RectangleInfo, exception *ExceptionInfo) *Image {
 	return ChopImage(i, chopInfo, exception)
 }
 
@@ -1114,7 +1106,7 @@ func (i *Image) ClipPathImage(pathname string, inside bool) bool {
 	return ClipPathImage(i, pathname, inside)
 }
 
-func (i *Image) Clone(columns, rows T.Size, orphan bool, exception *ExceptionInfo) *Image {
+func (i *Image) Clone(columns, rows Size, orphan bool, exception *ExceptionInfo) *Image {
 	return CloneImage(i, columns, rows, orphan, exception)
 }
 
@@ -1138,45 +1130,45 @@ func (i *Image) CloseBlob() bool { return CloseBlob(i) }
 
 func (i *Image) Clut(clutImage *Image) bool { return ClutImage(i, clutImage) }
 
-func (i *Image) ClutChannel(channel T.ChannelType, clutImage *Image) bool {
+func (i *Image) ClutChannel(channel ChannelType, clutImage *Image) bool {
 	return ClutImageChannel(i, channel, clutImage)
 }
 
 func (i *Image) CoalesceImages(exception *ExceptionInfo) *Image { return CoalesceImages(i, exception) }
 
-func (i *Image) ColorFloodfill(drawInfo *DrawInfo, target T.PixelPacket, xOffset, yOffset T.Long, method T.PaintMethod) bool {
+func (i *Image) ColorFloodfill(drawInfo *DrawInfo, target PixelPacket, xOffset, yOffset Long, method PaintMethod) bool {
 	return ColorFloodfillImage(i, drawInfo, target, xOffset, yOffset, method)
 }
 
-func (i *Image) Colorize(opacity string, colorize T.PixelPacket, exception *ExceptionInfo) *Image {
+func (i *Image) Colorize(opacity string, colorize PixelPacket, exception *ExceptionInfo) *Image {
 	return ColorizeImage(i, opacity, colorize, exception)
 }
 
-func (i *Image) CombineImages(channel T.ChannelType, exception *ExceptionInfo) *Image {
+func (i *Image) CombineImages(channel ChannelType, exception *ExceptionInfo) *Image {
 	return CombineImages(i, channel, exception)
 }
 
-func (i *Image) CompareChannels(reconstructImage *Image, channel T.ChannelType, metric T.MetricType, distortion *float64, exception *ExceptionInfo) *Image {
+func (i *Image) CompareChannels(reconstructImage *Image, channel ChannelType, metric MetricType, distortion *float64, exception *ExceptionInfo) *Image {
 	return CompareImageChannels(i, reconstructImage, channel, metric, distortion, exception)
 }
 
-func (i *Image) CompareImageLayers(method T.ImageLayerMethod, exception *ExceptionInfo) *Image {
+func (i *Image) CompareImageLayers(method ImageLayerMethod, exception *ExceptionInfo) *Image {
 	return CompareImageLayers(i, method, exception)
 }
 
-func (i *Image) CompareImages(reconstructImage *Image, metric T.MetricType, distortion *float64, exception *ExceptionInfo) *Image {
+func (i *Image) CompareImages(reconstructImage *Image, metric MetricType, distortion *float64, exception *ExceptionInfo) *Image {
 	return CompareImages(i, reconstructImage, metric, distortion, exception)
 }
 
-func (i *Image) CompositeImage(compose T.CompositeOperator, compositeImage *Image, xOffset, yOffset T.Long) bool {
+func (i *Image) CompositeImage(compose CompositeOperator, compositeImage *Image, xOffset, yOffset Long) bool {
 	return CompositeImage(i, compose, compositeImage, xOffset, yOffset)
 }
 
-func (i *Image) CompositeChannel(channel T.ChannelType, compose T.CompositeOperator, compositeImage *Image, xOffset, yOffset T.Long) bool {
+func (i *Image) CompositeChannel(channel ChannelType, compose CompositeOperator, compositeImage *Image, xOffset, yOffset Long) bool {
 	return CompositeImageChannel(i, channel, compose, compositeImage, xOffset, yOffset)
 }
 
-func (i *Image) CompositeLayers(compose T.CompositeOperator, source *Image, xOffset, yOffset T.Long, exception *ExceptionInfo) {
+func (i *Image) CompositeLayers(compose CompositeOperator, source *Image, xOffset, yOffset Long, exception *ExceptionInfo) {
 	CompositeLayers(i, compose, source, xOffset, yOffset, exception)
 }
 
@@ -1186,23 +1178,23 @@ func (i *Image) Contrast(sharpen bool) bool { return ContrastImage(i, sharpen) }
 
 func (i *Image) ContrastStretch(levels string) bool { return ContrastStretchImage(i, levels) }
 
-func (i *Image) ContrastStretchChannel(channel T.ChannelType, blackPoint, whitePoint float64) bool {
+func (i *Image) ContrastStretchChannel(channel ChannelType, blackPoint, whitePoint float64) bool {
 	return ContrastStretchImageChannel(i, channel, blackPoint, whitePoint)
 }
 
-func (i *Image) Convolve(order T.Size, kernel *float64, exception *ExceptionInfo) *Image {
+func (i *Image) Convolve(order Size, kernel *float64, exception *ExceptionInfo) *Image {
 	return ConvolveImage(i, order, kernel, exception)
 }
 
-func (i *Image) ConvolveChannel(channel T.ChannelType, order T.Size, kernel *float64, exception *ExceptionInfo) *Image {
+func (i *Image) ConvolveChannel(channel ChannelType, order Size, kernel *float64, exception *ExceptionInfo) *Image {
 	return ConvolveImageChannel(i, channel, order, kernel, exception)
 }
 
-func (i *Image) CropImage(geometry *T.RectangleInfo, exception *ExceptionInfo) *Image {
+func (i *Image) CropImage(geometry *RectangleInfo, exception *ExceptionInfo) *Image {
 	return CropImage(i, geometry, exception)
 }
 
-func (i *Image) CycleColormap(displace T.Long) bool { return CycleColormapImage(i, displace) }
+func (i *Image) CycleColormap(displace Long) bool { return CycleColormapImage(i, displace) }
 
 func (i *Image) DefineArtifact(artifact string) bool { return DefineImageArtifact(i, artifact) }
 
@@ -1240,17 +1232,17 @@ func (i *Image) DestroyImages() { DestroyImages(i) }
 
 func (i *Image) DisassociateStream() { DisassociateImageStream(i) }
 
-func (i *Image) Dispatch(xOffset, yOffset T.Long, columns, rows T.Size, map_ string, type_ T.StorageType, pixels *T.Void, exception *ExceptionInfo) uint {
+func (i *Image) Dispatch(xOffset, yOffset Long, columns, rows Size, map_ string, type_ StorageType, pixels *Void, exception *ExceptionInfo) uint {
 	return DispatchImage(i, xOffset, yOffset, columns, rows, map_, type_, pixels, exception)
 }
 
 func (i *Image) Dispose(exception *ExceptionInfo) *Image { return DisposeImages(i, exception) }
 
-func (i *Image) Distort(method T.DistortImageMethod, numberArguments T.Size, arguments *float64, bestfit bool, exception *ExceptionInfo) *Image {
+func (i *Image) Distort(method DistortImageMethod, numberArguments Size, arguments *float64, bestfit bool, exception *ExceptionInfo) *Image {
 	return DistortImage(i, method, numberArguments, arguments, bestfit, exception)
 }
 
-func (i *Image) DrawAffine(source *Image, affine *T.AffineMatrix) bool {
+func (i *Image) DrawAffine(source *Image, affine *AffineMatrix) bool {
 	return DrawAffineImage(i, source, affine)
 }
 
@@ -1266,7 +1258,7 @@ func (i *Image) DrawPatternPath(drawInfo *DrawInfo, name string, pattern **Image
 	return DrawPatternPath(i, drawInfo, name, pattern)
 }
 
-func (i *Image) DrawPrimitive(drawInfo *DrawInfo, primitiveInfo *T.PrimitiveInfo) bool {
+func (i *Image) DrawPrimitive(drawInfo *DrawInfo, primitiveInfo *PrimitiveInfo) bool {
 	return DrawPrimitive(i, drawInfo, primitiveInfo)
 }
 
@@ -1284,31 +1276,31 @@ func (i *Image) EOFBlob() int { return EOFBlob(i) }
 
 func (i *Image) Equalize() bool { return EqualizeImage(i) }
 
-func (i *Image) EqualizeChannel(channel T.ChannelType) bool {
+func (i *Image) EqualizeChannel(channel ChannelType) bool {
 	return EqualizeImageChannel(i, channel)
 }
 
-func (i *Image) Evaluate(op T.MagickEvaluateOperator, value float64, exception *ExceptionInfo) bool {
+func (i *Image) Evaluate(op MagickEvaluateOperator, value float64, exception *ExceptionInfo) bool {
 	return EvaluateImage(i, op, value, exception)
 }
 
-func (i *Image) EvaluateChannel(channel T.ChannelType, op T.MagickEvaluateOperator, value float64, exception *ExceptionInfo) bool {
+func (i *Image) EvaluateChannel(channel ChannelType, op MagickEvaluateOperator, value float64, exception *ExceptionInfo) bool {
 	return EvaluateImageChannel(i, channel, op, value, exception)
 }
 
-func (i *Image) Excerpt(geometry *T.RectangleInfo, exception *ExceptionInfo) *Image {
+func (i *Image) Excerpt(geometry *RectangleInfo, exception *ExceptionInfo) *Image {
 	return ExcerptImage(i, geometry, exception)
 }
 
-func (i *Image) ExportPixels(xOffset, yOffset T.Long, columns, rows T.Size, map_ string, type_ T.StorageType, pixels *T.Void, exception *ExceptionInfo) bool {
+func (i *Image) ExportPixels(xOffset, yOffset Long, columns, rows Size, map_ string, type_ StorageType, pixels *Void, exception *ExceptionInfo) bool {
 	return ExportImagePixels(i, xOffset, yOffset, columns, rows, map_, type_, pixels, exception)
 }
 
-func (i *Image) ExportQuantumPixels(quantumInfo *T.QuantumInfo, quantumType T.QuantumType, pixels *byte) bool {
+func (i *Image) ExportQuantumPixels(quantumInfo *QuantumInfo, quantumType QuantumType, pixels *byte) bool {
 	return ExportQuantumPixels(i, quantumInfo, quantumType, pixels)
 }
 
-func (i *Image) Extent(geometry *T.RectangleInfo, exception *ExceptionInfo) *Image {
+func (i *Image) Extent(geometry *RectangleInfo, exception *ExceptionInfo) *Image {
 	return ExtentImage(i, geometry, exception)
 }
 
@@ -1318,7 +1310,7 @@ func (i *Image) FlattenImages(exception *ExceptionInfo) *Image { return FlattenI
 
 func (i *Image) Flip(exception *ExceptionInfo) *Image { return FlipImage(i, exception) }
 
-func (i *Image) FloodfillPaint(channel T.ChannelType, drawInfo *DrawInfo, target *MagickPixelPacket, xOffset, yOffset T.Long, invert bool) bool {
+func (i *Image) FloodfillPaint(channel ChannelType, drawInfo *DrawInfo, target *MagickPixelPacket, xOffset, yOffset Long, invert bool) bool {
 	return FloodfillPaintImage(i, channel, drawInfo, target, xOffset, yOffset, invert)
 }
 
@@ -1340,29 +1332,29 @@ func (i *Image) FormatPropertyList(property, format string, operands VAList) boo
 	return FormatImagePropertyList(i, property, format, operands)
 }
 
-func (i *Image) FormatMagickCaption(drawInfo *DrawInfo, caption string, metrics *T.TypeMetric) T.Long {
+func (i *Image) FormatMagickCaption(drawInfo *DrawInfo, caption string, metrics *TypeMetric) Long {
 	return FormatMagickCaption(i, drawInfo, caption, metrics)
 }
 
-func (i *Image) Frame(frameInfo *T.FrameInfo, exception *ExceptionInfo) *Image {
+func (i *Image) Frame(frameInfo *FrameInfo, exception *ExceptionInfo) *Image {
 	return FrameImage(i, frameInfo, exception)
 }
 
-func (i *Image) FuzzyColorCompare(p, q *T.PixelPacket) bool { return FuzzyColorCompare(i, p, q) }
+func (i *Image) FuzzyColorCompare(p, q *PixelPacket) bool { return FuzzyColorCompare(i, p, q) }
 
-func (i *Image) FuzzyOpacityCompare(p, q *T.PixelPacket) bool { return FuzzyOpacityCompare(i, p, q) }
+func (i *Image) FuzzyOpacityCompare(p, q *PixelPacket) bool { return FuzzyOpacityCompare(i, p, q) }
 
 func (i *Image) Fx(expression string, exception *ExceptionInfo) *Image {
 	return FxImage(i, expression, exception)
 }
 
-func (i *Image) FxChannel(channel T.ChannelType, expression string, exception *ExceptionInfo) *Image {
+func (i *Image) FxChannel(channel ChannelType, expression string, exception *ExceptionInfo) *Image {
 	return FxImageChannel(i, channel, expression, exception)
 }
 
 func (i *Image) Gamma(level string) bool { return GammaImage(i, level) }
 
-func (i *Image) GammaChannel(channel T.ChannelType, gamma float64) bool {
+func (i *Image) GammaChannel(channel ChannelType, gamma float64) bool {
 	return GammaImageChannel(i, channel, gamma)
 }
 
@@ -1370,7 +1362,7 @@ func (i *Image) GaussianBlur(radius, sigma float64, exception *ExceptionInfo) *I
 	return GaussianBlurImage(i, radius, sigma, exception)
 }
 
-func (i *Image) GaussianBlurChannel(channel T.ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image {
+func (i *Image) GaussianBlurChannel(channel ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image {
 	return GaussianBlurImageChannel(i, channel, radius, sigma, exception)
 }
 
@@ -1378,41 +1370,41 @@ func (i *Image) BlobError() bool { return GetBlobError(i) }
 
 func (i *Image) BlobFileHandle() *FILE { return GetBlobFileHandle(i) }
 
-func (i *Image) BlobSize() T.MagickSizeType { return GetBlobSize(i) }
+func (i *Image) BlobSize() MagickSizeType { return GetBlobSize(i) }
 
 func (i *Image) BlobStreamData() *byte { return GetBlobStreamData(i) }
 
-func (i *Image) BlobStreamHandler() T.StreamHandler { return GetBlobStreamHandler(i) }
+func (i *Image) BlobStreamHandler() StreamHandler { return GetBlobStreamHandler(i) }
 
 func (i *Image) Artifact(artifact string) string { return GetImageArtifact(i, artifact) }
 
-func (i *Image) Attribute(key string) *T.ImageAttribute { return GetImageAttribute(i, key) }
+func (i *Image) Attribute(key string) *ImageAttribute { return GetImageAttribute(i, key) }
 
-func (i *Image) BoundingBox(exception *ExceptionInfo) T.RectangleInfo {
+func (i *Image) BoundingBox(exception *ExceptionInfo) RectangleInfo {
 	return GetImageBoundingBox(i, exception)
 }
 
-func (i *Image) ChannelDepth(channel T.ChannelType, exception *ExceptionInfo) T.Size {
+func (i *Image) ChannelDepth(channel ChannelType, exception *ExceptionInfo) Size {
 	return GetImageChannelDepth(i, channel, exception)
 }
 
-func (i *Image) ChannelDistortion(reconstructImage *Image, channel T.ChannelType, metric T.MetricType, distortion *float64, exception *ExceptionInfo) bool {
+func (i *Image) ChannelDistortion(reconstructImage *Image, channel ChannelType, metric MetricType, distortion *float64, exception *ExceptionInfo) bool {
 	return GetImageChannelDistortion(i, reconstructImage, channel, metric, distortion, exception)
 }
 
-func (i *Image) ChannelExtrema(channel T.ChannelType, minima, maxima *T.Size, exception *ExceptionInfo) bool {
+func (i *Image) ChannelExtrema(channel ChannelType, minima, maxima *Size, exception *ExceptionInfo) bool {
 	return GetImageChannelExtrema(i, channel, minima, maxima, exception)
 }
 
-func (i *Image) ChannelMean(channel T.ChannelType, mean, standardDeviation *float64, exception *ExceptionInfo) bool {
+func (i *Image) ChannelMean(channel ChannelType, mean, standardDeviation *float64, exception *ExceptionInfo) bool {
 	return GetImageChannelMean(i, channel, mean, standardDeviation, exception)
 }
 
-func (i *Image) ChannelRange(channel T.ChannelType, minima, maxima *float64, exception *ExceptionInfo) bool {
+func (i *Image) ChannelRange(channel ChannelType, minima, maxima *float64, exception *ExceptionInfo) bool {
 	return GetImageChannelRange(i, channel, minima, maxima, exception)
 }
 
-func (i *Image) ChannelStatistics(exception *ExceptionInfo) *T.ChannelStatistics {
+func (i *Image) ChannelStatistics(exception *ExceptionInfo) *ChannelStatistics {
 	return GetImageChannelStatistics(i, exception)
 }
 
@@ -1420,15 +1412,15 @@ func (i *Image) ClipMask(exception *ExceptionInfo) *Image {
 	return GetImageClipMask(i, exception)
 }
 
-func (i *Image) ClippingPathAttribute() *T.ImageAttribute {
+func (i *Image) ClippingPathAttribute() *ImageAttribute {
 	return GetImageClippingPathAttribute(i)
 }
 
-func (i *Image) Depth(exception *ExceptionInfo) T.Size {
+func (i *Image) Depth(exception *ExceptionInfo) Size {
 	return GetImageDepth(i, exception)
 }
 
-func (i *Image) Distortion(reconstructImage *Image, metric T.MetricType, distortion *float64, exception *ExceptionInfo) bool {
+func (i *Image) Distortion(reconstructImage *Image, metric MetricType, distortion *float64, exception *ExceptionInfo) bool {
 	return GetImageDistortion(i, reconstructImage, metric, distortion, exception)
 }
 
@@ -1438,15 +1430,15 @@ func (i *Image) DynamicThreshold(clusterThreshold, smoothThreshold float64, exce
 
 func (i *Image) Exception(exception *ExceptionInfo) { GetImageException(i, exception) }
 
-func (i *Image) Extrema(minima, maxima *T.Size, exception *ExceptionInfo) bool {
+func (i *Image) Extrema(minima, maxima *Size, exception *ExceptionInfo) bool {
 	return GetImageExtrema(i, minima, maxima, exception)
 }
 
-func (i *Image) Geometry(geometry string, sizeToFit uint, regionInfo *T.RectangleInfo) int {
+func (i *Image) Geometry(geometry string, sizeToFit uint, regionInfo *RectangleInfo) int {
 	return GetImageGeometry(i, geometry, sizeToFit, regionInfo)
 }
 
-func (i *Image) Histogram(numberColors *T.Size, exception *ExceptionInfo) *T.ColorPacket {
+func (i *Image) Histogram(numberColors *Size, exception *ExceptionInfo) *ColorPacket {
 	return GetImageHistogram(i, numberColors, exception)
 }
 
@@ -1456,7 +1448,7 @@ func (i *Image) Mean(mean, standardDeviation *float64, exception *ExceptionInfo)
 	return GetImageMean(i, mean, standardDeviation, exception)
 }
 
-func (i *Image) ImagePixels(x, y T.Long, columns, rows T.Size) *T.PixelPacket {
+func (i *Image) ImagePixels(x, y Long, columns, rows Size) *PixelPacket {
 	return GetImagePixels(i, x, y, columns, rows)
 }
 
@@ -1466,7 +1458,7 @@ func (i *Image) Property(property string) string { return GetImageProperty(i, pr
 
 func (i *Image) QuantizeError() bool { return GetImageQuantizeError(i) }
 
-func (i *Image) QuantumDepth(constrain bool) T.Size {
+func (i *Image) QuantumDepth(constrain bool) Size {
 	return GetImageQuantumDepth(i, constrain)
 }
 
@@ -1476,43 +1468,43 @@ func (i *Image) Range(minima, maxima *float64, exception *ExceptionInfo) bool {
 
 func (i *Image) TotalInkDensity() float64 { return GetImageTotalInkDensity(i) }
 
-func (i *Image) Type(exception *ExceptionInfo) T.ImageType { return GetImageType(i, exception) }
+func (i *Image) Type(exception *ExceptionInfo) ImageType { return GetImageType(i, exception) }
 
-func (i *Image) VirtualPixelMethod() T.VirtualPixelMethod { return GetImageVirtualPixelMethod(i) }
+func (i *Image) VirtualPixelMethod() VirtualPixelMethod { return GetImageVirtualPixelMethod(i) }
 
-func (i *Image) Indexes() *T.IndexPacket { return GetIndexes(i) }
+func (i *Image) Indexes() *IndexPacket { return GetIndexes(i) }
 
 func (i *Image) MagickPixelPacket(pixel *MagickPixelPacket) { GetMagickPixelPacket(i, pixel) }
 
-func (i *Image) MultilineTypeMetrics(drawInfo *DrawInfo, metrics *T.TypeMetric) bool {
+func (i *Image) MultilineTypeMetrics(drawInfo *DrawInfo, metrics *TypeMetric) bool {
 	return GetMultilineTypeMetrics(i, drawInfo, metrics)
 }
 
 func (i *Image) NextArtifact() string { return GetNextImageArtifact(i) }
 
-func (i *Image) NextAttribute() *T.ImageAttribute { return GetNextImageAttribute(i) }
+func (i *Image) NextAttribute() *ImageAttribute { return GetNextImageAttribute(i) }
 
 func (i *Image) NextProfile() string { return GetNextImageProfile(i) }
 
 func (i *Image) NextProperty() string { return GetNextImageProperty(i) }
 
-func (i *Image) NumberColors(file *FILE, exception *ExceptionInfo) T.Size {
+func (i *Image) NumberColors(file *FILE, exception *ExceptionInfo) Size {
 	return GetNumberColors(i, file, exception)
 }
 
 func (i *Image) NumberScenes() uint { return GetNumberScenes(i) }
 
-func (i *Image) OnePixel(x, y T.Long) T.PixelPacket { return GetOnePixel(i, x, y) }
+func (i *Image) OnePixel(x, y Long) PixelPacket { return GetOnePixel(i, x, y) }
 
-func (i *Image) PixelCacheArea() T.MagickSizeType { return GetPixelCacheArea(i) }
+func (i *Image) PixelCacheArea() MagickSizeType { return GetPixelCacheArea(i) }
 
-func (i *Image) Pixels() *T.PixelPacket { return GetPixels(i) }
+func (i *Image) Pixels() *PixelPacket { return GetPixels(i) }
 
-func (i *Image) TypeMetrics(drawInfo *DrawInfo, metrics *T.TypeMetric) bool {
+func (i *Image) TypeMetrics(drawInfo *DrawInfo, metrics *TypeMetric) bool {
 	return GetTypeMetrics(i, drawInfo, metrics)
 }
 
-func (i *Image) Gradient(startColor, stopColor *T.PixelPacket) bool {
+func (i *Image) Gradient(startColor, stopColor *PixelPacket) bool {
 	return GradientImage(i, startColor, stopColor)
 }
 
@@ -1528,15 +1520,15 @@ func (i *Image) Implode(amount float64, exception *ExceptionInfo) *Image {
 	return ImplodeImage(i, amount, exception)
 }
 
-func (i *Image) ImportPixels(xOffset, yOffset T.Long, columns, rows T.Size, map_ string, type_ T.StorageType, pixels *T.Void) bool {
+func (i *Image) ImportPixels(xOffset, yOffset Long, columns, rows Size, map_ string, type_ StorageType, pixels *Void) bool {
 	return ImportImagePixels(i, xOffset, yOffset, columns, rows, map_, type_, pixels)
 }
 
-func (i *Image) ImportQuantumPixels(quantumInfo *T.QuantumInfo, quantumType T.QuantumType, pixels *byte) bool {
+func (i *Image) ImportQuantumPixels(quantumInfo *QuantumInfo, quantumType QuantumType, pixels *byte) bool {
 	return ImportQuantumPixels(i, quantumInfo, quantumType, pixels)
 }
 
-func (i *Image) InterpolatePixelColor(imageView *CacheView, method T.InterpolatePixelMethod, x, y float64, exception *ExceptionInfo) MagickPixelPacket {
+func (i *Image) InterpolatePixelColor(imageView *CacheView, method InterpolatePixelMethod, x, y float64, exception *ExceptionInfo) MagickPixelPacket {
 	return InterpolatePixelColor(i, imageView, method, x, y, exception)
 }
 
@@ -1546,7 +1538,7 @@ func (i *Image) BlobSeekable() bool { return IsBlobSeekable(i) }
 
 func (i *Image) BlobTemporary() bool { return IsBlobTemporary(i) }
 
-func (i *Image) ColorSimilar(p, q *T.PixelPacket) bool { return IsColorSimilar(i, p, q) }
+func (i *Image) ColorSimilar(p, q *PixelPacket) bool { return IsColorSimilar(i, p, q) }
 
 func (i *Image) Gray(exception *ExceptionInfo) bool { return IsGrayImage(i, exception) }
 
@@ -1564,7 +1556,7 @@ func (i *Image) Equal(reconstructImage *Image) bool {
 	return IsImagesEqual(i, reconstructImage)
 }
 
-func (i *Image) Similar(targetImage *Image, xOffset, yOffset *T.Long, exception *ExceptionInfo) bool {
+func (i *Image) Similar(targetImage *Image, xOffset, yOffset *Long, exception *ExceptionInfo) bool {
 	return IsImageSimilar(i, targetImage, xOffset, yOffset, exception)
 }
 
@@ -1572,7 +1564,7 @@ func (i *Image) Monochrome(exception *ExceptionInfo) bool {
 	return IsMonochromeImage(i, exception)
 }
 
-func (i *Image) OpacitySimilar(p, q *T.PixelPacket) bool { return IsOpacitySimilar(i, p, q) }
+func (i *Image) OpacitySimilar(p, q *PixelPacket) bool { return IsOpacitySimilar(i, p, q) }
 
 func (i *Image) IsOpaque(exception *ExceptionInfo) bool { return IsOpaqueImage(i, exception) }
 
@@ -1582,7 +1574,7 @@ func (i *Image) Taint() bool { return IsTaintImage(i) }
 
 func (i *Image) Level(levels string) bool { return LevelImage(i, levels) }
 
-func (i *Image) LevelChannel(channel T.ChannelType, blackPoint, whitePoint, gamma float64) bool {
+func (i *Image) LevelChannel(channel ChannelType, blackPoint, whitePoint, gamma float64) bool {
 	return LevelImageChannel(i, channel, blackPoint, whitePoint, gamma)
 }
 
@@ -1590,7 +1582,7 @@ func (i *Image) LinearStretch(blackPoint, whitePoint float64) bool {
 	return LinearStretchImage(i, blackPoint, whitePoint)
 }
 
-func (i *Image) LiquidRescale(columns, rows T.Size, deltaX, rigidity float64, exception *ExceptionInfo) *Image {
+func (i *Image) LiquidRescale(columns, rows Size, deltaX, rigidity float64, exception *ExceptionInfo) *Image {
 	return LiquidRescaleImage(i, columns, rows, deltaX, rigidity, exception)
 }
 
@@ -1602,7 +1594,7 @@ func (i *Image) Magnify(exception *ExceptionInfo) *Image { return MagnifyImage(i
 
 func (i *Image) Map(mapImage *Image, dither bool) bool { return MapImage(i, mapImage, dither) }
 
-func (i *Image) MatteFloodfill(target T.PixelPacket, opacity T.Quantum, xOffset, yOffset T.Long, method T.PaintMethod) bool {
+func (i *Image) MatteFloodfill(target PixelPacket, opacity Quantum, xOffset, yOffset Long, method PaintMethod) bool {
 	return MatteFloodfillImage(i, target, opacity, xOffset, yOffset, method)
 }
 
@@ -1610,7 +1602,7 @@ func (i *Image) MedianFilter(radius float64, exception *ExceptionInfo) *Image {
 	return MedianFilterImage(i, radius, exception)
 }
 
-func (i *Image) MergeImageLayers(method T.ImageLayerMethod, exception *ExceptionInfo) *Image {
+func (i *Image) MergeImageLayers(method ImageLayerMethod, exception *ExceptionInfo) *Image {
 	return MergeImageLayers(i, method, exception)
 }
 
@@ -1618,7 +1610,7 @@ func (i *Image) Minify(exception *ExceptionInfo) *Image { return MinifyImage(i, 
 
 func (i *Image) Modulate(modulate string) bool { return ModulateImage(i, modulate) }
 
-func (i *Image) MorphImages(numberFrames T.Size, exception *ExceptionInfo) *Image {
+func (i *Image) MorphImages(numberFrames Size, exception *ExceptionInfo) *Image {
 	return MorphImages(i, numberFrames, exception)
 }
 
@@ -1630,13 +1622,13 @@ func (i *Image) MotionBlur(radius, sigma, angle float64, exception *ExceptionInf
 
 func (i *Image) Negate(grayscale bool) bool { return NegateImage(i, grayscale) }
 
-func (i *Image) NegateChannel(channel T.ChannelType, grayscale bool) bool {
+func (i *Image) NegateChannel(channel ChannelType, grayscale bool) bool {
 	return NegateImageChannel(i, channel, grayscale)
 }
 
 func (i *Image) Normalize() bool { return NormalizeImage(i) }
 
-func (i *Image) NormalizeChannel(channel T.ChannelType) bool {
+func (i *Image) NormalizeChannel(channel ChannelType) bool {
 	return NormalizeImageChannel(i, channel)
 }
 
@@ -1644,13 +1636,13 @@ func (i *Image) OilPaint(radius float64, exception *ExceptionInfo) *Image {
 	return OilPaintImage(i, radius, exception)
 }
 
-func (i *Image) Opaque(target, fill T.PixelPacket) bool { return OpaqueImage(i, target, fill) }
+func (i *Image) Opaque(target, fill PixelPacket) bool { return OpaqueImage(i, target, fill) }
 
 func (i *Image) OpaquePaint(target, fill *MagickPixelPacket, invert bool) bool {
 	return OpaquePaintImage(i, target, fill, invert)
 }
 
-func (i *Image) OpaquePaintChannel(channel T.ChannelType, target, fill *MagickPixelPacket, invert bool) bool {
+func (i *Image) OpaquePaintChannel(channel ChannelType, target, fill *MagickPixelPacket, invert bool) bool {
 	return OpaquePaintImageChannel(i, channel, target, fill, invert)
 }
 
@@ -1670,7 +1662,7 @@ func (i *Image) OptimizePlusLayers(exception *ExceptionInfo) *Image {
 
 func (i *Image) OrderedDither() bool { return OrderedDitherImage(i) }
 
-func (i *Image) OrderedDitherChannel(channel T.ChannelType, exception *ExceptionInfo) bool {
+func (i *Image) OrderedDitherChannel(channel ChannelType, exception *ExceptionInfo) bool {
 	return OrderedDitherImageChannel(i, channel, exception)
 }
 
@@ -1678,7 +1670,7 @@ func (i *Image) OrderedPosterize(thresholdMap string, exception *ExceptionInfo) 
 	return OrderedPosterizeImage(i, thresholdMap, exception)
 }
 
-func (i *Image) OrderedPosterizeChannel(channel T.ChannelType, thresholdMap string, exception *ExceptionInfo) bool {
+func (i *Image) OrderedPosterizeChannel(channel ChannelType, thresholdMap string, exception *ExceptionInfo) bool {
 	return OrderedPosterizeImageChannel(i, channel, thresholdMap, exception)
 }
 
@@ -1686,7 +1678,7 @@ func (i *Image) PackbitsEncode(length uint32, pixels *byte) bool {
 	return PackbitsEncodeImage(i, length, pixels)
 }
 
-func (i *Image) PaintFloodfill(channel T.ChannelType, target *MagickPixelPacket, x, y T.Long, drawInfo *DrawInfo, method T.PaintMethod) bool {
+func (i *Image) PaintFloodfill(channel ChannelType, target *MagickPixelPacket, x, y Long, drawInfo *DrawInfo, method PaintMethod) bool {
 	return PaintFloodfillImage(i, channel, target, x, y, drawInfo, method)
 }
 
@@ -1694,27 +1686,27 @@ func (i *Image) PaintOpaque(target, fill *MagickPixelPacket) bool {
 	return PaintOpaqueImage(i, target, fill)
 }
 
-func (i *Image) PaintOpaqueChannel(channel T.ChannelType, target, fill *MagickPixelPacket) bool {
+func (i *Image) PaintOpaqueChannel(channel ChannelType, target, fill *MagickPixelPacket) bool {
 	return PaintOpaqueImageChannel(i, channel, target, fill)
 }
 
-func (i *Image) PaintTransparentImage(target *MagickPixelPacket, opacity T.Quantum) bool {
+func (i *Image) PaintTransparentImage(target *MagickPixelPacket, opacity Quantum) bool {
 	return PaintTransparentImage(i, target, opacity)
 }
 
-func (i *Image) ParseGravityGeometry(geometry string, regionInfo *T.RectangleInfo) T.MagickStatusType {
+func (i *Image) ParseGravityGeometry(geometry string, regionInfo *RectangleInfo) MagickStatusType {
 	return ParseGravityGeometry(i, geometry, regionInfo)
 }
 
-func (i *Image) ParsePageGeometry(geometry string, regionInfo *T.RectangleInfo) T.MagickStatusType {
+func (i *Image) ParsePageGeometry(geometry string, regionInfo *RectangleInfo) MagickStatusType {
 	return ParsePageGeometry(i, geometry, regionInfo)
 }
 
-func (i *Image) PersistCache(filename string, attach bool, offset *T.MagickOffsetType, exception *ExceptionInfo) bool {
+func (i *Image) PersistCache(filename string, attach bool, offset *MagickOffsetType, exception *ExceptionInfo) bool {
 	return PersistCache(i, filename, attach, offset, exception)
 }
 
-func (i *Image) Plasma(segment *T.SegmentInfo, attenuate, depth T.Size) bool {
+func (i *Image) Plasma(segment *SegmentInfo, attenuate, depth Size) bool {
 	return PlasmaImage(i, segment, attenuate, depth)
 }
 
@@ -1722,33 +1714,33 @@ func (i *Image) Polaroid(drawInfo *DrawInfo, angle float64, exception *Exception
 	return PolaroidImage(i, drawInfo, angle, exception)
 }
 
-func (i *Image) PopPixels(quantum T.QuantumType, destination *byte) bool {
+func (i *Image) PopPixels(quantum QuantumType, destination *byte) bool {
 	return PopImagePixels(i, quantum, destination)
 }
 
-func (i *Image) Posterize(levels T.Size, dither bool) bool {
+func (i *Image) Posterize(levels Size, dither bool) bool {
 	return PosterizeImage(i, levels, dither)
 }
 
-func (i *Image) Preview(preview T.PreviewType, exception *ExceptionInfo) *Image {
+func (i *Image) Preview(preview PreviewType, exception *ExceptionInfo) *Image {
 	return PreviewImage(i, preview, exception)
 }
 
-func (i *Image) ProfileImage(name string, datum *T.Void, length uint32, clone bool) bool {
+func (i *Image) ProfileImage(name string, datum *Void, length uint32, clone bool) bool {
 	return ProfileImage(i, name, datum, length, clone)
 }
 
-func (i *Image) PushPixels(quantum T.QuantumType, source *byte) bool {
+func (i *Image) PushPixels(quantum QuantumType, source *byte) bool {
 	return PushImagePixels(i, quantum, source)
 }
 
 func (i *Image) QuantizationError() uint { return QuantizationError(i) }
 
-func (i *Image) QueryColorname(color *T.PixelPacket, compliance T.ComplianceType, name string, exception *ExceptionInfo) bool {
+func (i *Image) QueryColorname(color *PixelPacket, compliance ComplianceType, name string, exception *ExceptionInfo) bool {
 	return QueryColorname(i, color, compliance, name, exception)
 }
 
-func (i *Image) QueryMagickColorname(color *MagickPixelPacket, compliance T.ComplianceType, hex bool, name string, exception *ExceptionInfo) bool {
+func (i *Image) QueryMagickColorname(color *MagickPixelPacket, compliance ComplianceType, hex bool, name string, exception *ExceptionInfo) bool {
 	return QueryMagickColorname(i, color, compliance, hex, name, exception)
 }
 
@@ -1756,11 +1748,11 @@ func (i *Image) RadialBlur(angle float64, exception *ExceptionInfo) *Image {
 	return RadialBlurImage(i, angle, exception)
 }
 
-func (i *Image) RadialBlurChannel(channel T.ChannelType, angle float64, exception *ExceptionInfo) *Image {
+func (i *Image) RadialBlurChannel(channel ChannelType, angle float64, exception *ExceptionInfo) *Image {
 	return RadialBlurImageChannel(i, channel, angle, exception)
 }
 
-func (i *Image) RaiseImage(raiseInfo *T.RectangleInfo, raise bool) bool {
+func (i *Image) RaiseImage(raiseInfo *RectangleInfo, raise bool) bool {
 	return RaiseImage(i, raiseInfo, raise)
 }
 
@@ -1772,7 +1764,7 @@ func (i *Image) RandomThresholdImage(thresholds string, exception *ExceptionInfo
 	return RandomThresholdImage(i, thresholds, exception)
 }
 
-func (i *Image) RandomThresholdImageChannel(channel T.ChannelType, thresholds string, exception *ExceptionInfo) bool {
+func (i *Image) RandomThresholdImageChannel(channel ChannelType, thresholds string, exception *ExceptionInfo) bool {
 	return RandomThresholdImageChannel(i, channel, thresholds, exception)
 }
 
@@ -1784,23 +1776,23 @@ func (i *Image) ReadBlobDouble() float64 { return ReadBlobDouble(i) }
 
 func (i *Image) ReadBlobFloat() float32 { return ReadBlobFloat(i) }
 
-func (i *Image) ReadBlobLong() T.Size { return ReadBlobLong(i) }
+func (i *Image) ReadBlobLong() Size { return ReadBlobLong(i) }
 
-func (i *Image) ReadBlobLongLong() T.MagickSizeType { return ReadBlobLongLong(i) }
+func (i *Image) ReadBlobLongLong() MagickSizeType { return ReadBlobLongLong(i) }
 
-func (i *Image) ReadBlobLSBLong() T.Size { return ReadBlobLSBLong(i) }
+func (i *Image) ReadBlobLSBLong() Size { return ReadBlobLSBLong(i) }
 
-func (i *Image) ReadBlobLSBShort() T.UnsignedShort { return ReadBlobLSBShort(i) }
+func (i *Image) ReadBlobLSBShort() UnsignedShort { return ReadBlobLSBShort(i) }
 
-func (i *Image) ReadBlobMSBLong() T.Size { return ReadBlobMSBLong(i) }
+func (i *Image) ReadBlobMSBLong() Size { return ReadBlobMSBLong(i) }
 
-func (i *Image) ReadBlobMSBShort() T.UnsignedShort { return ReadBlobMSBShort(i) }
+func (i *Image) ReadBlobMSBShort() UnsignedShort { return ReadBlobMSBShort(i) }
 
-func (i *Image) ReadBlobShort() T.UnsignedShort { return ReadBlobShort(i) }
+func (i *Image) ReadBlobShort() UnsignedShort { return ReadBlobShort(i) }
 
 func (i *Image) ReadBlobString(str string) string { return ReadBlobString(i, str) }
 
-func (i *Image) Recolor(order T.Size, colorMatrix *float64, exception *ExceptionInfo) *Image {
+func (i *Image) Recolor(order Size, colorMatrix *float64, exception *ExceptionInfo) *Image {
 	return RecolorImage(i, order, colorMatrix, exception)
 }
 
@@ -1816,7 +1808,7 @@ func (i *Image) RemoveProfile(name string) *StringInfo { return RemoveImageProfi
 
 func (i *Image) RemoveProperty(property string) string { return RemoveImageProperty(i, property) }
 
-func (i *Image) Resample(xResolution, yResolution float64, filter T.FilterTypes, blur float64, exception *ExceptionInfo) *Image {
+func (i *Image) Resample(xResolution, yResolution float64, filter FilterTypes, blur float64, exception *ExceptionInfo) *Image {
 	return ResampleImage(i, xResolution, yResolution, filter, blur, exception)
 }
 
@@ -1830,15 +1822,15 @@ func (i *Image) ResetProfileIterator() { ResetImageProfileIterator(i) }
 
 func (i *Image) ResetPropertyIterator() { ResetImagePropertyIterator(i) }
 
-func (i *Image) Resize(columns, rows T.Size, filter T.FilterTypes, blur float64, exception *ExceptionInfo) *Image {
+func (i *Image) Resize(columns, rows Size, filter FilterTypes, blur float64, exception *ExceptionInfo) *Image {
 	return ResizeImage(i, columns, rows, filter, blur, exception)
 }
 
-func (i *Image) RGBTransform(colorspace T.ColorspaceType) bool {
+func (i *Image) RGBTransform(colorspace ColorspaceType) bool {
 	return RGBTransformImage(i, colorspace)
 }
 
-func (i *Image) Roll(xOffset, yOffset T.Long, exception *ExceptionInfo) *Image {
+func (i *Image) Roll(xOffset, yOffset Long, exception *ExceptionInfo) *Image {
 	return RollImage(i, xOffset, yOffset, exception)
 }
 
@@ -1846,27 +1838,27 @@ func (i *Image) Rotate(degrees float64, exception *ExceptionInfo) *Image {
 	return RotateImage(i, degrees, exception)
 }
 
-func (i *Image) Sample(columns, rows T.Size, exception *ExceptionInfo) *Image {
+func (i *Image) Sample(columns, rows Size, exception *ExceptionInfo) *Image {
 	return SampleImage(i, columns, rows, exception)
 }
 
-func (i *Image) Scale(columns, rows T.Size, exception *ExceptionInfo) *Image {
+func (i *Image) Scale(columns, rows Size, exception *ExceptionInfo) *Image {
 	return ScaleImage(i, columns, rows, exception)
 }
 
-func (i *Image) SeekBlob(offset T.MagickOffsetType, whence int) T.MagickOffsetType {
+func (i *Image) SeekBlob(offset MagickOffsetType, whence int) MagickOffsetType {
 	return SeekBlob(i, offset, whence)
 }
 
-func (i *Image) Segment(colorspace T.ColorspaceType, verbose bool, clusterThreshold, smoothThreshold float64) bool {
+func (i *Image) Segment(colorspace ColorspaceType, verbose bool, clusterThreshold, smoothThreshold float64) bool {
 	return SegmentImage(i, colorspace, verbose, clusterThreshold, smoothThreshold)
 }
 
-func (i *Image) SeparateChannel(channel T.ChannelType) bool {
+func (i *Image) SeparateChannel(channel ChannelType) bool {
 	return SeparateImageChannel(i, channel)
 }
 
-func (i *Image) SeparateImages(channel T.ChannelType, exception *ExceptionInfo) *Image {
+func (i *Image) SeparateImages(channel ChannelType, exception *ExceptionInfo) *Image {
 	return SeparateImages(i, channel, exception)
 }
 
@@ -1876,11 +1868,11 @@ func (i *Image) SepiaTone(threshold float64, exception *ExceptionInfo) *Image {
 
 func (i *Image) SetBlobExempt(exempt bool) { SetBlobExempt(i, exempt) }
 
-func (i *Image) SetGeometry(geometry *T.RectangleInfo) { SetGeometry(i, geometry) }
+func (i *Image) SetGeometry(geometry *RectangleInfo) { SetGeometry(i, geometry) }
 
-func (i *Image) SetImage(opacity T.Quantum) { SetImage(i, opacity) }
+func (i *Image) SetImage(opacity Quantum) { SetImage(i, opacity) }
 
-func (i *Image) SetAlphaChannel(alphaType T.AlphaChannelType) bool {
+func (i *Image) SetAlphaChannel(alphaType AlphaChannelType) bool {
 	return SetImageAlphaChannel(i, alphaType)
 }
 
@@ -1892,23 +1884,23 @@ func (i *Image) SetAttribute(key, value string) bool { return SetImageAttribute(
 
 func (i *Image) SetBackgroundColor() bool { return SetImageBackgroundColor(i) }
 
-func (i *Image) SetChannelDepth(channel T.ChannelType, depth T.Size) bool {
+func (i *Image) SetChannelDepth(channel ChannelType, depth Size) bool {
 	return SetImageChannelDepth(i, channel, depth)
 }
 
 func (i *Image) SetClipMask(clipMask *Image) bool { return SetImageClipMask(i, clipMask) }
 
-func (i *Image) SetDepth(depth T.Size) bool { return SetImageDepth(i, depth) }
+func (i *Image) SetDepth(depth Size) bool { return SetImageDepth(i, depth) }
 
-func (i *Image) SetExtent(columns, rows T.Size) bool {
+func (i *Image) SetExtent(columns, rows Size) bool {
 	return SetImageExtent(i, columns, rows)
 }
 
 func (i *Image) SetMask(mask *Image) bool { return SetImageMask(i, mask) }
 
-func (i *Image) SetOpacity(opacity T.Quantum) bool { return SetImageOpacity(i, opacity) }
+func (i *Image) SetOpacity(opacity Quantum) bool { return SetImageOpacity(i, opacity) }
 
-func (i *Image) SetPixels(x, y T.Long, columns, rows T.Size) *T.PixelPacket {
+func (i *Image) SetPixels(x, y Long, columns, rows Size) *PixelPacket {
 	return SetImagePixels(i, x, y, columns, rows)
 }
 
@@ -1916,7 +1908,7 @@ func (i *Image) SetProfile(name string, profile *StringInfo) bool {
 	return SetImageProfile(i, name, profile)
 }
 
-func (i *Image) SetProgressMonitor(progressMonitor T.MagickProgressMonitor, clientData *T.Void) T.MagickProgressMonitor {
+func (i *Image) SetProgressMonitor(progressMonitor MagickProgressMonitor, clientData *Void) MagickProgressMonitor {
 	return SetImageProgressMonitor(i, progressMonitor, clientData)
 }
 
@@ -1924,13 +1916,13 @@ func (i *Image) SetProperty(property, value string) bool {
 	return SetImageProperty(i, property, value)
 }
 
-func (i *Image) SetStorageClass(storageClass T.ClassType) bool {
+func (i *Image) SetStorageClass(storageClass ClassType) bool {
 	return SetImageStorageClass(i, storageClass)
 }
 
-func (i *Image) SetType(imageType T.ImageType) bool { return SetImageType(i, imageType) }
+func (i *Image) SetType(imageType ImageType) bool { return SetImageType(i, imageType) }
 
-func (i *Image) SetVirtualPixelMethod(virtualPixelMethod T.VirtualPixelMethod) T.VirtualPixelMethod {
+func (i *Image) SetVirtualPixelMethod(virtualPixelMethod VirtualPixelMethod) VirtualPixelMethod {
 	return SetImageVirtualPixelMethod(i, virtualPixelMethod)
 }
 
@@ -1938,7 +1930,7 @@ func (i *Image) Shade(gray bool, azimuth, elevation float64, exception *Exceptio
 	return ShadeImage(i, gray, azimuth, elevation, exception)
 }
 
-func (i *Image) Shadow(opacity, sigma float64, xOffset, yOffset T.Long, exception *ExceptionInfo) *Image {
+func (i *Image) Shadow(opacity, sigma float64, xOffset, yOffset Long, exception *ExceptionInfo) *Image {
 	return ShadowImage(i, opacity, sigma, xOffset, yOffset, exception)
 }
 
@@ -1946,11 +1938,11 @@ func (i *Image) Sharpen(radius, sigma float64, exception *ExceptionInfo) *Image 
 	return SharpenImage(i, radius, sigma, exception)
 }
 
-func (i *Image) SharpenChannel(channel T.ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image {
+func (i *Image) SharpenChannel(channel ChannelType, radius, sigma float64, exception *ExceptionInfo) *Image {
 	return SharpenImageChannel(i, channel, radius, sigma, exception)
 }
 
-func (i *Image) Shave(shaveInfo *T.RectangleInfo, exception *ExceptionInfo) *Image {
+func (i *Image) Shave(shaveInfo *RectangleInfo, exception *ExceptionInfo) *Image {
 	return ShaveImage(i, shaveInfo, exception)
 }
 
@@ -1962,13 +1954,13 @@ func (i *Image) SigmoidalContrast(sharpen bool, levels string) bool {
 	return SigmoidalContrastImage(i, sharpen, levels)
 }
 
-func (i *Image) SigmoidalContrastChannel(channel T.ChannelType, sharpen bool, contrast, midpoint float64) bool {
+func (i *Image) SigmoidalContrastChannel(channel ChannelType, sharpen bool, contrast, midpoint float64) bool {
 	return SigmoidalContrastImageChannel(i, channel, sharpen, contrast, midpoint)
 }
 
 func (i *Image) Signature() bool { return SignatureImage(i) }
 
-func (i *Image) SizeBlob() T.MagickOffsetType { return SizeBlob(i) }
+func (i *Image) SizeBlob() MagickOffsetType { return SizeBlob(i) }
 
 func (i *Image) Sketch(radius, sigma, angle float64, exception *ExceptionInfo) *Image {
 	return SketchImage(i, radius, sigma, angle, exception)
@@ -1978,7 +1970,7 @@ func (i *Image) Solarize(threshold float64) bool { return SolarizeImage(i, thres
 
 func (i *Image) SortColormapByIntensity() bool { return SortColormapByIntensity(i) }
 
-func (i *Image) Splice(geometry *T.RectangleInfo, exception *ExceptionInfo) *Image {
+func (i *Image) Splice(geometry *RectangleInfo, exception *ExceptionInfo) *Image {
 	return SpliceImage(i, geometry, exception)
 }
 
@@ -2006,7 +1998,7 @@ func (i *Image) SyncPixels() bool { return SyncImagePixels(i) }
 
 func (i *Image) SyncProfiles() bool { return SyncImageProfiles(i) }
 
-func (i *Image) TellBlob() T.MagickOffsetType { return TellBlob(i) }
+func (i *Image) TellBlob() MagickOffsetType { return TellBlob(i) }
 
 func (i *Image) Texture(texture *Image) bool { return TextureImage(i, texture) }
 
@@ -2016,31 +2008,31 @@ func (i *Image) ThresholdChannel(threshold string) uint {
 	return ThresholdImageChannel(i, threshold)
 }
 
-func (i *Image) Thumbnail(columns, rows T.Size, exception *ExceptionInfo) *Image {
+func (i *Image) Thumbnail(columns, rows Size, exception *ExceptionInfo) *Image {
 	return ThumbnailImage(i, columns, rows, exception)
 }
 
-func (i *Image) Tint(opacity string, tint T.PixelPacket, exception *ExceptionInfo) *Image {
+func (i *Image) Tint(opacity string, tint PixelPacket, exception *ExceptionInfo) *Image {
 	return TintImage(i, opacity, tint, exception)
 }
 
-func (i *Image) TransformColorspace(colorspace T.ColorspaceType) uint {
+func (i *Image) TransformColorspace(colorspace ColorspaceType) uint {
 	return TransformColorspace(i, colorspace)
 }
 
-func (i *Image) TransformImageColorspace(colorspace T.ColorspaceType) bool {
+func (i *Image) TransformImageColorspace(colorspace ColorspaceType) bool {
 	return TransformImageColorspace(i, colorspace)
 }
 
-func (i *Image) TransformRGB(colorspace T.ColorspaceType) bool {
+func (i *Image) TransformRGB(colorspace ColorspaceType) bool {
 	return TransformRGBImage(i, colorspace)
 }
 
-func (i *Image) Transparent(target T.PixelPacket, opacity T.Quantum) bool {
+func (i *Image) Transparent(target PixelPacket, opacity Quantum) bool {
 	return TransparentImage(i, target, opacity)
 }
 
-func (i *Image) TransparentPaint(target *MagickPixelPacket, opacity T.Quantum, invert bool) bool {
+func (i *Image) TransparentPaint(target *MagickPixelPacket, opacity Quantum, invert bool) bool {
 	return TransparentPaintImage(i, target, opacity, invert)
 }
 
@@ -2060,15 +2052,15 @@ func (i *Image) UnsharpMask(radius, sigma, amount, threshold float64, exception 
 	return UnsharpMaskImage(i, radius, sigma, amount, threshold, exception)
 }
 
-func (i *Image) UnsharpMaskChannel(channel T.ChannelType, radius, sigma, amount, threshold float64, exception *ExceptionInfo) *Image {
+func (i *Image) UnsharpMaskChannel(channel ChannelType, radius, sigma, amount, threshold float64, exception *ExceptionInfo) *Image {
 	return UnsharpMaskImageChannel(i, channel, radius, sigma, amount, threshold, exception)
 }
 
-func (i *Image) ValidateColormapIndex(index T.Size) T.IndexPacket {
+func (i *Image) ValidateColormapIndex(index Size) IndexPacket {
 	return ValidateColormapIndex(i, index)
 }
 
-func (i *Image) Vignette(radius, sigma float64, x, y T.Long, exception *ExceptionInfo) *Image {
+func (i *Image) Vignette(radius, sigma float64, x, y Long, exception *ExceptionInfo) *Image {
 	return VignetteImage(i, radius, sigma, x, y, exception)
 }
 
@@ -2084,17 +2076,17 @@ func (i *Image) WriteBlobByte(value byte) int32 { return WriteBlobByte(i, value)
 
 func (i *Image) WriteBlobFloat(value float32) int32 { return WriteBlobFloat(i, value) }
 
-func (i *Image) WriteBlobLong(value T.UnsignedLong) int32 { return WriteBlobLong(i, value) }
+func (i *Image) WriteBlobLong(value UnsignedLong) int32 { return WriteBlobLong(i, value) }
 
-func (i *Image) WriteBlobLSBLong(value T.UnsignedLong) int32 { return WriteBlobLSBLong(i, value) }
+func (i *Image) WriteBlobLSBLong(value UnsignedLong) int32 { return WriteBlobLSBLong(i, value) }
 
-func (i *Image) WriteBlobLSBShort(value T.UnsignedShort) int32 { return WriteBlobLSBShort(i, value) }
+func (i *Image) WriteBlobLSBShort(value UnsignedShort) int32 { return WriteBlobLSBShort(i, value) }
 
-func (i *Image) WriteBlobMSBLong(value T.UnsignedLong) int32 { return WriteBlobMSBLong(i, value) }
+func (i *Image) WriteBlobMSBLong(value UnsignedLong) int32 { return WriteBlobMSBLong(i, value) }
 
-func (i *Image) WriteBlobMSBShort(value T.UnsignedShort) int32 { return WriteBlobMSBShort(i, value) }
+func (i *Image) WriteBlobMSBShort(value UnsignedShort) int32 { return WriteBlobMSBShort(i, value) }
 
-func (i *Image) WriteBlobShort(value T.UnsignedShort) int32 { return WriteBlobShort(i, value) }
+func (i *Image) WriteBlobShort(value UnsignedShort) int32 { return WriteBlobShort(i, value) }
 
 func (i *Image) WriteBlobString(str string) int32 { return WriteBlobString(i, str) }
 
@@ -2102,7 +2094,7 @@ func (i *Image) ZLIBEncode(length uint32, pixels *byte) bool {
 	return ZLIBEncodeImage(i, length, pixels)
 }
 
-func (i *Image) Zoom(columns, rows T.Size, exception *ExceptionInfo) *Image {
+func (i *Image) Zoom(columns, rows Size, exception *ExceptionInfo) *Image {
 	return ZoomImage(i, columns, rows, exception)
 }
 
@@ -2114,11 +2106,11 @@ func (i *Image) AcquireCacheView() *CacheView { return AcquireCacheView(i) }
 
 func (i *Image) AcquireImageColormap(colors uint32) bool { return AcquireImageColormap(i, colors) }
 
-func (i *Image) AcquirePixelCache(a1 T.VirtualPixelMethod, a2 T.Long, a3 T.Long, a4 T.Size, a5 T.Size, a6 *ExceptionInfo) *T.PixelPacket {
+func (i *Image) AcquirePixelCache(a1 VirtualPixelMethod, a2 Long, a3 Long, a4 Size, a5 Size, a6 *ExceptionInfo) *PixelPacket {
 	return AcquirePixelCache(i, a1, a2, a3, a4, a5, a6)
 }
 
-func (i *Image) AcquirePixels() *T.PixelPacket { return AcquirePixels(i) }
+func (i *Image) AcquirePixels() *PixelPacket { return AcquirePixels(i) }
 
 func (i *Image) AcquireVirtualCacheView(exception *ExceptionInfo) *CacheView {
 	return AcquireVirtualCacheView(i, exception)
@@ -2126,13 +2118,13 @@ func (i *Image) AcquireVirtualCacheView(exception *ExceptionInfo) *CacheView {
 
 func (i *Image) AutoGamma() bool { return AutoGammaImage(i) }
 
-func (i *Image) AutoGammaChannel(channel T.ChannelType) bool {
+func (i *Image) AutoGammaChannel(channel ChannelType) bool {
 	return AutoGammaImageChannel(i, channel)
 }
 
 func (i *Image) AutoLevel() bool { return AutoLevelImage(i) }
 
-func (i *Image) AutoLevelChannel(channel T.ChannelType) bool {
+func (i *Image) AutoLevelChannel(channel ChannelType) bool {
 	return AutoLevelImageChannel(i, channel)
 }
 
@@ -2144,7 +2136,7 @@ func (i *Image) BrightnessContrast(brightness, contrast float64) bool {
 	return BrightnessContrastImage(i, brightness, contrast)
 }
 
-func (i *Image) BrightnessContrastChannel(channel T.ChannelType, brightness, contrast float64) bool {
+func (i *Image) BrightnessContrastChannel(channel ChannelType, brightness, contrast float64) bool {
 	return BrightnessContrastImageChannel(i, channel, brightness, contrast)
 }
 
@@ -2152,15 +2144,15 @@ func (i *Image) ColorDecisionList(colorCorrectionCollection string) bool {
 	return ColorDecisionListImage(i, colorCorrectionCollection)
 }
 
-func (i *Image) ColorMatrix(colorMatrix *T.KernelInfo, exception *ExceptionInfo) *Image {
+func (i *Image) ColorMatrix(colorMatrix *KernelInfo, exception *ExceptionInfo) *Image {
 	return ColorMatrixImage(i, colorMatrix, exception)
 }
 
-func (i *Image) CropToHBITMAP(r *T.RectangleInfo, e *ExceptionInfo) *T.Void {
+func (i *Image) CropToHBITMAP(r *RectangleInfo, e *ExceptionInfo) *Void {
 	return CropImageToHBITMAP(i, r, e)
 }
 
-func (i *Image) CropToTiles(cropGeometry *T.RectangleInfo, exception *ExceptionInfo) *Image {
+func (i *Image) CropToTiles(cropGeometry *RectangleInfo, exception *ExceptionInfo) *Image {
 	return CropImageToTiles(i, cropGeometry, exception)
 }
 
@@ -2180,11 +2172,11 @@ func (i *Image) ExtractSubimage(reference *Image, exception *ExceptionInfo) *Ima
 	return ExtractSubimageFromImage(i, reference, exception)
 }
 
-func (i *Image) Filter(kernel *T.KernelInfo, exception *ExceptionInfo) *Image {
+func (i *Image) Filter(kernel *KernelInfo, exception *ExceptionInfo) *Image {
 	return FilterImage(i, kernel, exception)
 }
 
-func (i *Image) FilterChannel(channel T.ChannelType, kernel *T.KernelInfo, exception *ExceptionInfo) *Image {
+func (i *Image) FilterChannel(channel ChannelType, kernel *KernelInfo, exception *ExceptionInfo) *Image {
 	return FilterImageChannel(i, channel, kernel, exception)
 }
 
@@ -2192,41 +2184,41 @@ func (i *Image) FFT(modulus bool, exception *ExceptionInfo) *Image {
 	return ForwardFourierTransformImage(i, modulus, exception)
 }
 
-func (i *Image) Function(function T.MagickFunction, numberParameters int32, parameters *float64, exception *ExceptionInfo) bool {
+func (i *Image) Function(function MagickFunction, numberParameters int32, parameters *float64, exception *ExceptionInfo) bool {
 	return FunctionImage(i, function, numberParameters, parameters, exception)
 }
 
-func (i *Image) FunctionChannel(channel T.ChannelType, function T.MagickFunction, numberParameters int32, argument *float64, exception *ExceptionInfo) bool {
+func (i *Image) FunctionChannel(channel ChannelType, function MagickFunction, numberParameters int32, argument *float64, exception *ExceptionInfo) bool {
 	return FunctionImageChannel(i, channel, function, numberParameters, argument, exception)
 }
 
-func (i *Image) AuthenticIndexQueue() *T.IndexPacket { return GetAuthenticIndexQueue(i) }
+func (i *Image) AuthenticIndexQueue() *IndexPacket { return GetAuthenticIndexQueue(i) }
 
-func (i *Image) AuthenticPixelQueue() *T.PixelPacket { return GetAuthenticPixelQueue(i) }
+func (i *Image) AuthenticPixelQueue() *PixelPacket { return GetAuthenticPixelQueue(i) }
 
-func (i *Image) AuthenticPixels(x, y int32, columns, rows uint32, exception *ExceptionInfo) *T.PixelPacket {
+func (i *Image) AuthenticPixels(x, y int32, columns, rows uint32, exception *ExceptionInfo) *PixelPacket {
 	return GetAuthenticPixels(i, x, y, columns, rows, exception)
 }
 
-func (i *Image) BlobProperties() *stat { return GetBlobProperties(i) }
+func (i *Image) BlobProperties() *Stat { return GetBlobProperties(i) }
 
 func (i *Image) AlphaChannel() bool { return GetImageAlphaChannel(i) }
 
-func (i *Image) ChannelDistortions(reconstructImage *Image, metric T.MetricType, exception *ExceptionInfo) *float64 {
+func (i *Image) ChannelDistortions(reconstructImage *Image, metric MetricType, exception *ExceptionInfo) *float64 {
 	return GetImageChannelDistortions(i, reconstructImage, metric, exception)
 }
 
-func (i *Image) ChannelFeatures(distance uint32, exception *ExceptionInfo) *T.ChannelFeatures {
+func (i *Image) ChannelFeatures(distance uint32, exception *ExceptionInfo) *ChannelFeatures {
 	return GetImageChannelFeatures(i, distance, exception)
 }
 
-func (i *Image) ChannelKurtosis(channel T.ChannelType, kurtosis, kewness *float64, exception *ExceptionInfo) bool {
+func (i *Image) ChannelKurtosis(channel ChannelType, kurtosis, kewness *float64, exception *ExceptionInfo) bool {
 	return GetImageChannelKurtosis(i, channel, kurtosis, kewness, exception)
 }
 
 func (i *Image) Channels() uint32 { return GetImageChannels(i) }
 
-func (i *Image) AuthenticPixel(x, y int32, pixel *T.PixelPacket, exception *ExceptionInfo) bool {
+func (i *Image) AuthenticPixel(x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool {
 	return GetOneAuthenticPixel(i, x, y, pixel, exception)
 }
 
@@ -2234,29 +2226,29 @@ func (i *Image) VirtualMagickPixel(x, y int32, pixel *MagickPixelPacket, excepti
 	return GetOneVirtualMagickPixel(i, x, y, pixel, exception)
 }
 
-func (i *Image) VirtualMethodPixel(virtualPixelMethod T.VirtualPixelMethod, x, y int32, pixel *T.PixelPacket, exception *ExceptionInfo) {
+func (i *Image) VirtualMethodPixel(virtualPixelMethod VirtualPixelMethod, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) {
 	GetOneVirtualMethodPixel(i, virtualPixelMethod, x, y, pixel, exception)
 }
 
-func (i *Image) VirtualPixel(x, y int32, pixel *T.PixelPacket, exception *ExceptionInfo) bool {
+func (i *Image) VirtualPixel(x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool {
 	return GetOneVirtualPixel(i, x, y, pixel, exception)
 }
 
-func (i *Image) VirtualIndexQueue() *T.IndexPacket { return GetVirtualIndexQueue(i) }
+func (i *Image) VirtualIndexQueue() *IndexPacket { return GetVirtualIndexQueue(i) }
 
-func (i *Image) VirtualPixelQueue() *T.PixelPacket { return GetVirtualPixelQueue(i) }
+func (i *Image) VirtualPixelQueue() *PixelPacket { return GetVirtualPixelQueue(i) }
 
-func (i *Image) VirtualPixels(x, y int32, columns, rows uint32, exception *ExceptionInfo) *T.PixelPacket {
+func (i *Image) VirtualPixels(x, y int32, columns, rows uint32, exception *ExceptionInfo) *PixelPacket {
 	return GetVirtualPixels(i, x, y, columns, rows, exception)
 }
 
 func (i *Image) HaldClut(haldImage *Image) bool { return HaldClutImage(i, haldImage) }
 
-func (i *Image) HaldClutChannel(channel T.ChannelType, haldImage *Image) bool {
+func (i *Image) HaldClutChannel(channel ChannelType, haldImage *Image) bool {
 	return HaldClutImageChannel(i, channel, haldImage)
 }
 
-func (i *Image) ToHBITMAP() **T.Void { return ImageToHBITMAP(i) }
+func (i *Image) ToHBITMAP() **Void { return ImageToHBITMAP(i) }
 
 func (i *Image) IntegralRotate(rotations uint32, exception *ExceptionInfo) *Image {
 	return IntegralRotateImage(i, rotations, exception)
@@ -2270,11 +2262,11 @@ func (i *Image) LevelColors(blackColor, whiteColor *MagickPixelPacket, invert bo
 	return LevelColorsImage(i, blackColor, whiteColor, invert)
 }
 
-func (i *Image) LevelColorsChannel(channel T.ChannelType, blackColor, whiteColor *MagickPixelPacket, invert bool) bool {
+func (i *Image) LevelColorsChannel(channel ChannelType, blackColor, whiteColor *MagickPixelPacket, invert bool) bool {
 	return LevelColorsImageChannel(i, channel, blackColor, whiteColor, invert)
 }
 
-func (i *Image) LevelImageColors(channel T.ChannelType, blackColor, whiteColor *MagickPixelPacket, invert bool) bool {
+func (i *Image) LevelImageColors(channel ChannelType, blackColor, whiteColor *MagickPixelPacket, invert bool) bool {
 	// Name conflict w/LevelColorsImage if shortened
 	return LevelImageColors(i, channel, blackColor, whiteColor, invert)
 }
@@ -2283,11 +2275,11 @@ func (i *Image) Levelize(blackPoint, whitePoint, gamma float64) bool {
 	return LevelizeImage(i, blackPoint, whitePoint, gamma)
 }
 
-func (i *Image) LevelizeChannel(channel T.ChannelType, blackPoint, whitePoint, gamma float64) bool {
+func (i *Image) LevelizeChannel(channel ChannelType, blackPoint, whitePoint, gamma float64) bool {
 	return LevelizeImageChannel(i, channel, blackPoint, whitePoint, gamma)
 }
 
-func (i *Image) MinMaxStretch(channel T.ChannelType, blackAdjust, whiteAdjust float64) bool {
+func (i *Image) MinMaxStretch(channel ChannelType, blackAdjust, whiteAdjust float64) bool {
 	return MinMaxStretchImage(i, channel, blackAdjust, whiteAdjust)
 }
 
@@ -2295,23 +2287,23 @@ func (i *Image) Mode(radius float64, exception *ExceptionInfo) *Image {
 	return ModeImage(i, radius, exception)
 }
 
-func (i *Image) MorphologyApply(method T.MorphologyMethod, channel T.ChannelType, iterations int32, kernel *T.KernelInfo, compose T.CompositeMethod, bias float64, exception *ExceptionInfo) *Image {
+func (i *Image) MorphologyApply(method MorphologyMethod, channel ChannelType, iterations int32, kernel *KernelInfo, compose CompositeMethod, bias float64, exception *ExceptionInfo) *Image {
 	return MorphologyApply(i, method, channel, iterations, kernel, compose, bias, exception)
 }
 
-func (i *Image) Morphology(method T.MorphologyMethod, iterations int32, kernel *T.KernelInfo, exception *ExceptionInfo) *Image {
+func (i *Image) Morphology(method MorphologyMethod, iterations int32, kernel *KernelInfo, exception *ExceptionInfo) *Image {
 	return MorphologyImage(i, method, iterations, kernel, exception)
 }
 
-func (i *Image) MorphologyChannel(channel T.ChannelType, method T.MorphologyMethod, iterations int32, kernel *T.KernelInfo, exception *ExceptionInfo) *Image {
+func (i *Image) MorphologyChannel(channel ChannelType, method MorphologyMethod, iterations int32, kernel *KernelInfo, exception *ExceptionInfo) *Image {
 	return MorphologyImageChannel(i, channel, method, iterations, kernel, exception)
 }
 
-func (i *Image) MotionBlurChannel(channel T.ChannelType, radius, sigma, angle float64, exception *ExceptionInfo) *Image {
+func (i *Image) MotionBlurChannel(channel ChannelType, radius, sigma, angle float64, exception *ExceptionInfo) *Image {
 	return MotionBlurImageChannel(i, channel, radius, sigma, angle, exception)
 }
 
-func (i *Image) ParseSizeGeometry(geometry string, regionInfo *T.RectangleInfo) T.MagickStatusType { // doc RectangeInfo
+func (i *Image) ParseSizeGeometry(geometry string, regionInfo *RectangleInfo) MagickStatusType { // doc RectangeInfo
 	return ParseSizeGeometry(i, geometry, regionInfo)
 }
 
@@ -2323,11 +2315,11 @@ func (i *Image) PasskeyEncipher(passkey *StringInfo, exception *ExceptionInfo) b
 	return PasskeyEncipherImage(i, passkey, exception)
 }
 
-func (i *Image) PosterizeChannel(channel T.ChannelType, levels uint32, dither bool) bool {
+func (i *Image) PosterizeChannel(channel ChannelType, levels uint32, dither bool) bool {
 	return PosterizeImageChannel(i, channel, levels, dither)
 }
 
-func (i *Image) QueueAuthenticPixels(x, y int32, columns, rows uint32, exception *ExceptionInfo) *T.PixelPacket {
+func (i *Image) QueueAuthenticPixels(x, y int32, columns, rows uint32, exception *ExceptionInfo) *PixelPacket {
 	return QueueAuthenticPixels(i, x, y, columns, rows, exception)
 }
 
@@ -2335,7 +2327,7 @@ func (i *Image) SelectiveBlur(radius, sigma, threshold float64, exception *Excep
 	return SelectiveBlurImage(i, radius, sigma, threshold, exception)
 }
 
-func (i *Image) SelectiveBlurChannel(channel T.ChannelType, radius, sigma, threshold float64, exception *ExceptionInfo) *Image {
+func (i *Image) SelectiveBlurChannel(channel ChannelType, radius, sigma, threshold float64, exception *ExceptionInfo) *Image {
 	return SelectiveBlurImageChannel(i, channel, radius, sigma, threshold, exception)
 }
 
@@ -2343,7 +2335,7 @@ func (i *Image) SetChannels(channels uint32) bool { return SetImageChannels(i, c
 
 func (i *Image) SetColor(color *MagickPixelPacket) bool { return SetImageColor(i, color) }
 
-func (i *Image) SetColorspace(colorspace T.ColorspaceType) {
+func (i *Image) SetColorspace(colorspace ColorspaceType) {
 	SetImageColorspace(i, colorspace)
 }
 
@@ -2351,19 +2343,19 @@ func (i *Image) ShearRotate(degrees float64, exception *ExceptionInfo) *Image {
 	return ShearRotateImage(i, degrees, exception)
 }
 
-func (i *Image) Similarity(reference *Image, offset *T.RectangleInfo, similarity *float64, exception *ExceptionInfo) *Image {
+func (i *Image) Similarity(reference *Image, offset *RectangleInfo, similarity *float64, exception *ExceptionInfo) *Image {
 	return SimilarityImage(i, reference, offset, similarity, exception)
 }
 
-func (i *Image) SparseColor(channel T.ChannelType, method T.SparseColorMethod, numberArguments uint32, arguments *float64, exception *ExceptionInfo) *Image {
+func (i *Image) SparseColor(channel ChannelType, method SparseColorMethod, numberArguments uint32, arguments *float64, exception *ExceptionInfo) *Image {
 	return SparseColorImage(i, channel, method, numberArguments, arguments, exception)
 }
 
-func (i *Image) Statistic(type_ T.StatisticType, width, height uint32, exception *ExceptionInfo) *Image {
+func (i *Image) Statistic(type_ StatisticType, width, height uint32, exception *ExceptionInfo) *Image {
 	return StatisticImage(i, type_, width, height, exception)
 }
 
-func (i *Image) StatisticChannel(channel T.ChannelType, type_ T.StatisticType, width, height uint32, exception *ExceptionInfo) *Image {
+func (i *Image) StatisticChannel(channel ChannelType, type_ StatisticType, width, height uint32, exception *ExceptionInfo) *Image {
 	return StatisticImageChannel(i, channel, type_, width, height, exception)
 }
 
@@ -2383,23 +2375,23 @@ var ConsolidateCMYKImages func(images *Image, exception *ExceptionInfo) *Image
 
 var DeconstructImages func(images *Image, exception *ExceptionInfo) *Image
 
-var DeleteImageList func(images *Image, offset T.Long) uint
+var DeleteImageList func(images *Image, offset Long) uint
 
 var DestroyImageList func(images *Image) *Image
 
 var GetFirstImageInList func(images *Image) *Image
 
-var GetImageFromList func(images *Image, index T.Long) *Image
+var GetImageFromList func(images *Image, index Long) *Image
 
-var GetImageIndexInList func(images *Image) T.Long
+var GetImageIndexInList func(images *Image) Long
 
-var GetImageList func(images *Image, offset T.Long, exception *ExceptionInfo) *Image
+var GetImageList func(images *Image, offset Long, exception *ExceptionInfo) *Image
 
-var GetImageListIndex func(images *Image) T.Long
+var GetImageListIndex func(images *Image) Long
 
-var GetImageListLength func(images *Image) T.Size
+var GetImageListLength func(images *Image) Size
 
-var GetImageListSize func(images *Image) T.Size
+var GetImageListSize func(images *Image) Size
 
 var GetLastImageInList func(images *Image) *Image
 
@@ -2413,9 +2405,9 @@ var GetPreviousImageInList func(images *Image) *Image
 
 var ImageListToArray func(images *Image, exception *ExceptionInfo) []*Image
 
-var MontageImages func(images *Image, montageInfo *T.MontageInfo, exception *ExceptionInfo) *Image
+var MontageImages func(images *Image, montageInfo *MontageInfo, exception *ExceptionInfo) *Image
 
-var SpliceImageList func(images *Image, offset T.Long, length T.Size, splices *Image, exception *ExceptionInfo) *Image
+var SpliceImageList func(images *Image, offset Long, length Size, splices *Image, exception *ExceptionInfo) *Image
 
 var SplitImageList func(images *Image) *Image
 
@@ -2451,68 +2443,68 @@ var ReplaceImageInList func(images **Image, image *Image)
 
 var ReverseImageList func(images **Image)
 
-var SetImageList func(images **Image, image *Image, offset T.Long, exception *ExceptionInfo) uint
+var SetImageList func(images **Image, image *Image, offset Long, exception *ExceptionInfo) uint
 
 var ShiftImageList func(images **Image) *Image
 
-var SpliceImageIntoList func(images **Image, length T.Size, splice *Image) *Image
+var SpliceImageIntoList func(images **Image, length Size, splice *Image) *Image
 
 var TransformImages func(images **Image, cropGeometry, imageGeometry string) bool
 
 var UnshiftImageList func(images **Image, image *Image, exception *ExceptionInfo) uint
 
-var AcquireCacheViewIndexes func(c *CacheView) *T.IndexPacket
+var AcquireCacheViewIndexes func(c *CacheView) *IndexPacket
 
-var AcquireCacheViewPixels func(c *CacheView, x, y T.Long, columns, rows T.Size, exception *ExceptionInfo) *T.PixelPacket
+var AcquireCacheViewPixels func(c *CacheView, x, y Long, columns, rows Size, exception *ExceptionInfo) *PixelPacket
 
-var AcquireOneCacheViewPixel func(c *CacheView, x, y T.Long, exception *ExceptionInfo) T.PixelPacket
+var AcquireOneCacheViewPixel func(c *CacheView, x, y Long, exception *ExceptionInfo) PixelPacket
 
 var CloneCacheView func(c *CacheView) *CacheView
 
 var CloseCacheView func(c *CacheView) *CacheView
 
-var GetCacheView func(c *CacheView, x, y T.Long, columns, rows T.Size) *T.PixelPacket
+var GetCacheView func(c *CacheView, x, y Long, columns, rows Size) *PixelPacket
 
-var GetCacheViewColorspace func(c *CacheView) T.ColorspaceType
+var GetCacheViewColorspace func(c *CacheView) ColorspaceType
 
 var GetCacheViewException func(c *CacheView) *ExceptionInfo
 
-var GetCacheViewIndexes func(c *CacheView) *T.IndexPacket
+var GetCacheViewIndexes func(c *CacheView) *IndexPacket
 
-var GetCacheViewPixels func(c *CacheView, x, y T.Long, columns, rows T.Size) *T.PixelPacket
+var GetCacheViewPixels func(c *CacheView, x, y Long, columns, rows Size) *PixelPacket
 
-var GetCacheViewStorageClass func(c *CacheView) T.ClassType
+var GetCacheViewStorageClass func(c *CacheView) ClassType
 
-var SetCacheViewStorageClass func(c *CacheView, storageClass T.ClassType) bool
+var SetCacheViewStorageClass func(c *CacheView, storageClass ClassType) bool
 
-var SetCacheViewVirtualPixelMethod func(c *CacheView, virtualPixelMethod T.VirtualPixelMethod) bool
+var SetCacheViewVirtualPixelMethod func(c *CacheView, virtualPixelMethod VirtualPixelMethod) bool
 
 //sketchy docs and/or deprecated
 
 var DestroyCacheView func(c *CacheView) *CacheView
 
-var GetCacheViewAuthenticIndexQueue func(c *CacheView) *T.IndexPacket
+var GetCacheViewAuthenticIndexQueue func(c *CacheView) *IndexPacket
 
-var GetCacheViewAuthenticPixelQueue func(c *CacheView) *T.PixelPacket
+var GetCacheViewAuthenticPixelQueue func(c *CacheView) *PixelPacket
 
-var GetCacheViewAuthenticPixels func(c *CacheView, x, y int32, columns, rows uint32, exception *ExceptionInfo) *T.PixelPacket
+var GetCacheViewAuthenticPixels func(c *CacheView, x, y int32, columns, rows uint32, exception *ExceptionInfo) *PixelPacket
 
 var GetCacheViewChannels func(c *CacheView) uint32
 
-var GetCacheViewVirtualIndexQueue func(c *CacheView) *T.IndexPacket
+var GetCacheViewVirtualIndexQueue func(c *CacheView) *IndexPacket
 
-var GetCacheViewVirtualPixelQueue func(c *CacheView) *T.PixelPacket
+var GetCacheViewVirtualPixelQueue func(c *CacheView) *PixelPacket
 
-var GetCacheViewVirtualPixels func(c *CacheView, x, y int32, columns, rows uint32, exception *ExceptionInfo) *T.PixelPacket
+var GetCacheViewVirtualPixels func(c *CacheView, x, y int32, columns, rows uint32, exception *ExceptionInfo) *PixelPacket
 
-var GetOneCacheViewAuthenticPixel func(c *CacheView, x, y int32, pixel *T.PixelPacket, exception *ExceptionInfo) bool // doc Pixelpacket
-var GetOneCacheViewVirtualMethodPixel func(c *CacheView, virtualPixelMethod T.VirtualPixelMethod, x, y int32, pixel *T.PixelPacket, exception *ExceptionInfo) bool
+var GetOneCacheViewAuthenticPixel func(c *CacheView, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool // doc Pixelpacket
+var GetOneCacheViewVirtualMethodPixel func(c *CacheView, virtualPixelMethod VirtualPixelMethod, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool
 
-var GetOneCacheViewVirtualPixel func(c *CacheView, x, y int32, pixel *T.PixelPacket, exception *ExceptionInfo) bool
+var GetOneCacheViewVirtualPixel func(c *CacheView, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool
 
-var QueueCacheViewAuthenticPixels func(c *CacheView, x, y int32, columns, rows uint32, exception *ExceptionInfo) *T.PixelPacket
+var QueueCacheViewAuthenticPixels func(c *CacheView, x, y int32, columns, rows uint32, exception *ExceptionInfo) *PixelPacket
 
-var SetCacheViewPixels func(c *CacheView, x, y int32, columns, rows uint32) *T.PixelPacket
+var SetCacheViewPixels func(c *CacheView, x, y int32, columns, rows uint32) *PixelPacket
 
 var SyncCacheView func(c *CacheView) bool
 
@@ -2520,13 +2512,13 @@ var SyncCacheViewAuthenticPixels func(c *CacheView, exception *ExceptionInfo) bo
 
 var SyncCacheViewPixels func(c *CacheView) bool
 
-func (c *CacheView) AcquireIndexes() *T.IndexPacket { return AcquireCacheViewIndexes(c) }
+func (c *CacheView) AcquireIndexes() *IndexPacket { return AcquireCacheViewIndexes(c) }
 
-func (c *CacheView) AcquirePixels(x, y T.Long, columns, rows T.Size, exception *ExceptionInfo) *T.PixelPacket {
+func (c *CacheView) AcquirePixels(x, y Long, columns, rows Size, exception *ExceptionInfo) *PixelPacket {
 	return AcquireCacheViewPixels(c, x, y, columns, rows, exception)
 }
 
-func (c *CacheView) AcquirePixel(x, y T.Long, exception *ExceptionInfo) T.PixelPacket {
+func (c *CacheView) AcquirePixel(x, y Long, exception *ExceptionInfo) PixelPacket {
 	return AcquireOneCacheViewPixel(c, x, y, exception)
 }
 
@@ -2534,67 +2526,67 @@ func (c *CacheView) Clone() *CacheView { return CloneCacheView(c) }
 
 func (c *CacheView) Close() *CacheView { return CloseCacheView(c) }
 
-func (c *CacheView) Get(x, y T.Long, columns, rows T.Size) *T.PixelPacket {
+func (c *CacheView) Get(x, y Long, columns, rows Size) *PixelPacket {
 	return GetCacheView(c, x, y, columns, rows)
 }
 
-func (c *CacheView) Colorspace() T.ColorspaceType { return GetCacheViewColorspace(c) }
+func (c *CacheView) Colorspace() ColorspaceType { return GetCacheViewColorspace(c) }
 
 func (c *CacheView) Exception() *ExceptionInfo { return GetCacheViewException(c) }
 
-func (c *CacheView) ViewIndexes() *T.IndexPacket { return GetCacheViewIndexes(c) }
+func (c *CacheView) ViewIndexes() *IndexPacket { return GetCacheViewIndexes(c) }
 
-func (c *CacheView) Pixels(x, y T.Long, columns, rows T.Size) *T.PixelPacket {
+func (c *CacheView) Pixels(x, y Long, columns, rows Size) *PixelPacket {
 	return GetCacheViewPixels(c, x, y, columns, rows)
 }
 
-func (c *CacheView) StorageClass() T.ClassType { return GetCacheViewStorageClass(c) }
+func (c *CacheView) StorageClass() ClassType { return GetCacheViewStorageClass(c) }
 
-func (c *CacheView) SetStorageClass(storageClass T.ClassType) bool {
+func (c *CacheView) SetStorageClass(storageClass ClassType) bool {
 	return SetCacheViewStorageClass(c, storageClass)
 }
 
-func (c *CacheView) SetVirtualPixelMethod(virtualPixelMethod T.VirtualPixelMethod) bool {
+func (c *CacheView) SetVirtualPixelMethod(virtualPixelMethod VirtualPixelMethod) bool {
 	return SetCacheViewVirtualPixelMethod(c, virtualPixelMethod)
 }
 
 func (c *CacheView) Destroy() *CacheView { return DestroyCacheView(c) }
 
-func (c *CacheView) AuthenticIndexQueue() *T.IndexPacket { return GetCacheViewAuthenticIndexQueue(c) }
+func (c *CacheView) AuthenticIndexQueue() *IndexPacket { return GetCacheViewAuthenticIndexQueue(c) }
 
-func (c *CacheView) AuthenticPixelQueue() *T.PixelPacket { return GetCacheViewAuthenticPixelQueue(c) }
+func (c *CacheView) AuthenticPixelQueue() *PixelPacket { return GetCacheViewAuthenticPixelQueue(c) }
 
-func (c *CacheView) AuthenticPixels(x, y int32, columns, rows uint32, exception *ExceptionInfo) *T.PixelPacket {
+func (c *CacheView) AuthenticPixels(x, y int32, columns, rows uint32, exception *ExceptionInfo) *PixelPacket {
 	return GetCacheViewAuthenticPixels(c, x, y, columns, rows, exception)
 }
 
 func (c *CacheView) Channels() uint32 { return GetCacheViewChannels(c) }
 
-func (c *CacheView) VirtualIndexQueue() *T.IndexPacket { return GetCacheViewVirtualIndexQueue(c) }
+func (c *CacheView) VirtualIndexQueue() *IndexPacket { return GetCacheViewVirtualIndexQueue(c) }
 
-func (c *CacheView) VirtualPixelQueue() *T.PixelPacket { return GetCacheViewVirtualPixelQueue(c) }
+func (c *CacheView) VirtualPixelQueue() *PixelPacket { return GetCacheViewVirtualPixelQueue(c) }
 
-func (c *CacheView) VirtualPixels(x, y int32, columns, rows uint32, exception *ExceptionInfo) *T.PixelPacket {
+func (c *CacheView) VirtualPixels(x, y int32, columns, rows uint32, exception *ExceptionInfo) *PixelPacket {
 	return GetCacheViewVirtualPixels(c, x, y, columns, rows, exception)
 }
 
-func (c *CacheView) AuthenticPixel(x, y int32, pixel *T.PixelPacket, exception *ExceptionInfo) bool {
+func (c *CacheView) AuthenticPixel(x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool {
 	return GetOneCacheViewAuthenticPixel(c, x, y, pixel, exception)
 }
 
-func (c *CacheView) VirtualMethodPixel(virtualPixelMethod T.VirtualPixelMethod, x, y int32, pixel *T.PixelPacket, exception *ExceptionInfo) bool {
+func (c *CacheView) VirtualMethodPixel(virtualPixelMethod VirtualPixelMethod, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool {
 	return GetOneCacheViewVirtualMethodPixel(c, virtualPixelMethod, x, y, pixel, exception)
 }
 
-func (c *CacheView) VirtualPixel(x, y int32, pixel *T.PixelPacket, exception *ExceptionInfo) bool {
+func (c *CacheView) VirtualPixel(x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool {
 	return GetOneCacheViewVirtualPixel(c, x, y, pixel, exception)
 }
 
-func (c *CacheView) QueueAuthenticPixels(x, y int32, columns, rows uint32, exception *ExceptionInfo) *T.PixelPacket {
+func (c *CacheView) QueueAuthenticPixels(x, y int32, columns, rows uint32, exception *ExceptionInfo) *PixelPacket {
 	return QueueCacheViewAuthenticPixels(c, x, y, columns, rows, exception)
 }
 
-func (c *CacheView) SetPixels(x, y int32, columns, rows uint32) *T.PixelPacket {
+func (c *CacheView) SetPixels(x, y int32, columns, rows uint32) *PixelPacket {
 	return SetCacheViewPixels(c, x, y, columns, rows)
 }
 
@@ -2606,9 +2598,9 @@ func (c *CacheView) SyncAuthenticPixels(exception *ExceptionInfo) bool {
 
 func (c *CacheView) SyncPixels() bool { return SyncCacheViewPixels(c) }
 
-var GetImageDecoder func(m *MagickInfo) *T.DecodeImageHandler
+var GetImageDecoder func(m *MagickInfo) *DecodeImageHandler
 
-var GetImageEncoder func(m *MagickInfo) *T.EncodeImageHandler
+var GetImageEncoder func(m *MagickInfo) *EncodeImageHandler
 
 var GetMagickAdjoin func(m *MagickInfo) bool
 
@@ -2620,13 +2612,13 @@ var GetMagickEndianSupport func(m *MagickInfo) bool
 
 var GetMagickSeekableStream func(m *MagickInfo) bool
 
-var GetMagickThreadSupport func(m *MagickInfo) T.MagickStatusType
+var GetMagickThreadSupport func(m *MagickInfo) MagickStatusType
 
 var RegisterMagickInfo func(m *MagickInfo) *MagickInfo
 
-func (m *MagickInfo) Decoder() *T.DecodeImageHandler { return GetImageDecoder(m) }
+func (m *MagickInfo) Decoder() *DecodeImageHandler { return GetImageDecoder(m) }
 
-func (m *MagickInfo) Encoder() *T.EncodeImageHandler { return GetImageEncoder(m) }
+func (m *MagickInfo) Encoder() *EncodeImageHandler { return GetImageEncoder(m) }
 
 func (m *MagickInfo) Adjoin() bool { return GetMagickAdjoin(m) }
 
@@ -2638,301 +2630,301 @@ func (m *MagickInfo) EndianSupport() bool { return GetMagickEndianSupport(m) }
 
 func (m *MagickInfo) SeekableStream() bool { return GetMagickSeekableStream(m) }
 
-func (m *MagickInfo) ThreadSupport() T.MagickStatusType { return GetMagickThreadSupport(m) }
+func (m *MagickInfo) ThreadSupport() MagickStatusType { return GetMagickThreadSupport(m) }
 
 func (m *MagickInfo) Register() *MagickInfo { return RegisterMagickInfo(m) }
 
-var XAnimateBackgroundImage func(d *Display, resourceInfo *T.XResourceInfo, images *Image)
+var XAnimateBackgroundImage func(d *Display, resourceInfo *XResourceInfo, images *Image)
 
-var XAnimateImages func(d *Display, resourceInfo *T.XResourceInfo, argv []string, argc int, images *Image) *Image
+var XAnimateImages func(d *Display, resourceInfo *XResourceInfo, argv []string, argc int, images *Image) *Image
 
-var XAnnotateImage func(d *Display, pixel *T.XPixelInfo, annotateInfo *T.XAnnotateInfo, image *Image) bool
+var XAnnotateImage func(d *Display, pixel *XPixelInfo, annotateInfo *XAnnotateInfo, image *Image) bool
 
-var XBestFont func(d *Display, resourceInfo *T.XResourceInfo, textFont bool) *T.XFontStruct
+var XBestFont func(d *Display, resourceInfo *XResourceInfo, textFont bool) *XFontStruct
 
-var XBestIconSize func(d *Display, window *T.XWindowInfo, image *Image)
+var XBestIconSize func(d *Display, window *XWindowInfo, image *Image)
 
-var XBestPixel func(d *Display, colormap T.Colormap, colors *T.XColor, numberColors uint, color *T.XColor)
+var XBestPixel func(d *Display, colormap Colormap, colors *XColor, numberColors uint, color *XColor)
 
-var XBestVisualInfo func(d *Display, mapInfo *T.XStandardColormap, resourceInfo *T.XResourceInfo) *T.XVisualInfo
+var XBestVisualInfo func(d *Display, mapInfo *XStandardColormap, resourceInfo *XResourceInfo) *XVisualInfo
 
-var XCheckDefineCursor func(d *Display, window T.Window, cursor T.Cursor) int
+var XCheckDefineCursor func(d *Display, window Window, cursor Cursor) int
 
-var XCheckRefreshWindows func(d *Display, windows *T.XWindows)
+var XCheckRefreshWindows func(d *Display, windows *XWindows)
 
-var XClientMessage func(d *Display, window T.Window, protocol, reason T.Atom, timestamp T.Time)
+var XClientMessage func(d *Display, window Window, protocol, reason Atom, timestamp Time)
 
-var XColorBrowserWidget func(d *Display, windows *T.XWindows, action, reply string)
+var XColorBrowserWidget func(d *Display, windows *XWindows, action, reply string)
 
-var XCommandWidget func(d *Display, windows *T.XWindows, selections []string, event *T.XEvent) int
+var XCommandWidget func(d *Display, windows *XWindows, selections []string, event *XEvent) int
 
-var XConfigureImageColormap func(d *Display, resourceInfo *T.XResourceInfo, windows *T.XWindows, image *Image)
+var XConfigureImageColormap func(d *Display, resourceInfo *XResourceInfo, windows *XWindows, image *Image)
 
-var XConfirmWidget func(d *Display, windows *T.XWindows, reason, description string) int
+var XConfirmWidget func(d *Display, windows *XWindows, reason, description string) int
 
-var XConstrainWindowPosition func(d *Display, windowInfo *T.XWindowInfo)
+var XConstrainWindowPosition func(d *Display, windowInfo *XWindowInfo)
 
-var XDelay func(d *Display, milliseconds T.Size)
+var XDelay func(d *Display, milliseconds Size)
 
-var XDestroyWindowColors func(d *Display, window T.Window)
+var XDestroyWindowColors func(d *Display, window Window)
 
-var XDialogWidget func(d *Display, windows *T.XWindows, action, query, reply string) int
+var XDialogWidget func(d *Display, windows *XWindows, action, query, reply string) int
 
-var XDisplayBackgroundImage func(d *Display, resourceInfo *T.XResourceInfo, image *Image) bool
+var XDisplayBackgroundImage func(d *Display, resourceInfo *XResourceInfo, image *Image) bool
 
-var XDisplayImage func(d *Display, resourceInfo *T.XResourceInfo, argv []string, argc int, image **Image, state *T.Size) *Image
+var XDisplayImage func(d *Display, resourceInfo *XResourceInfo, argv []string, argc int, image **Image, state *Size) *Image
 
-var XDisplayImageInfo func(d *Display, resourceInfo *T.XResourceInfo, windows *T.XWindows, undoImage, image *Image)
+var XDisplayImageInfo func(d *Display, resourceInfo *XResourceInfo, windows *XWindows, undoImage, image *Image)
 
-var XDrawImage func(d *Display, pixel *T.XPixelInfo, drawInfo *T.XDrawInfo, image *Image) bool
+var XDrawImage func(d *Display, pixel *XPixelInfo, drawInfo *XDrawInfo, image *Image) bool
 
-var XError func(d *Display, err *T.XErrorEvent) int
+var XError func(d *Display, err *XErrorEvent) int
 
-var XFileBrowserWidget func(d *Display, windows *T.XWindows, action, reply string)
+var XFileBrowserWidget func(d *Display, windows *XWindows, action, reply string)
 
-var XFontBrowserWidget func(d *Display, windows *T.XWindows, action, reply string)
+var XFontBrowserWidget func(d *Display, windows *XWindows, action, reply string)
 
-var XFreeResources func(d *Display, visualInfo *T.XVisualInfo, mapInfo *T.XStandardColormap, pixel *T.XPixelInfo, fontInfo *T.XFontStruct, resourceInfo *T.XResourceInfo, windowInfo *T.XWindowInfo)
+var XFreeResources func(d *Display, visualInfo *XVisualInfo, mapInfo *XStandardColormap, pixel *XPixelInfo, fontInfo *XFontStruct, resourceInfo *XResourceInfo, windowInfo *XWindowInfo)
 
-var XFreeStandardColormap func(d *Display, visualInfo *T.XVisualInfo, mapInfo *T.XStandardColormap, pixel *T.XPixelInfo)
+var XFreeStandardColormap func(d *Display, visualInfo *XVisualInfo, mapInfo *XStandardColormap, pixel *XPixelInfo)
 
-var XGetPixelPacket func(d *Display, visualInfo *T.XVisualInfo, mapInfo *T.XStandardColormap, resourceInfo *T.XResourceInfo, image *Image, pixel *T.XPixelInfo)
+var XGetPixelPacket func(d *Display, visualInfo *XVisualInfo, mapInfo *XStandardColormap, resourceInfo *XResourceInfo, image *Image, pixel *XPixelInfo)
 
-var XGetResourceDatabase func(d *Display, clientName string) XrmDatabase
+var XGetResourceDatabase func(d *Display, clientName string) *XrmDatabase
 
 var XGetScreenDensity func(d *Display) string
 
-var XGetWindowColor func(d *Display, windows *T.XWindows, name string) bool
+var XGetWindowColor func(d *Display, windows *XWindows, name string) bool
 
-var XGetWindowInfo func(d *Display, visualInfo *T.XVisualInfo, mapInfo *T.XStandardColormap, pixel *T.XPixelInfo, fontInfo *T.XFontStruct, resourceInfo *T.XResourceInfo, window *T.XWindowInfo)
+var XGetWindowInfo func(d *Display, visualInfo *XVisualInfo, mapInfo *XStandardColormap, pixel *XPixelInfo, fontInfo *XFontStruct, resourceInfo *XResourceInfo, window *XWindowInfo)
 
-var XHighlightEllipse func(d *Display, window T.Window, annotateContext T.GC, highlightInfo *T.RectangleInfo)
+var XHighlightEllipse func(d *Display, window Window, annotateContext GC, highlightInfo *RectangleInfo)
 
-var XHighlightLine func(d *Display, window T.Window, annotateContext T.GC, highlightInfo *T.XSegment)
+var XHighlightLine func(d *Display, window Window, annotateContext GC, highlightInfo *XSegment)
 
-var XHighlightRectangle func(d *Display, window T.Window, annotateContext T.GC, highlightInfo *T.RectangleInfo)
+var XHighlightRectangle func(d *Display, window Window, annotateContext GC, highlightInfo *RectangleInfo)
 
-var XInfoWidget func(d *Display, windows *T.XWindows, activity string)
+var XInfoWidget func(d *Display, windows *XWindows, activity string)
 
-var XInitializeWindows func(d *Display, resourceInfo *T.XResourceInfo) *T.XWindows
+var XInitializeWindows func(d *Display, resourceInfo *XResourceInfo) *XWindows
 
-var XListBrowserWidget func(d *Display, windows *T.XWindows, windowInfo *T.XWindowInfo, list []string, action, query, reply string)
+var XListBrowserWidget func(d *Display, windows *XWindows, windowInfo *XWindowInfo, list []string, action, query, reply string)
 
-var XMakeCursor func(d *Display, window T.Window, colormap T.Colormap, backgroundColor, foregroundColor string) T.Cursor
+var XMakeCursor func(d *Display, window Window, colormap Colormap, backgroundColor, foregroundColor string) Cursor
 
-var XMakeImage func(d *Display, resourceInfo *T.XResourceInfo, window *T.XWindowInfo, image *Image, width, height uint) bool
+var XMakeImage func(d *Display, resourceInfo *XResourceInfo, window *XWindowInfo, image *Image, width, height uint) bool
 
-var XMakeMagnifyImage func(d *Display, windows *T.XWindows)
+var XMakeMagnifyImage func(d *Display, windows *XWindows)
 
-var XMakeStandardColormap func(d *Display, visualInfo *T.XVisualInfo, resourceInfo *T.XResourceInfo, image *Image, mapInfo *T.XStandardColormap, pixel *T.XPixelInfo)
+var XMakeStandardColormap func(d *Display, visualInfo *XVisualInfo, resourceInfo *XResourceInfo, image *Image, mapInfo *XStandardColormap, pixel *XPixelInfo)
 
-var XMakeWindow func(d *Display, parent T.Window, argv []string, argc int, classHint *T.XClassHint, managerHints *T.XWMHints, windowInfo *T.XWindowInfo)
+var XMakeWindow func(d *Display, parent Window, argv []string, argc int, classHint *XClassHint, managerHints *XWMHints, windowInfo *XWindowInfo)
 
-var XMenuWidget func(d *Display, windows *T.XWindows, title string, selections []string, item string) int
+var XMenuWidget func(d *Display, windows *XWindows, title string, selections []string, item string) int
 
-var XNoticeWidget func(d *Display, windows *T.XWindows, reason, description string)
+var XNoticeWidget func(d *Display, windows *XWindows, reason, description string)
 
-var XPreferencesWidget func(d *Display, resourceInfo *T.XResourceInfo, windows *T.XWindows) bool
+var XPreferencesWidget func(d *Display, resourceInfo *XResourceInfo, windows *XWindows) bool
 
-var XProgressMonitorWidget func(d *Display, windows *T.XWindows, task string, offset T.MagickOffsetType, span T.MagickSizeType)
+var XProgressMonitorWidget func(d *Display, windows *XWindows, task string, offset MagickOffsetType, span MagickSizeType)
 
-var XQueryPosition func(d *Display, window T.Window, x, y *int)
+var XQueryPosition func(d *Display, window Window, x, y *int)
 
-var XRefreshWindow func(d *Display, window *T.XWindowInfo, event *T.XEvent)
+var XRefreshWindow func(d *Display, window *XWindowInfo, event *XEvent)
 
 var XRemoteCommand func(d *Display, window, filename string) bool
 
-var XRetainWindowColors func(d *Display, window T.Window)
+var XRetainWindowColors func(d *Display, window Window)
 
-var XrmGetDatabase func(d *Display) XrmDatabase
+var XrmGetDatabase func(d *Display) *XrmDatabase
 
-var XSetCursorState func(d *Display, windows *T.XWindows, state T.MagickStatusType)
+var XSetCursorState func(d *Display, windows *XWindows, state MagickStatusType)
 
-var XTextViewWidget func(d *Display, resourceInfo *T.XResourceInfo, windows *T.XWindows, mono bool, title string, textlist []string)
+var XTextViewWidget func(d *Display, resourceInfo *XResourceInfo, windows *XWindows, mono bool, title string, textlist []string)
 
-var XWindowByID func(d *Display, rootWindow T.Window, id T.Size) T.Window
+var XWindowByID func(d *Display, rootWindow Window, id Size) Window
 
-var XWindowByName func(d *Display, rootWindow T.Window, name string) T.Window
+var XWindowByName func(d *Display, rootWindow Window, name string) Window
 
-var XWindowByProperty func(d *Display, window T.Window, property T.Atom) T.Window
+var XWindowByProperty func(d *Display, window Window, property Atom) Window
 
-func (d *Display) XAnimateBackgroundImage(resourceInfo *T.XResourceInfo, images *Image) {
+func (d *Display) XAnimateBackgroundImage(resourceInfo *XResourceInfo, images *Image) {
 	XAnimateBackgroundImage(d, resourceInfo, images)
 }
 
-func (d *Display) XAnimateImages(resourceInfo *T.XResourceInfo, argv []string, argc int, images *Image) *Image {
+func (d *Display) XAnimateImages(resourceInfo *XResourceInfo, argv []string, argc int, images *Image) *Image {
 	return XAnimateImages(d, resourceInfo, argv, argc, images)
 }
 
-func (d *Display) XAnnotateImage(pixel *T.XPixelInfo, annotateInfo *T.XAnnotateInfo, image *Image) bool {
+func (d *Display) XAnnotateImage(pixel *XPixelInfo, annotateInfo *XAnnotateInfo, image *Image) bool {
 	return XAnnotateImage(d, pixel, annotateInfo, image)
 }
 
-func (d *Display) XBestFont(resourceInfo *T.XResourceInfo, textFont bool) *T.XFontStruct {
+func (d *Display) XBestFont(resourceInfo *XResourceInfo, textFont bool) *XFontStruct {
 	return XBestFont(d, resourceInfo, textFont)
 }
 
-func (d *Display) XBestIconSize(window *T.XWindowInfo, image *Image) {
+func (d *Display) XBestIconSize(window *XWindowInfo, image *Image) {
 	XBestIconSize(d, window, image)
 }
 
-func (d *Display) XBestPixel(colormap T.Colormap, colors *T.XColor, numberColors uint, color *T.XColor) {
+func (d *Display) XBestPixel(colormap Colormap, colors *XColor, numberColors uint, color *XColor) {
 	XBestPixel(d, colormap, colors, numberColors, color)
 }
 
-func (d *Display) XBestVisualInfo(mapInfo *T.XStandardColormap, resourceInfo *T.XResourceInfo) *T.XVisualInfo {
+func (d *Display) XBestVisualInfo(mapInfo *XStandardColormap, resourceInfo *XResourceInfo) *XVisualInfo {
 	return XBestVisualInfo(d, mapInfo, resourceInfo)
 }
 
-func (d *Display) XCheckDefineCursor(window T.Window, cursor T.Cursor) int {
+func (d *Display) XCheckDefineCursor(window Window, cursor Cursor) int {
 	return XCheckDefineCursor(d, window, cursor)
 }
 
-func (d *Display) XCheckRefreshWindows(windows *T.XWindows) { XCheckRefreshWindows(d, windows) }
+func (d *Display) XCheckRefreshWindows(windows *XWindows) { XCheckRefreshWindows(d, windows) }
 
-func (d *Display) XClientMessage(window T.Window, protocol, reason T.Atom, timestamp T.Time) {
+func (d *Display) XClientMessage(window Window, protocol, reason Atom, timestamp Time) {
 	XClientMessage(d, window, protocol, reason, timestamp)
 }
 
-func (d *Display) XColorBrowserWidget(windows *T.XWindows, action, reply string) {
+func (d *Display) XColorBrowserWidget(windows *XWindows, action, reply string) {
 	XColorBrowserWidget(d, windows, action, reply)
 }
 
-func (d *Display) XCommandWidget(windows *T.XWindows, selections []string, event *T.XEvent) int {
+func (d *Display) XCommandWidget(windows *XWindows, selections []string, event *XEvent) int {
 	return XCommandWidget(d, windows, selections, event)
 }
 
-func (d *Display) XConfigureImageColormap(resourceInfo *T.XResourceInfo, windows *T.XWindows, image *Image) {
+func (d *Display) XConfigureImageColormap(resourceInfo *XResourceInfo, windows *XWindows, image *Image) {
 	XConfigureImageColormap(d, resourceInfo, windows, image)
 }
 
-func (d *Display) XConfirmWidget(windows *T.XWindows, reason, description string) int {
+func (d *Display) XConfirmWidget(windows *XWindows, reason, description string) int {
 	return XConfirmWidget(d, windows, reason, description)
 }
 
-func (d *Display) XConstrainWindowPosition(windowInfo *T.XWindowInfo) {
+func (d *Display) XConstrainWindowPosition(windowInfo *XWindowInfo) {
 	XConstrainWindowPosition(d, windowInfo)
 }
 
-func (d *Display) XDelay(milliseconds T.Size) { XDelay(d, milliseconds) }
+func (d *Display) XDelay(milliseconds Size) { XDelay(d, milliseconds) }
 
-func (d *Display) XDestroyWindowColors(window T.Window) { XDestroyWindowColors(d, window) }
+func (d *Display) XDestroyWindowColors(window Window) { XDestroyWindowColors(d, window) }
 
-func (d *Display) XDialogWidget(windows *T.XWindows, action, query, reply string) int {
+func (d *Display) XDialogWidget(windows *XWindows, action, query, reply string) int {
 	return XDialogWidget(d, windows, action, query, reply)
 }
 
-func (d *Display) XBackgroundImage(resourceInfo *T.XResourceInfo, image *Image) bool {
+func (d *Display) XBackgroundImage(resourceInfo *XResourceInfo, image *Image) bool {
 	return XDisplayBackgroundImage(d, resourceInfo, image)
 }
 
-func (d *Display) XDisplayImage(resourceInfo *T.XResourceInfo, argv []string, argc int, image **Image, state *T.Size) *Image {
+func (d *Display) XDisplayImage(resourceInfo *XResourceInfo, argv []string, argc int, image **Image, state *Size) *Image {
 	return XDisplayImage(d, resourceInfo, argv, argc, image, state)
 }
 
-func (d *Display) XDisplayImageInfo(resourceInfo *T.XResourceInfo, windows *T.XWindows, undoImage, image *Image) {
+func (d *Display) XDisplayImageInfo(resourceInfo *XResourceInfo, windows *XWindows, undoImage, image *Image) {
 	XDisplayImageInfo(d, resourceInfo, windows, undoImage, image)
 }
 
-func (d *Display) XDrawImage(pixel *T.XPixelInfo, drawInfo *T.XDrawInfo, image *Image) bool {
+func (d *Display) XDrawImage(pixel *XPixelInfo, drawInfo *XDrawInfo, image *Image) bool {
 	return XDrawImage(d, pixel, drawInfo, image)
 }
 
-func (d *Display) XError(err *T.XErrorEvent) int { return XError(d, err) }
+func (d *Display) XError(err *XErrorEvent) int { return XError(d, err) }
 
-func (d *Display) XFileBrowserWidget(windows *T.XWindows, action, reply string) {
+func (d *Display) XFileBrowserWidget(windows *XWindows, action, reply string) {
 	XFileBrowserWidget(d, windows, action, reply)
 }
 
-func (d *Display) XFontBrowserWidget(windows *T.XWindows, action, reply string) {
+func (d *Display) XFontBrowserWidget(windows *XWindows, action, reply string) {
 	XFontBrowserWidget(d, windows, action, reply)
 }
 
-func (d *Display) XFreeResources(visualInfo *T.XVisualInfo, mapInfo *T.XStandardColormap, pixel *T.XPixelInfo, fontInfo *T.XFontStruct, resourceInfo *T.XResourceInfo, windowInfo *T.XWindowInfo) {
+func (d *Display) XFreeResources(visualInfo *XVisualInfo, mapInfo *XStandardColormap, pixel *XPixelInfo, fontInfo *XFontStruct, resourceInfo *XResourceInfo, windowInfo *XWindowInfo) {
 	XFreeResources(d, visualInfo, mapInfo, pixel, fontInfo, resourceInfo, windowInfo)
 }
 
-func (d *Display) XFreeStandardColormap(visualInfo *T.XVisualInfo, mapInfo *T.XStandardColormap, pixel *T.XPixelInfo) {
+func (d *Display) XFreeStandardColormap(visualInfo *XVisualInfo, mapInfo *XStandardColormap, pixel *XPixelInfo) {
 	XFreeStandardColormap(d, visualInfo, mapInfo, pixel)
 }
 
-func (d *Display) XGetPixelPacket(visualInfo *T.XVisualInfo, mapInfo *T.XStandardColormap, resourceInfo *T.XResourceInfo, image *Image, pixel *T.XPixelInfo) {
+func (d *Display) XGetPixelPacket(visualInfo *XVisualInfo, mapInfo *XStandardColormap, resourceInfo *XResourceInfo, image *Image, pixel *XPixelInfo) {
 	XGetPixelPacket(d, visualInfo, mapInfo, resourceInfo, image, pixel)
 }
 
-func (d *Display) XGetResourceDatabase(clientName string) XrmDatabase {
+func (d *Display) XGetResourceDatabase(clientName string) *XrmDatabase {
 	return XGetResourceDatabase(d, clientName)
 }
 
 func (d *Display) XGetScreenDensity() string { return XGetScreenDensity(d) }
 
-func (d *Display) XGetWindowColor(windows *T.XWindows, name string) bool {
+func (d *Display) XGetWindowColor(windows *XWindows, name string) bool {
 	return XGetWindowColor(d, windows, name)
 }
 
-func (d *Display) XGetWindowInfo(visualInfo *T.XVisualInfo, mapInfo *T.XStandardColormap, pixel *T.XPixelInfo, fontInfo *T.XFontStruct, resourceInfo *T.XResourceInfo, window *T.XWindowInfo) {
+func (d *Display) XGetWindowInfo(visualInfo *XVisualInfo, mapInfo *XStandardColormap, pixel *XPixelInfo, fontInfo *XFontStruct, resourceInfo *XResourceInfo, window *XWindowInfo) {
 	XGetWindowInfo(d, visualInfo, mapInfo, pixel, fontInfo, resourceInfo, window)
 }
 
-func (d *Display) XHighlightEllipse(window T.Window, annotateContext T.GC, highlightInfo *T.RectangleInfo) {
+func (d *Display) XHighlightEllipse(window Window, annotateContext GC, highlightInfo *RectangleInfo) {
 	XHighlightEllipse(d, window, annotateContext, highlightInfo)
 }
 
-func (d *Display) XHighlightLine(window T.Window, annotateContext T.GC, highlightInfo *T.XSegment) {
+func (d *Display) XHighlightLine(window Window, annotateContext GC, highlightInfo *XSegment) {
 	XHighlightLine(d, window, annotateContext, highlightInfo)
 }
 
-func (d *Display) XHighlightRectangle(window T.Window, annotateContext T.GC, highlightInfo *T.RectangleInfo) {
+func (d *Display) XHighlightRectangle(window Window, annotateContext GC, highlightInfo *RectangleInfo) {
 	XHighlightRectangle(d, window, annotateContext, highlightInfo)
 }
 
-func (d *Display) XInfoWidget(windows *T.XWindows, activity string) { XInfoWidget(d, windows, activity) }
+func (d *Display) XInfoWidget(windows *XWindows, activity string) { XInfoWidget(d, windows, activity) }
 
-func (d *Display) XInitializeWindows(resourceInfo *T.XResourceInfo) *T.XWindows {
+func (d *Display) XInitializeWindows(resourceInfo *XResourceInfo) *XWindows {
 	return XInitializeWindows(d, resourceInfo)
 }
 
-func (d *Display) XListBrowserWidget(windows *T.XWindows, windowInfo *T.XWindowInfo, list []string, action, query, reply string) {
+func (d *Display) XListBrowserWidget(windows *XWindows, windowInfo *XWindowInfo, list []string, action, query, reply string) {
 	XListBrowserWidget(d, windows, windowInfo, list, action, query, reply)
 }
 
-func (d *Display) XMakeCursor(window T.Window, colormap T.Colormap, backgroundColor, foregroundColor string) T.Cursor {
+func (d *Display) XMakeCursor(window Window, colormap Colormap, backgroundColor, foregroundColor string) Cursor {
 	return XMakeCursor(d, window, colormap, backgroundColor, foregroundColor)
 }
 
-func (d *Display) XMakeImage(resourceInfo *T.XResourceInfo, window *T.XWindowInfo, image *Image, width, height uint) bool {
+func (d *Display) XMakeImage(resourceInfo *XResourceInfo, window *XWindowInfo, image *Image, width, height uint) bool {
 	return XMakeImage(d, resourceInfo, window, image, width, height)
 }
 
-func (d *Display) XMakeMagnifyImage(windows *T.XWindows) { XMakeMagnifyImage(d, windows) }
+func (d *Display) XMakeMagnifyImage(windows *XWindows) { XMakeMagnifyImage(d, windows) }
 
-func (d *Display) XMakeStandardColormap(visualInfo *T.XVisualInfo, resourceInfo *T.XResourceInfo, image *Image, mapInfo *T.XStandardColormap, pixel *T.XPixelInfo) {
+func (d *Display) XMakeStandardColormap(visualInfo *XVisualInfo, resourceInfo *XResourceInfo, image *Image, mapInfo *XStandardColormap, pixel *XPixelInfo) {
 	XMakeStandardColormap(d, visualInfo, resourceInfo, image, mapInfo, pixel)
 }
 
-func (d *Display) XMakeWindow(parent T.Window, argv []string, argc int, classHint *T.XClassHint, managerHints *T.XWMHints, windowInfo *T.XWindowInfo) {
+func (d *Display) XMakeWindow(parent Window, argv []string, argc int, classHint *XClassHint, managerHints *XWMHints, windowInfo *XWindowInfo) {
 	XMakeWindow(d, parent, argv, argc, classHint, managerHints, windowInfo)
 }
 
-func (d *Display) XMenuWidget(windows *T.XWindows, title string, selections []string, item string) int {
+func (d *Display) XMenuWidget(windows *XWindows, title string, selections []string, item string) int {
 	return XMenuWidget(d, windows, title, selections, item)
 }
 
-func (d *Display) XNoticeWidget(windows *T.XWindows, reason, description string) {
+func (d *Display) XNoticeWidget(windows *XWindows, reason, description string) {
 	XNoticeWidget(d, windows, reason, description)
 }
 
-func (d *Display) XPreferencesWidget(resourceInfo *T.XResourceInfo, windows *T.XWindows) bool {
+func (d *Display) XPreferencesWidget(resourceInfo *XResourceInfo, windows *XWindows) bool {
 	return XPreferencesWidget(d, resourceInfo, windows)
 }
 
-func (d *Display) XProgressMonitorWidget(windows *T.XWindows, task string, offset T.MagickOffsetType, span T.MagickSizeType) {
+func (d *Display) XProgressMonitorWidget(windows *XWindows, task string, offset MagickOffsetType, span MagickSizeType) {
 	XProgressMonitorWidget(d, windows, task, offset, span)
 }
 
-func (d *Display) XQueryPosition(window T.Window, x, y *int) { XQueryPosition(d, window, x, y) }
+func (d *Display) XQueryPosition(window Window, x, y *int) { XQueryPosition(d, window, x, y) }
 
-func (d *Display) XRefreshWindow(window *T.XWindowInfo, event *T.XEvent) {
+func (d *Display) XRefreshWindow(window *XWindowInfo, event *XEvent) {
 	XRefreshWindow(d, window, event)
 }
 
@@ -2940,27 +2932,27 @@ func (d *Display) XRemoteCommand(window, filename string) bool {
 	return XRemoteCommand(d, window, filename)
 }
 
-func (d *Display) XRetainWindowColors(window T.Window) { XRetainWindowColors(d, window) }
+func (d *Display) XRetainWindowColors(window Window) { XRetainWindowColors(d, window) }
 
-func (d *Display) XrmGetDatabase() XrmDatabase { return XrmGetDatabase(d) }
+func (d *Display) XrmGetDatabase() *XrmDatabase { return XrmGetDatabase(d) }
 
-func (d *Display) XSetCursorState(windows *T.XWindows, state T.MagickStatusType) {
+func (d *Display) XSetCursorState(windows *XWindows, state MagickStatusType) {
 	XSetCursorState(d, windows, state)
 }
 
-func (d *Display) XTextViewWidget(resourceInfo *T.XResourceInfo, windows *T.XWindows, mono bool, title string, textlist []string) {
+func (d *Display) XTextViewWidget(resourceInfo *XResourceInfo, windows *XWindows, mono bool, title string, textlist []string) {
 	XTextViewWidget(d, resourceInfo, windows, mono, title, textlist)
 }
 
-func (d *Display) XWindowByID(rootWindow T.Window, id T.Size) T.Window {
+func (d *Display) XWindowByID(rootWindow Window, id Size) Window {
 	return XWindowByID(d, rootWindow, id)
 }
 
-func (d *Display) XWindowByName(rootWindow T.Window, name string) T.Window {
+func (d *Display) XWindowByName(rootWindow Window, name string) Window {
 	return XWindowByName(d, rootWindow, name)
 }
 
-func (d *Display) XWindowByProperty(window T.Window, property T.Atom) T.Window {
+func (d *Display) XWindowByProperty(window Window, property Atom) Window {
 	return XWindowByProperty(d, window, property)
 }
 
@@ -2968,7 +2960,7 @@ var AcquireImageInfo func() *ImageInfo
 
 var AcquireQuantizeInfo func(i *ImageInfo) *QuantizeInfo
 
-var AcquireQuantumInfo func(i *ImageInfo) *T.QuantumInfo
+var AcquireQuantumInfo func(i *ImageInfo) *QuantumInfo
 
 var AcquireStreamInfo func(i *ImageInfo) *StreamInfo
 
@@ -2978,7 +2970,7 @@ var AllocateNextImage func(i *ImageInfo, image *Image)
 
 var AnimateImages func(i *ImageInfo, images *Image) bool
 
-var BlobToImage func(i *ImageInfo, blob *T.Void, length uint32, exception *ExceptionInfo) *Image
+var BlobToImage func(i *ImageInfo, blob *Void, length uint32, exception *ExceptionInfo) *Image
 
 var CloneDrawInfo func(i *ImageInfo, drawInfo *DrawInfo) *DrawInfo
 
@@ -2986,7 +2978,7 @@ var CloneImageInfo func(i *ImageInfo) *ImageInfo
 
 var CloneImageOptions func(i *ImageInfo, cloneInfo *ImageInfo) bool
 
-var CloneMontageInfo func(i *ImageInfo, montageInfo *T.MontageInfo) *T.MontageInfo
+var CloneMontageInfo func(i *ImageInfo, montageInfo *MontageInfo) *MontageInfo
 
 var DefineImageOption func(i *ImageInfo, option string) bool
 
@@ -3006,11 +2998,11 @@ var GetImageInfo func(i *ImageInfo)
 
 var GetImageOption func(i *ImageInfo, key string) string
 
-var GetMontageInfo func(i *ImageInfo, montageInfo *T.MontageInfo)
+var GetMontageInfo func(i *ImageInfo, montageInfo *MontageInfo)
 
 var GetNextImageOption func(i *ImageInfo) string
 
-var GetQuantumInfo func(i *ImageInfo, quantumInfo *T.QuantumInfo)
+var GetQuantumInfo func(i *ImageInfo, quantumInfo *QuantumInfo)
 
 var HuffmanEncodeImage func(i *ImageInfo, image *Image) bool
 
@@ -3026,15 +3018,15 @@ var InterpretImageProperties func(i *ImageInfo, image *Image, embedText string) 
 
 var InvokeDelegate func(i *ImageInfo, image *Image, decode, encode string, exception *ExceptionInfo) bool
 
-var MontageImageList func(i *ImageInfo, montageInfo *T.MontageInfo, images *Image, exception *ExceptionInfo) *Image
+var MontageImageList func(i *ImageInfo, montageInfo *MontageInfo, images *Image, exception *ExceptionInfo) *Image
 
-var NewMagickImage func(i *ImageInfo, width, height T.Size, background *MagickPixelPacket) *Image
+var NewMagickImage func(i *ImageInfo, width, height Size, background *MagickPixelPacket) *Image
 
-var OpenBlob func(i *ImageInfo, image *Image, mode T.BlobMode, exception *ExceptionInfo) bool
+var OpenBlob func(i *ImageInfo, image *Image, mode BlobMode, exception *ExceptionInfo) bool
 
 var OpenStream func(i *ImageInfo, streamInfo *StreamInfo, filename string, exception *ExceptionInfo) bool
 
-var PingBlob func(i *ImageInfo, blob *T.Void, length uint32, exception *ExceptionInfo) *Image
+var PingBlob func(i *ImageInfo, blob *Void, length uint32, exception *ExceptionInfo) *Image
 
 var PingImage func(i *ImageInfo, exception *ExceptionInfo) *Image
 
@@ -3042,7 +3034,7 @@ var ReadImage func(i *ImageInfo, exception *ExceptionInfo) *Image
 
 var ReadInlineImage func(i *ImageInfo, content string, exception *ExceptionInfo) *Image
 
-var ReadStream func(i *ImageInfo, stream T.StreamHandler, exception *ExceptionInfo) *Image
+var ReadStream func(i *ImageInfo, stream StreamHandler, exception *ExceptionInfo) *Image
 
 var RemoteDisplayCommand func(i *ImageInfo, window, filename string, exception *ExceptionInfo) bool
 
@@ -3052,11 +3044,11 @@ var ResetImageOptionIterator func(i *ImageInfo)
 
 var SetImageInfo func(i *ImageInfo, rectify bool, exception *ExceptionInfo) bool
 
-var SetImageInfoBlob func(i *ImageInfo, blob *T.Void, length uint32)
+var SetImageInfoBlob func(i *ImageInfo, blob *Void, length uint32)
 
 var SetImageInfoFile func(i *ImageInfo, file *FILE)
 
-var SetImageInfoProgressMonitor func(i *ImageInfo, progressMonitor T.MagickProgressMonitor, clientData *T.Void) T.MagickProgressMonitor
+var SetImageInfoProgressMonitor func(i *ImageInfo, progressMonitor MagickProgressMonitor, clientData *Void) MagickProgressMonitor
 
 var SetImageOption func(i *ImageInfo, option, value string) bool
 
@@ -3068,9 +3060,9 @@ var WriteImage func(i *ImageInfo, image *Image) bool
 
 var WriteImages func(i *ImageInfo, images *Image, filename string, exception *ExceptionInfo) bool
 
-var WriteStream func(i *ImageInfo, image *Image, stream T.StreamHandler) bool
+var WriteStream func(i *ImageInfo, image *Image, stream StreamHandler) bool
 
-var XImportImage func(i *ImageInfo, ximageInfo *T.XImportInfo) *Image
+var XImportImage func(i *ImageInfo, ximageInfo *XImportInfo) *Image
 
 var AcquireImage func(i *ImageInfo) *Image
 
@@ -3090,7 +3082,7 @@ var SyncImagesSettings func(i *ImageInfo, image *Image) bool
 
 func (i *ImageInfo) AcquireQuantizeInfo() *QuantizeInfo { return AcquireQuantizeInfo(i) }
 
-func (i *ImageInfo) AcquireQuantumInfo() *T.QuantumInfo { return AcquireQuantumInfo(i) }
+func (i *ImageInfo) AcquireQuantumInfo() *QuantumInfo { return AcquireQuantumInfo(i) }
 
 func (i *ImageInfo) AcquireStreamInfo() *StreamInfo { return AcquireStreamInfo(i) }
 
@@ -3100,7 +3092,7 @@ func (i *ImageInfo) AllocateNextImage(image *Image) { AllocateNextImage(i, image
 
 func (i *ImageInfo) AnimateImages(images *Image) bool { return AnimateImages(i, images) }
 
-func (i *ImageInfo) BlobToImage(blob *T.Void, length uint32, exception *ExceptionInfo) *Image {
+func (i *ImageInfo) BlobToImage(blob *Void, length uint32, exception *ExceptionInfo) *Image {
 	return BlobToImage(i, blob, length, exception)
 }
 
@@ -3112,7 +3104,7 @@ func (i *ImageInfo) CloneOptions(cloneInfo *ImageInfo) bool {
 	return CloneImageOptions(i, cloneInfo)
 }
 
-func (i *ImageInfo) CloneMontageInfo(montageInfo *T.MontageInfo) *T.MontageInfo {
+func (i *ImageInfo) CloneMontageInfo(montageInfo *MontageInfo) *MontageInfo {
 	return CloneMontageInfo(i, montageInfo)
 }
 
@@ -3136,11 +3128,11 @@ func (i *ImageInfo) Get() { GetImageInfo(i) }
 
 func (i *ImageInfo) Option(key string) string { return GetImageOption(i, key) }
 
-func (i *ImageInfo) MontageInfo(montageInfo *T.MontageInfo) { GetMontageInfo(i, montageInfo) }
+func (i *ImageInfo) MontageInfo(montageInfo *MontageInfo) { GetMontageInfo(i, montageInfo) }
 
 func (i *ImageInfo) NextOption() string { return GetNextImageOption(i) }
 
-func (i *ImageInfo) QuantumInfo(quantumInfo *T.QuantumInfo) { GetQuantumInfo(i, quantumInfo) }
+func (i *ImageInfo) QuantumInfo(quantumInfo *QuantumInfo) { GetQuantumInfo(i, quantumInfo) }
 
 func (i *ImageInfo) HuffmanEncode(image *Image) bool { return HuffmanEncodeImage(i, image) }
 
@@ -3168,15 +3160,15 @@ func (i *ImageInfo) InvokeDelegate(image *Image, decode, encode string, exceptio
 	return InvokeDelegate(i, image, decode, encode, exception)
 }
 
-func (i *ImageInfo) MontageImageList(montageInfo *T.MontageInfo, images *Image, exception *ExceptionInfo) *Image {
+func (i *ImageInfo) MontageImageList(montageInfo *MontageInfo, images *Image, exception *ExceptionInfo) *Image {
 	return MontageImageList(i, montageInfo, images, exception)
 }
 
-func (i *ImageInfo) NewMagickImage(width, height T.Size, background *MagickPixelPacket) *Image {
+func (i *ImageInfo) NewMagickImage(width, height Size, background *MagickPixelPacket) *Image {
 	return NewMagickImage(i, width, height, background)
 }
 
-func (i *ImageInfo) OpenBlob(image *Image, mode T.BlobMode, exception *ExceptionInfo) bool {
+func (i *ImageInfo) OpenBlob(image *Image, mode BlobMode, exception *ExceptionInfo) bool {
 	return OpenBlob(i, image, mode, exception)
 }
 
@@ -3184,7 +3176,7 @@ func (i *ImageInfo) OpenStream(streamInfo *StreamInfo, filename string, exceptio
 	return OpenStream(i, streamInfo, filename, exception)
 }
 
-func (i *ImageInfo) PingBlob(blob *T.Void, length uint32, exception *ExceptionInfo) *Image {
+func (i *ImageInfo) PingBlob(blob *Void, length uint32, exception *ExceptionInfo) *Image {
 	return PingBlob(i, blob, length, exception)
 }
 
@@ -3196,7 +3188,7 @@ func (i *ImageInfo) ReadInlineImage(content string, exception *ExceptionInfo) *I
 	return ReadInlineImage(i, content, exception)
 }
 
-func (i *ImageInfo) ReadStream(stream T.StreamHandler, exception *ExceptionInfo) *Image {
+func (i *ImageInfo) ReadStream(stream StreamHandler, exception *ExceptionInfo) *Image {
 	return ReadStream(i, stream, exception)
 }
 
@@ -3212,11 +3204,11 @@ func (i *ImageInfo) SetImageInfo(rectify bool, exception *ExceptionInfo) bool {
 	return SetImageInfo(i, rectify, exception)
 }
 
-func (i *ImageInfo) SetBlob(blob *T.Void, length uint32) { SetImageInfoBlob(i, blob, length) }
+func (i *ImageInfo) SetBlob(blob *Void, length uint32) { SetImageInfoBlob(i, blob, length) }
 
 func (i *ImageInfo) SetFile(file *FILE) { SetImageInfoFile(i, file) }
 
-func (i *ImageInfo) SetProgressMonitor(progressMonitor T.MagickProgressMonitor, clientData *T.Void) T.MagickProgressMonitor {
+func (i *ImageInfo) SetProgressMonitor(progressMonitor MagickProgressMonitor, clientData *Void) MagickProgressMonitor {
 	return SetImageInfoProgressMonitor(i, progressMonitor, clientData)
 }
 
@@ -3238,11 +3230,11 @@ func (i *ImageInfo) WriteImages(images *Image, filename string, exception *Excep
 	return WriteImages(i, images, filename, exception)
 }
 
-func (i *ImageInfo) WriteStream(image *Image, stream T.StreamHandler) bool {
+func (i *ImageInfo) WriteStream(image *Image, stream StreamHandler) bool {
 	return WriteStream(i, image, stream)
 }
 
-func (i *ImageInfo) XImportImage(ximageInfo *T.XImportInfo) *Image {
+func (i *ImageInfo) XImportImage(ximageInfo *XImportInfo) *Image {
 	return XImportImage(i, ximageInfo)
 }
 
@@ -3350,39 +3342,39 @@ func (x *XMLTreeInfo) SetContent(content string) *XMLTreeInfo {
 
 func (x *XMLTreeInfo) XML() string { return XMLTreeInfoToXML(x) }
 
-var NewLinkedList func(capacity T.Size) *LinkedListInfo
+var NewLinkedList func(capacity Size) *LinkedListInfo
 
 var DestroyConfigureOptions func(options *LinkedListInfo) *LinkedListInfo
 
 var DestroyLocaleOptions func(messages *LinkedListInfo) *LinkedListInfo
 
-var AppendValueToLinkedList func(l *LinkedListInfo, value *T.Void) bool
+var AppendValueToLinkedList func(l *LinkedListInfo, value *Void) bool
 
-var ClearLinkedList func(l *LinkedListInfo, relinquishValue func(*T.Void) *T.Void)
+var ClearLinkedList func(l *LinkedListInfo, relinquishValue func(*Void) *Void)
 
-var DestroyLinkedList func(l *LinkedListInfo, relinquishValue func(*T.Void) *T.Void)
+var DestroyLinkedList func(l *LinkedListInfo, relinquishValue func(*Void) *Void)
 
-var GetLastValueInLinkedList func(l *LinkedListInfo) *T.Void
+var GetLastValueInLinkedList func(l *LinkedListInfo) *Void
 
-var GetNextValueInLinkedList func(l *LinkedListInfo) *T.Void
+var GetNextValueInLinkedList func(l *LinkedListInfo) *Void
 
-var GetNumberOfElementsInLinkedList func(l *LinkedListInfo) T.Size
+var GetNumberOfElementsInLinkedList func(l *LinkedListInfo) Size
 
-var GetValueFromLinkedList func(l *LinkedListInfo, index T.Size) *T.Void
+var GetValueFromLinkedList func(l *LinkedListInfo, index Size) *Void
 
-var InsertValueInLinkedList func(l *LinkedListInfo, index T.Size, value *T.Void) bool
+var InsertValueInLinkedList func(l *LinkedListInfo, index Size, value *Void) bool
 
-var InsertValueInSortedLinkedList func(l *LinkedListInfo, compare func(*T.Void, *T.Void) int, replace **T.Void, value *T.Void) bool
+var InsertValueInSortedLinkedList func(l *LinkedListInfo, compare func(*Void, *Void) int, replace **Void, value *Void) bool
 
 var IsLinkedListEmpty func(l *LinkedListInfo) bool
 
-var LinkedListToArray func(l *LinkedListInfo, array **T.Void) bool
+var LinkedListToArray func(l *LinkedListInfo, array **Void) bool
 
-var RemoveElementByValueFromLinkedList func(l *LinkedListInfo, value *T.Void) *T.Void
+var RemoveElementByValueFromLinkedList func(l *LinkedListInfo, value *Void) *Void
 
-var RemoveElementFromLinkedList func(l *LinkedListInfo, index T.Size) *T.Void
+var RemoveElementFromLinkedList func(l *LinkedListInfo, index Size) *Void
 
-var RemoveLastElementFromLinkedList func(l *LinkedListInfo) *T.Void
+var RemoveLastElementFromLinkedList func(l *LinkedListInfo) *Void
 
 var ResetLinkedListIterator func(l *LinkedListInfo)
 
@@ -3390,119 +3382,119 @@ func (l *LinkedListInfo) DestroyConfigureOptions() *LinkedListInfo { return Dest
 
 func (l *LinkedListInfo) DestroyLocaleOptions() *LinkedListInfo { return DestroyLocaleOptions(l) }
 
-func (l *LinkedListInfo) AppendValue(value *T.Void) bool {
+func (l *LinkedListInfo) AppendValue(value *Void) bool {
 	return AppendValueToLinkedList(l, value)
 }
 
-func (l *LinkedListInfo) Clear(relinquishValue func(*T.Void) *T.Void) {
+func (l *LinkedListInfo) Clear(relinquishValue func(*Void) *Void) {
 	ClearLinkedList(l, relinquishValue)
 }
 
-func (l *LinkedListInfo) Destroy(relinquishValue func(*T.Void) *T.Void) {
+func (l *LinkedListInfo) Destroy(relinquishValue func(*Void) *Void) {
 	DestroyLinkedList(l, relinquishValue)
 }
 
-func (l *LinkedListInfo) LastValue() *T.Void { return GetLastValueInLinkedList(l) }
+func (l *LinkedListInfo) LastValue() *Void { return GetLastValueInLinkedList(l) }
 
-func (l *LinkedListInfo) NextValue() *T.Void { return GetNextValueInLinkedList(l) }
+func (l *LinkedListInfo) NextValue() *Void { return GetNextValueInLinkedList(l) }
 
-func (l *LinkedListInfo) NumberOfElements() T.Size { return GetNumberOfElementsInLinkedList(l) }
+func (l *LinkedListInfo) NumberOfElements() Size { return GetNumberOfElementsInLinkedList(l) }
 
-func (l *LinkedListInfo) Value(index T.Size) *T.Void { return GetValueFromLinkedList(l, index) }
+func (l *LinkedListInfo) Value(index Size) *Void { return GetValueFromLinkedList(l, index) }
 
-func (l *LinkedListInfo) InsertValue(index T.Size, value *T.Void) bool {
+func (l *LinkedListInfo) InsertValue(index Size, value *Void) bool {
 	return InsertValueInLinkedList(l, index, value)
 }
 
-func (l *LinkedListInfo) InsertValueSorted(compare func(*T.Void, *T.Void) int, replace **T.Void, value *T.Void) bool {
+func (l *LinkedListInfo) InsertValueSorted(compare func(*Void, *Void) int, replace **Void, value *Void) bool {
 	return InsertValueInSortedLinkedList(l, compare, replace, value)
 }
 
 func (l *LinkedListInfo) Empty() bool { return IsLinkedListEmpty(l) }
 
-func (l *LinkedListInfo) Array(array **T.Void) bool { return LinkedListToArray(l, array) }
+func (l *LinkedListInfo) Array(array **Void) bool { return LinkedListToArray(l, array) }
 
-func (l *LinkedListInfo) RemoveElementByValue(value *T.Void) *T.Void {
+func (l *LinkedListInfo) RemoveElementByValue(value *Void) *Void {
 	return RemoveElementByValueFromLinkedList(l, value)
 }
 
-func (l *LinkedListInfo) RemoveElement(index T.Size) *T.Void {
+func (l *LinkedListInfo) RemoveElement(index Size) *Void {
 	return RemoveElementFromLinkedList(l, index)
 }
 
-func (l *LinkedListInfo) RemoveLastElement() *T.Void { return RemoveLastElementFromLinkedList(l) }
+func (l *LinkedListInfo) RemoveLastElement() *Void { return RemoveLastElementFromLinkedList(l) }
 
 func (l *LinkedListInfo) ResetIterator() { ResetLinkedListIterator(l) }
 
 var GetDelegateInfo func(decode, encode string, exception *ExceptionInfo) *DelegateInfo
 
-var GetDelegateInfoList func(pattern string, numberDelegates *T.Size, exception *ExceptionInfo) **DelegateInfo
+var GetDelegateInfoList func(pattern string, numberDelegates *Size, exception *ExceptionInfo) **DelegateInfo
 
 var GetDelegateCommands func(d *DelegateInfo) string
 
-var GetDelegateMode func(d *DelegateInfo) T.Long
+var GetDelegateMode func(d *DelegateInfo) Long
 
 var GetDelegateThreadSupport func(d *DelegateInfo) bool
 
 func (d *DelegateInfo) Commands() string { return GetDelegateCommands(d) }
 
-func (d *DelegateInfo) Mode() T.Long { return GetDelegateMode(d) }
+func (d *DelegateInfo) Mode() Long { return GetDelegateMode(d) }
 
 func (d *DelegateInfo) ThreadSupport() bool { return GetDelegateThreadSupport(d) }
 
-var NewSplayTree func(compare func(*T.Void, *T.Void) int, relinquishKey, relinquishValue func(*T.Void) *T.Void) *SplayTreeInfo
+var NewSplayTree func(compare func(*Void, *Void) int, relinquishKey, relinquishValue func(*Void) *Void) *SplayTreeInfo
 
-var AddValueToSplayTree func(s *SplayTreeInfo, key, value *T.Void) bool
+var AddValueToSplayTree func(s *SplayTreeInfo, key, value *Void) bool
 
-var CloneSplayTree func(s *SplayTreeInfo, cloneKey, cloneValue func(*T.Void) *T.Void) *SplayTreeInfo
+var CloneSplayTree func(s *SplayTreeInfo, cloneKey, cloneValue func(*Void) *Void) *SplayTreeInfo
 
-var DeleteNodeByValueFromSplayTree func(s *SplayTreeInfo, value *T.Void) bool
+var DeleteNodeByValueFromSplayTree func(s *SplayTreeInfo, value *Void) bool
 
-var DeleteNodeFromSplayTree func(s *SplayTreeInfo, key *T.Void) bool
+var DeleteNodeFromSplayTree func(s *SplayTreeInfo, key *Void) bool
 
 var DestroySplayTree func(s *SplayTreeInfo) *SplayTreeInfo
 
-var GetNextKeyInSplayTree func(s *SplayTreeInfo) *T.Void
+var GetNextKeyInSplayTree func(s *SplayTreeInfo) *Void
 
-var GetNextValueInSplayTree func(s *SplayTreeInfo) *T.Void
+var GetNextValueInSplayTree func(s *SplayTreeInfo) *Void
 
-var GetNumberOfNodesInSplayTree func(s *SplayTreeInfo) T.Size
+var GetNumberOfNodesInSplayTree func(s *SplayTreeInfo) Size
 
-var GetValueFromSplayTree func(s *SplayTreeInfo, key *T.Void) *T.Void
+var GetValueFromSplayTree func(s *SplayTreeInfo, key *Void) *Void
 
-var RemoveNodeByValueFromSplayTree func(s *SplayTreeInfo, value *T.Void) *T.Void
+var RemoveNodeByValueFromSplayTree func(s *SplayTreeInfo, value *Void) *Void
 
-var RemoveNodeFromSplayTree func(s *SplayTreeInfo, key *T.Void) *T.Void
+var RemoveNodeFromSplayTree func(s *SplayTreeInfo, key *Void) *Void
 
 var ResetSplayTreeIterator func(s *SplayTreeInfo)
 
-func (s *SplayTreeInfo) AddValue(key, value *T.Void) bool { return AddValueToSplayTree(s, key, value) }
+func (s *SplayTreeInfo) AddValue(key, value *Void) bool { return AddValueToSplayTree(s, key, value) }
 
-func (s *SplayTreeInfo) Clone(cloneKey, cloneValue func(*T.Void) *T.Void) *SplayTreeInfo {
+func (s *SplayTreeInfo) Clone(cloneKey, cloneValue func(*Void) *Void) *SplayTreeInfo {
 	return CloneSplayTree(s, cloneKey, cloneValue)
 }
 
-func (s *SplayTreeInfo) DeleteNodeByValue(value *T.Void) bool {
+func (s *SplayTreeInfo) DeleteNodeByValue(value *Void) bool {
 	return DeleteNodeByValueFromSplayTree(s, value)
 }
 
-func (s *SplayTreeInfo) DeleteNode(key *T.Void) bool { return DeleteNodeFromSplayTree(s, key) }
+func (s *SplayTreeInfo) DeleteNode(key *Void) bool { return DeleteNodeFromSplayTree(s, key) }
 
 func (s *SplayTreeInfo) Destroy() *SplayTreeInfo { return DestroySplayTree(s) }
 
-func (s *SplayTreeInfo) NextKey() *T.Void { return GetNextKeyInSplayTree(s) }
+func (s *SplayTreeInfo) NextKey() *Void { return GetNextKeyInSplayTree(s) }
 
-func (s *SplayTreeInfo) NextValue() *T.Void { return GetNextValueInSplayTree(s) }
+func (s *SplayTreeInfo) NextValue() *Void { return GetNextValueInSplayTree(s) }
 
-func (s *SplayTreeInfo) NumberOfNodes() T.Size { return GetNumberOfNodesInSplayTree(s) }
+func (s *SplayTreeInfo) NumberOfNodes() Size { return GetNumberOfNodesInSplayTree(s) }
 
-func (s *SplayTreeInfo) Value(key *T.Void) *T.Void { return GetValueFromSplayTree(s, key) }
+func (s *SplayTreeInfo) Value(key *Void) *Void { return GetValueFromSplayTree(s, key) }
 
-func (s *SplayTreeInfo) RemoveNodeByValue(value *T.Void) *T.Void {
+func (s *SplayTreeInfo) RemoveNodeByValue(value *Void) *Void {
 	return RemoveNodeByValueFromSplayTree(s, value)
 }
 
-func (s *SplayTreeInfo) RemoveNode(key *T.Void) *T.Void { return RemoveNodeFromSplayTree(s, key) }
+func (s *SplayTreeInfo) RemoveNode(key *Void) *Void { return RemoveNodeFromSplayTree(s, key) }
 
 func (s *SplayTreeInfo) ResetIterator() { ResetSplayTreeIterator(s) }
 
@@ -3510,33 +3502,33 @@ var DestroyHashmap func(h *HashmapInfo) *HashmapInfo
 
 func (h *HashmapInfo) Destroy() *HashmapInfo { return DestroyHashmap(h) }
 
-var GetNextKeyInHashmap func(h *HashmapInfo) *T.Void
+var GetNextKeyInHashmap func(h *HashmapInfo) *Void
 
-func (h *HashmapInfo) NextKey() *T.Void { return GetNextKeyInHashmap(h) }
+func (h *HashmapInfo) NextKey() *Void { return GetNextKeyInHashmap(h) }
 
-var GetNextValueInHashmap func(h *HashmapInfo) *T.Void
+var GetNextValueInHashmap func(h *HashmapInfo) *Void
 
-func (h *HashmapInfo) NextValue() *T.Void { return GetNextValueInHashmap(h) }
+func (h *HashmapInfo) NextValue() *Void { return GetNextValueInHashmap(h) }
 
-var GetNumberOfEntriesInHashmap func(h *HashmapInfo) T.Size
+var GetNumberOfEntriesInHashmap func(h *HashmapInfo) Size
 
-func (h *HashmapInfo) NumberOfEntries() T.Size { return GetNumberOfEntriesInHashmap(h) }
+func (h *HashmapInfo) NumberOfEntries() Size { return GetNumberOfEntriesInHashmap(h) }
 
-var GetValueFromHashmap func(h *HashmapInfo, key *T.Void) *T.Void
+var GetValueFromHashmap func(h *HashmapInfo, key *Void) *Void
 
-func (h *HashmapInfo) Value(key *T.Void) *T.Void { return GetValueFromHashmap(h, key) }
+func (h *HashmapInfo) Value(key *Void) *Void { return GetValueFromHashmap(h, key) }
 
 var IsHashmapEmpty func(h *HashmapInfo) bool
 
 func (h *HashmapInfo) Empty() bool { return IsHashmapEmpty(h) }
 
-var PutEntryInHashmap func(h *HashmapInfo, key, value *T.Void) bool
+var PutEntryInHashmap func(h *HashmapInfo, key, value *Void) bool
 
-func (h *HashmapInfo) PutEntry(key, value *T.Void) bool { return PutEntryInHashmap(h, key, value) }
+func (h *HashmapInfo) PutEntry(key, value *Void) bool { return PutEntryInHashmap(h, key, value) }
 
-var RemoveEntryFromHashmap func(h *HashmapInfo, key *T.Void) *T.Void
+var RemoveEntryFromHashmap func(h *HashmapInfo, key *Void) *Void
 
-func (h *HashmapInfo) RemoveEntry(key *T.Void) *T.Void { return RemoveEntryFromHashmap(h, key) }
+func (h *HashmapInfo) RemoveEntry(key *Void) *Void { return RemoveEntryFromHashmap(h, key) }
 
 var ResetHashmapIterator func(h *HashmapInfo)
 
@@ -3550,40 +3542,40 @@ var DestroyImageView func(i *ImageView) *ImageView
 
 func (i *ImageView) Destroy() *ImageView { return DestroyImageView(i) }
 
-var DuplexTransferImageViewIterator func(i *ImageView, duplex *ImageView, destination *ImageView, transfer T.DuplexTransferImageViewMethod, context *T.Void) bool
+var DuplexTransferImageViewIterator func(i *ImageView, duplex *ImageView, destination *ImageView, transfer DuplexTransferImageViewMethod, context *Void) bool
 
-func (i *ImageView) DuplexTransferIterator(duplex *ImageView, destination *ImageView, transfer T.DuplexTransferImageViewMethod, context *T.Void) bool {
+func (i *ImageView) DuplexTransferIterator(duplex *ImageView, destination *ImageView, transfer DuplexTransferImageViewMethod, context *Void) bool {
 	return DuplexTransferImageViewIterator(i, duplex, destination, transfer, context)
 }
 
-var GetImageViewAuthenticIndexes func(i *ImageView) *T.IndexPacket
+var GetImageViewAuthenticIndexes func(i *ImageView) *IndexPacket
 
-func (i *ImageView) AuthenticIndexes() *T.IndexPacket { return GetImageViewAuthenticIndexes(i) }
+func (i *ImageView) AuthenticIndexes() *IndexPacket { return GetImageViewAuthenticIndexes(i) }
 
-var GetImageViewAuthenticPixels func(i *ImageView) *T.PixelPacket
+var GetImageViewAuthenticPixels func(i *ImageView) *PixelPacket
 
-func (i *ImageView) AuthenticPixels() *T.PixelPacket { return GetImageViewAuthenticPixels(i) }
+func (i *ImageView) AuthenticPixels() *PixelPacket { return GetImageViewAuthenticPixels(i) }
 
-var GetImageViewExtent func(i *ImageView) *T.RectangleInfo // doc T.RectangleInfo
-func (i *ImageView) Extent() *T.RectangleInfo              { return GetImageViewExtent(i) }
+var GetImageViewExtent func(i *ImageView) *RectangleInfo // doc RectangleInfo
+func (i *ImageView) Extent() *RectangleInfo              { return GetImageViewExtent(i) }
 
 var GetImageViewImage func(i *ImageView) *Image
 
 func (i *ImageView) Image() *Image { return GetImageViewImage(i) }
 
-var GetImageViewIterator func(i *ImageView, get T.GetImageViewMethod, context *T.Void) bool
+var GetImageViewIterator func(i *ImageView, get GetImageViewMethod, context *Void) bool
 
-func (i *ImageView) Iterator(get T.GetImageViewMethod, context *T.Void) bool {
+func (i *ImageView) Iterator(get GetImageViewMethod, context *Void) bool {
 	return GetImageViewIterator(i, get, context)
 }
 
-var GetImageViewVirtualIndexes func(i *ImageView) *T.IndexPacket
+var GetImageViewVirtualIndexes func(i *ImageView) *IndexPacket
 
-func (i *ImageView) VirtualIndexes() *T.IndexPacket { return GetImageViewVirtualIndexes(i) }
+func (i *ImageView) VirtualIndexes() *IndexPacket { return GetImageViewVirtualIndexes(i) }
 
-var GetImageViewVirtualPixels func(i *ImageView) *T.PixelPacket
+var GetImageViewVirtualPixels func(i *ImageView) *PixelPacket
 
-func (i *ImageView) VirtualPixels() *T.PixelPacket { return GetImageViewVirtualPixels(i) }
+func (i *ImageView) VirtualPixels() *PixelPacket { return GetImageViewVirtualPixels(i) }
 
 var IsImageView func(i *ImageView) bool
 
@@ -3593,9 +3585,9 @@ var SetImageViewDescription func(i *ImageView, description string)
 
 func (i *ImageView) SetDescription(description string) { SetImageViewDescription(i, description) }
 
-var SetImageViewIterator func(i *ImageView, s SetImageViewMethod, context *T.Void) bool
+var SetImageViewIterator func(i *ImageView, s SetImageViewMethod, context *Void) bool
 
-func (i *ImageView) SetIterator(set SetImageViewMethod, context *T.Void) bool {
+func (i *ImageView) SetIterator(set SetImageViewMethod, context *Void) bool {
 	return SetImageViewIterator(i, set, context)
 }
 
@@ -3603,15 +3595,15 @@ var SetImageViewThreads func(i *ImageView, numberThreads uint32)
 
 func (i *ImageView) SetThreads(numberThreads uint32) { SetImageViewThreads(i, numberThreads) }
 
-var TransferImageViewIterator func(i *ImageView, destination *ImageView, transfer T.TransferImageViewMethod, context *T.Void) bool
+var TransferImageViewIterator func(i *ImageView, destination *ImageView, transfer TransferImageViewMethod, context *Void) bool
 
-func (i *ImageView) TransferIterator(destination *ImageView, transfer T.TransferImageViewMethod, context *T.Void) bool {
+func (i *ImageView) TransferIterator(destination *ImageView, transfer TransferImageViewMethod, context *Void) bool {
 	return TransferImageViewIterator(i, destination, transfer, context)
 }
 
-var UpdateImageViewIterator func(i *ImageView, update T.UpdateImageViewMethod, context *T.Void) bool
+var UpdateImageViewIterator func(i *ImageView, update UpdateImageViewMethod, context *Void) bool
 
-func (i *ImageView) UpdateIterator(update T.UpdateImageViewMethod, context *T.Void) bool {
+func (i *ImageView) UpdateIterator(update UpdateImageViewMethod, context *Void) bool {
 	return UpdateImageViewIterator(i, update, context)
 }
 
@@ -3663,13 +3655,13 @@ var DestroyStreamInfo func(s *StreamInfo) *StreamInfo
 
 func (s *StreamInfo) DestroyStreamInfo() *StreamInfo { return DestroyStreamInfo(s) }
 
-var GetStreamInfoClientData func(s *StreamInfo) *T.Void
+var GetStreamInfoClientData func(s *StreamInfo) *Void
 
-func (s *StreamInfo) GetStreamInfoClientData() *T.Void { return GetStreamInfoClientData(s) }
+func (s *StreamInfo) GetStreamInfoClientData() *Void { return GetStreamInfoClientData(s) }
 
-var SetStreamInfoClientData func(s *StreamInfo, clientData *T.Void)
+var SetStreamInfoClientData func(s *StreamInfo, clientData *Void)
 
-func (s *StreamInfo) SetStreamInfoClientData(clientData *T.Void) {
+func (s *StreamInfo) SetStreamInfoClientData(clientData *Void) {
 	SetStreamInfoClientData(s, clientData)
 }
 
@@ -3677,9 +3669,9 @@ var SetStreamInfoMap func(s *StreamInfo, map_ string)
 
 func (s *StreamInfo) SetStreamInfoMap(map_ string) { SetStreamInfoMap(s, map_) }
 
-var SetStreamInfoStorageType func(s *StreamInfo, storageType T.StorageType)
+var SetStreamInfoStorageType func(s *StreamInfo, storageType StorageType)
 
-func (s *StreamInfo) SetStreamInfoStorageType(storageType T.StorageType) {
+func (s *StreamInfo) SetStreamInfoStorageType(storageType StorageType) {
 	SetStreamInfoStorageType(s, storageType)
 }
 
@@ -3821,77 +3813,77 @@ var InheritException func(e *ExceptionInfo, relative *ExceptionInfo)
 
 func (e *ExceptionInfo) Inherit(relative *ExceptionInfo) { InheritException(e, relative) }
 
-var SetExceptionInfo func(e *ExceptionInfo, severity T.ExceptionType) bool
+var SetExceptionInfo func(e *ExceptionInfo, severity ExceptionType) bool
 
-func (e *ExceptionInfo) Set(severity T.ExceptionType) bool { return SetExceptionInfo(e, severity) }
+func (e *ExceptionInfo) Set(severity ExceptionType) bool { return SetExceptionInfo(e, severity) }
 
-var ThrowException func(e *ExceptionInfo, severity T.ExceptionType, reason, description string) bool
+var ThrowException func(e *ExceptionInfo, severity ExceptionType, reason, description string) bool
 
-func (e *ExceptionInfo) Throw(severity T.ExceptionType, reason, description string) bool {
+func (e *ExceptionInfo) Throw(severity ExceptionType, reason, description string) bool {
 	return ThrowException(e, severity, reason, description)
 }
 
-var ThrowMagickException func(e *ExceptionInfo, module, function string, line T.Size, severity T.ExceptionType, tag, format string, va ...VArg) bool
+var ThrowMagickException func(e *ExceptionInfo, module, function string, line Size, severity ExceptionType, tag, format string, va ...VArg) bool
 
-func (e *ExceptionInfo) ThrowMagick(module, function string, line T.Size, severity T.ExceptionType, tag, format string, va ...VArg) bool {
+func (e *ExceptionInfo) ThrowMagick(module, function string, line Size, severity ExceptionType, tag, format string, va ...VArg) bool {
 	return ThrowMagickException(e, module, function, line, severity, tag, format, va)
 }
 
-var ThrowMagickExceptionList func(e *ExceptionInfo, module, function string, line T.Size, severity T.ExceptionType, tag, format string, operands VAList) bool
+var ThrowMagickExceptionList func(e *ExceptionInfo, module, function string, line Size, severity ExceptionType, tag, format string, operands VAList) bool
 
-func (e *ExceptionInfo) ThrowMagickList(module, function string, line T.Size, severity T.ExceptionType, tag, format string, operands VAList) bool {
+func (e *ExceptionInfo) ThrowMagickList(module, function string, line Size, severity ExceptionType, tag, format string, operands VAList) bool {
 	return ThrowMagickExceptionList(e, module, function, line, severity, tag, format, operands)
 }
 
-var XGetResourceClass func(x XrmDatabase, clientName, keyword, resourceDefault string) string
+var XGetResourceClass func(x *XrmDatabase, clientName, keyword, resourceDefault string) string
 
-func (x XrmDatabase) ResourceClass(clientName, keyword, resourceDefault string) string {
+func (x *XrmDatabase) ResourceClass(clientName, keyword, resourceDefault string) string {
 	return XGetResourceClass(x, clientName, keyword, resourceDefault)
 }
 
-var XGetResourceInfo func(x XrmDatabase, clientName string, resourceInfo *T.XResourceInfo)
+var XGetResourceInfo func(x *XrmDatabase, clientName string, resourceInfo *XResourceInfo)
 
-func (x XrmDatabase) ResourceInfo(clientName string, resourceInfo *T.XResourceInfo) {
+func (x *XrmDatabase) ResourceInfo(clientName string, resourceInfo *XResourceInfo) {
 	XGetResourceInfo(x, clientName, resourceInfo)
 }
 
-var XGetResourceInstance func(x XrmDatabase, clientName, keyword, resourceDefault string) string
+var XGetResourceInstance func(x *XrmDatabase, clientName, keyword, resourceDefault string) string
 
-func (x XrmDatabase) ResourceInstance(clientName, keyword, resourceDefault string) string {
+func (x *XrmDatabase) ResourceInstance(clientName, keyword, resourceDefault string) string {
 	return XGetResourceInstance(x, clientName, keyword, resourceDefault)
 }
 
-var XrmCombineDatabase func(x XrmDatabase, target *XrmDatabase, override bool)
+var XrmCombineDatabase func(x *XrmDatabase, target **XrmDatabase, override bool)
 
-func (x XrmDatabase) Combine(target *XrmDatabase, override bool) {
+func (x *XrmDatabase) Combine(target **XrmDatabase, override bool) {
 	XrmCombineDatabase(x, target, override)
 }
 
-var AcquireMagickResource func(r ResourceType, size T.MagickSizeType) bool
+var AcquireMagickResource func(r ResourceType, size MagickSizeType) bool
 
-func (r ResourceType) AcquireResource(size T.MagickSizeType) bool {
+func (r ResourceType) AcquireResource(size MagickSizeType) bool {
 	return AcquireMagickResource(r, size)
 }
 
-var GetMagickResource func(r ResourceType) T.MagickSizeType
+var GetMagickResource func(r ResourceType) MagickSizeType
 
-func (r ResourceType) Resource() T.MagickSizeType { return GetMagickResource(r) }
+func (r ResourceType) Resource() MagickSizeType { return GetMagickResource(r) }
 
-var GetMagickResourceLimit func(r ResourceType) T.MagickSizeType
+var GetMagickResourceLimit func(r ResourceType) MagickSizeType
 
-func (r ResourceType) Limit() T.MagickSizeType { return GetMagickResourceLimit(r) }
+func (r ResourceType) Limit() MagickSizeType { return GetMagickResourceLimit(r) }
 
-var RelinquishMagickResource func(r ResourceType, size T.MagickSizeType)
+var RelinquishMagickResource func(r ResourceType, size MagickSizeType)
 
-func (r ResourceType) Relinquish(size T.MagickSizeType) { RelinquishMagickResource(r, size) }
+func (r ResourceType) Relinquish(size MagickSizeType) { RelinquishMagickResource(r, size) }
 
-var SetMagickResourceLimit func(r ResourceType, limit T.MagickSizeType) bool
+var SetMagickResourceLimit func(r ResourceType, limit MagickSizeType) bool
 
-func (r ResourceType) SetLimit(limit T.MagickSizeType) bool { return SetMagickResourceLimit(r, limit) }
+func (r ResourceType) SetLimit(limit MagickSizeType) bool { return SetMagickResourceLimit(r, limit) }
 
-var AttachBlob func(b *BlobInfo, blob *T.Void, length uint32)
+var AttachBlob func(b *BlobInfo, blob *Void, length uint32)
 
-func (b *BlobInfo) Attach(blob *T.Void, length uint32) { AttachBlob(b, blob, length) }
+func (b *BlobInfo) Attach(blob *Void, length uint32) { AttachBlob(b, blob, length) }
 
 var CloneBlobInfo func(b *BlobInfo) *BlobInfo
 
@@ -3909,9 +3901,9 @@ var ReferenceBlob func(b *BlobInfo) *BlobInfo
 
 func (b *BlobInfo) Reference() *BlobInfo { return ReferenceBlob(b) }
 
-var ConcatenateColorComponent func(m *MagickPixelPacket, channel T.ChannelType, compliance T.ComplianceType, tuple string)
+var ConcatenateColorComponent func(m *MagickPixelPacket, channel ChannelType, compliance ComplianceType, tuple string)
 
-func (m *MagickPixelPacket) ConcatenateColorComponent(channel T.ChannelType, compliance T.ComplianceType, tuple string) {
+func (m *MagickPixelPacket) ConcatenateColorComponent(channel ChannelType, compliance ComplianceType, tuple string) {
 	ConcatenateColorComponent(m, channel, compliance, tuple)
 }
 
@@ -3982,17 +3974,17 @@ var DestroyResizeFilter func(r *ResizeFilter) *ResizeFilter
 
 func (r *ResizeFilter) Destroy() *ResizeFilter { return DestroyResizeFilter(r) }
 
-var GetResizeFilterSupport func(r *ResizeFilter) T.MagickRealType
+var GetResizeFilterSupport func(r *ResizeFilter) MagickRealType
 
-func (r *ResizeFilter) Support() T.MagickRealType { return GetResizeFilterSupport(r) }
+func (r *ResizeFilter) Support() MagickRealType { return GetResizeFilterSupport(r) }
 
-var GetResizeFilterWeight func(r *ResizeFilter, x T.MagickRealType) T.MagickRealType
+var GetResizeFilterWeight func(r *ResizeFilter, x MagickRealType) MagickRealType
 
-func (r *ResizeFilter) Weight(x T.MagickRealType) T.MagickRealType { return GetResizeFilterWeight(r, x) }
+func (r *ResizeFilter) Weight(x MagickRealType) MagickRealType { return GetResizeFilterWeight(r, x) }
 
-var SetResizeFilterSupport func(r *ResizeFilter, support T.MagickRealType)
+var SetResizeFilterSupport func(r *ResizeFilter, support MagickRealType)
 
-func (r *ResizeFilter) SetSupport(support T.MagickRealType) { SetResizeFilterSupport(r, support) }
+func (r *ResizeFilter) SetSupport(support MagickRealType) { SetResizeFilterSupport(r, support) }
 
 var DestroyResampleFilter func(r *ResampleFilter) *ResampleFilter
 
@@ -4000,9 +3992,9 @@ var ResamplePixelColor func(r *ResampleFilter, u0, v0 float64) MagickPixelPacket
 
 var ScaleResampleFilter func(r *ResampleFilter, dux, duy, dvx, dvy float64)
 
-var SetResampleFilterInterpolateMethod func(r *ResampleFilter, method T.InterpolatePixelMethod) bool
+var SetResampleFilterInterpolateMethod func(r *ResampleFilter, method InterpolatePixelMethod) bool
 
-var SetResampleFilterVirtualPixelMethod func(r *ResampleFilter, method T.VirtualPixelMethod) bool
+var SetResampleFilterVirtualPixelMethod func(r *ResampleFilter, method VirtualPixelMethod) bool
 
 func (r *ResampleFilter) Destroy() *ResampleFilter { return DestroyResampleFilter(r) }
 
@@ -4014,11 +4006,11 @@ func (r *ResampleFilter) Scale(dux, duy, dvx, dvy float64) {
 	ScaleResampleFilter(r, dux, duy, dvx, dvy)
 }
 
-func (r *ResampleFilter) InterpolateMethod(method T.InterpolatePixelMethod) bool {
+func (r *ResampleFilter) InterpolateMethod(method InterpolatePixelMethod) bool {
 	return SetResampleFilterInterpolateMethod(r, method)
 }
 
-func (r *ResampleFilter) VirtualPixelMethod(method T.VirtualPixelMethod) bool {
+func (r *ResampleFilter) VirtualPixelMethod(method VirtualPixelMethod) bool {
 	return SetResampleFilterVirtualPixelMethod(r, method)
 }
 
@@ -4060,39 +4052,39 @@ func (s *SignatureInfo) Update(message *byte, length uint32) { UpdateSignature(s
 
 var DestroyFxInfo func(f *FxInfo) *FxInfo
 
-var FxEvaluateChannelExpression func(f *FxInfo, channel T.ChannelType, x, y T.Long, alpha *T.MagickRealType, exception *ExceptionInfo) bool
+var FxEvaluateChannelExpression func(f *FxInfo, channel ChannelType, x, y Long, alpha *MagickRealType, exception *ExceptionInfo) bool
 
-var FxEvaluateExpression func(f *FxInfo, alpha *T.MagickRealType, exception *ExceptionInfo) bool
+var FxEvaluateExpression func(f *FxInfo, alpha *MagickRealType, exception *ExceptionInfo) bool
 
 func (f *FxInfo) Destroy() *FxInfo { return DestroyFxInfo(f) }
 
-func (f *FxInfo) EvaluateChannelExpression(channel T.ChannelType, x, y T.Long, alpha *T.MagickRealType, exception *ExceptionInfo) bool {
+func (f *FxInfo) EvaluateChannelExpression(channel ChannelType, x, y Long, alpha *MagickRealType, exception *ExceptionInfo) bool {
 	return FxEvaluateChannelExpression(f, channel, x, y, alpha, exception)
 }
 
-func (f *FxInfo) EvaluateExpression(alpha *T.MagickRealType, exception *ExceptionInfo) bool {
+func (f *FxInfo) EvaluateExpression(alpha *MagickRealType, exception *ExceptionInfo) bool {
 	return FxEvaluateExpression(f, alpha, exception)
 }
 
 var GetCommandOptions func(value CommandOption) []string
 
-var CommandOptionToMnemonic func(option CommandOption, type_ T.Long) string
+var CommandOptionToMnemonic func(option CommandOption, type_ Long) string
 
-var ParseCommandOption func(option CommandOption, list bool, options string) T.Long
+var ParseCommandOption func(option CommandOption, list bool, options string) Long
 
 func (m CommandOption) Options() []string { return GetCommandOptions(m) }
 
-func (m CommandOption) Mnemonic(type_ T.Long) string { return CommandOptionToMnemonic(m, type_) }
+func (m CommandOption) Mnemonic(type_ Long) string { return CommandOptionToMnemonic(m, type_) }
 
-func (m CommandOption) Parse(list bool, options string) T.Long {
+func (m CommandOption) Parse(list bool, options string) Long {
 	return ParseCommandOption(m, list, options)
 }
 
-var AcquirePixelCachePixels /*IM*/ func(i *Image, m *T.MagickSizeType, e *ExceptionInfo) *T.Void
+var AcquirePixelCachePixels /*IM*/ func(i *Image, m *MagickSizeType, e *ExceptionInfo) *Void
 
-var AcquireRandomInfo func() *T.RandomInfo
+var AcquireRandomInfo func() *RandomInfo
 
-var DestroyRandomInfo func(*T.RandomInfo) *T.RandomInfo
+var DestroyRandomInfo func(*RandomInfo) *RandomInfo
 
 var AnnotateComponentGenesis func() bool
 
@@ -4100,9 +4092,9 @@ var AnnotateComponentTerminus func()
 
 var AsynchronousResourceComponentTerminus func()
 
-var BlackThresholdImageChannel func(*Image, T.ChannelType, string, *ExceptionInfo) bool
+var BlackThresholdImageChannel func(*Image, ChannelType, string, *ExceptionInfo) bool
 
-var BlobToStringInfo func(*T.Void, uint32) *StringInfo
+var BlobToStringInfo func(*Void, uint32) *StringInfo
 
 var CacheComponentGenesis func() bool
 
@@ -4110,7 +4102,7 @@ var CacheComponentTerminus func()
 
 var ClampImage func(*Image) bool
 
-var ClampImageChannel func(*Image, T.ChannelType) bool
+var ClampImageChannel func(*Image, ChannelType) bool
 
 var ClonePixelCache func(Cache) Cache
 
@@ -4132,17 +4124,17 @@ var ConstituteComponentGenesis func() bool
 
 var ConstituteComponentTerminus func()
 
-var ConvertHCLToRGB func(float64, float64, float64, *T.Quantum, *T.Quantum, *T.Quantum)
+var ConvertHCLToRGB func(float64, float64, float64, *Quantum, *Quantum, *Quantum)
 
-var ConvertRGBToHCL func(T.Quantum, T.Quantum, T.Quantum, *float64, *float64, *float64)
+var ConvertRGBToHCL func(Quantum, Quantum, Quantum, *float64, *float64, *float64)
 
 var DelegateComponentGenesis func() bool
 
 var DelegateComponentTerminus func()
 
-var DestroyPixelCacheNexus func(**T.NexusInfo, uint32) **T.NexusInfo
+var DestroyPixelCacheNexus func(**NexusInfo, uint32) **NexusInfo
 
-var DiscardBlobBytes func(*Image, T.MagickSizeType) bool
+var DiscardBlobBytes func(*Image, MagickSizeType) bool
 
 var DistortResizeImage func(*Image, uint32, uint32, *ExceptionInfo) *Image
 
@@ -4156,21 +4148,21 @@ var FormatLocaleString func(string, uint32, string, ...VArg) int32
 
 var FormatLocaleStringList func(string, uint32, string, VAList) int32
 
-var GenerateDifferentialNoise func(*T.RandomInfo, T.Quantum, T.NoiseType, T.MagickRealType) float64
+var GenerateDifferentialNoise func(*RandomInfo, Quantum, NoiseType, MagickRealType) float64
 
-var GetAuthenticPixelCacheNexus func(*Image, int32, int32, uint32, uint32, *T.NexusInfo, *ExceptionInfo) *T.PixelPacket
+var GetAuthenticPixelCacheNexus func(*Image, int32, int32, uint32, uint32, *NexusInfo, *ExceptionInfo) *PixelPacket
 
-var GetCacheViewExtent func(*T.CacheView) T.MagickSizeType
+var GetCacheViewExtent func(*CacheView) MagickSizeType
 
 var GetCommandOptionFlags func(CommandOption, bool, string) int32
 
 var GetConfigureOption func(string) string
 
-var GetImageExtent func(*Image) T.MagickSizeType
+var GetImageExtent func(*Image) MagickSizeType
 
 var GetImageKurtosis func(*Image, *float64, *float64, *ExceptionInfo) bool
 
-var GetImagePixelCacheType func(*Image) T.CacheType
+var GetImagePixelCacheType func(*Image) CacheType
 
 var GetImageReferenceCount func(*Image) int32
 
@@ -4178,25 +4170,25 @@ var GetMagickPageSize func() int32
 
 var GetMagickRawSupport func(*MagickInfo) bool
 
-var GetPathAttributes func(string, *T.Void) bool
+var GetPathAttributes func(string, *Void) bool
 
 var GetPixelCacheChannels func(Cache) uint32
 
-var GetPixelCacheColorspace func(Cache) T.ColorspaceType
+var GetPixelCacheColorspace func(Cache) ColorspaceType
 
-var GetPixelCacheMethods func(*T.CacheMethods)
+var GetPixelCacheMethods func(*CacheMethods)
 
-var GetPixelCacheNexusExtent func(Cache, *T.NexusInfo) T.MagickSizeType
+var GetPixelCacheNexusExtent func(Cache, *NexusInfo) MagickSizeType
 
-var GetPixelCachePixels func(*Image, *T.MagickSizeType, *ExceptionInfo) *T.Void
+var GetPixelCachePixels func(*Image, *MagickSizeType, *ExceptionInfo) *Void
 
-var GetPixelCacheStorageClass func(Cache) T.ClassType
+var GetPixelCacheStorageClass func(Cache) ClassType
 
 var GetPixelCacheTileSize func(*Image, *uint32, *uint32)
 
-var GetPixelCacheType func(*Image) T.CacheType
+var GetPixelCacheType func(*Image) CacheType
 
-var GetPixelCacheVirtualMethod func(*Image) T.VirtualPixelMethod
+var GetPixelCacheVirtualMethod func(*Image) VirtualPixelMethod
 
 var GetPolicyInfoList func(string, *uint32, *ExceptionInfo) []*PolicyInfo
 
@@ -4204,19 +4196,19 @@ var GetPolicyList func(string, *uint32, *ExceptionInfo) []string
 
 var GetPolicyValue func(string) string
 
-var GetPseudoRandomValue func(*T.RandomInfo) float64
+var GetPseudoRandomValue func(*RandomInfo) float64
 
-var GetQuantumEndian func(*T.QuantumInfo) T.EndianType
+var GetQuantumEndian func(*QuantumInfo) EndianType
 
-var GetQuantumExtent func(*Image, *T.QuantumInfo, T.QuantumType) uint32
+var GetQuantumExtent func(*Image, *QuantumInfo, QuantumType) uint32
 
-var GetQuantumFormat func(*T.QuantumInfo) T.QuantumFormatType
+var GetQuantumFormat func(*QuantumInfo) QuantumFormatType
 
-var GetQuantumPixels func(*T.QuantumInfo) *byte
+var GetQuantumPixels func(*QuantumInfo) *byte
 
-var GetQuantumType func(*Image, *ExceptionInfo) T.QuantumType
+var GetQuantumType func(*Image, *ExceptionInfo) QuantumType
 
-var GetRandomSecretKey func(*T.RandomInfo) T.Size
+var GetRandomSecretKey func(*RandomInfo) Size
 
 var GetSignatureBlocksize func(*SignatureInfo) uint
 
@@ -4224,31 +4216,31 @@ var GetSignatureDigest func(*SignatureInfo) *StringInfo
 
 var GetSignatureDigestsize func(*SignatureInfo) uint
 
-var Gettimeofday func(*timeval, *timezone)
+var Gettimeofday func(*Timeval, *Timezone)
 
-var GetVirtualIndexesFromNexus func(Cache, *T.NexusInfo) *T.IndexPacket
+var GetVirtualIndexesFromNexus func(Cache, *NexusInfo) *IndexPacket
 
-var GetVirtualPixelsFromNexus func(*Image, T.VirtualPixelMethod, int32, int32, uint32, uint32, *T.NexusInfo, *ExceptionInfo) *T.PixelPacket
+var GetVirtualPixelsFromNexus func(*Image, VirtualPixelMethod, int32, int32, uint32, uint32, *NexusInfo, *ExceptionInfo) *PixelPacket
 
-var GetVirtualPixelsNexus func(Cache, *T.NexusInfo) *T.PixelPacket
+var GetVirtualPixelsNexus func(Cache, *NexusInfo) *PixelPacket
 
 var InitializeSignature func(*SignatureInfo)
 
-var InterpolateMagickPixelPacket func(*Image, *CacheView, T.InterpolatePixelMethod, float64, float64, *MagickPixelPacket, *ExceptionInfo) bool
+var InterpolateMagickPixelPacket func(*Image, *CacheView, InterpolatePixelMethod, float64, float64, *MagickPixelPacket, *ExceptionInfo) bool
 
-var InterpolativeResizeImage func(*Image, uint32, uint32, T.InterpolatePixelMethod, *ExceptionInfo) *Image
+var InterpolativeResizeImage func(*Image, uint32, uint32, InterpolatePixelMethod, *ExceptionInfo) *Image
 
-var InterpretLocaleValue func(string, **char) float64
+var InterpretLocaleValue func(string, []string) float64
 
-var InterpretSiPrefixValue func(string, **char) float64
+var InterpretSiPrefixValue func(string, []string) float64
 
-var InversesRGBCompandor func(T.MagickRealType) T.MagickRealType
+var InversesRGBCompandor func(MagickRealType) MagickRealType
 
 var IsCommandOption func(string) bool
 
 var IsPathAccessible func(string) bool
 
-var IsRightsAuthorized func(T.PolicyDomain, T.PolicyRights, string) bool
+var IsRightsAuthorized func(PolicyDomain, PolicyRights, string) bool
 
 var IsStringNotFalse func(string) bool
 
@@ -4274,13 +4266,13 @@ var MagickComponentTerminus func()
 
 var MagickCreateThreadKey func(*MagickThreadKey) bool
 
-var MagickDelay func(T.MagickSizeType)
+var MagickDelay func(MagickSizeType)
 
 var MagickDeleteThreadKey func(MagickThreadKey) bool
 
-var MagickGetThreadValue func(MagickThreadKey) *T.Void
+var MagickGetThreadValue func(MagickThreadKey) *Void
 
-var MagickSetThreadValue func(MagickThreadKey, *T.Void) bool
+var MagickSetThreadValue func(MagickThreadKey, *Void) bool
 
 var MimeComponentGenesis func() bool
 
@@ -4290,17 +4282,17 @@ var ModuleComponentGenesis func() bool
 
 var ModuleComponentTerminus func()
 
-var NTArgvToUTF8 func(argc int, argv []*wchar_t) []string
+var NTArgvToUTF8 func(argc int, argv []WString) []string
 
 var NTGatherRandomData func(uint32, *byte) bool
 
-var ParseRegionGeometry func(*Image, string, *T.RectangleInfo, *ExceptionInfo) T.MagickStatusType
+var ParseRegionGeometry func(*Image, string, *RectangleInfo, *ExceptionInfo) MagickStatusType
 
 var PerceptibleImage func(*Image, float64) bool
 
-var PerceptibleImageChannel func(*Image, T.ChannelType, float64) bool
+var PerceptibleImageChannel func(*Image, ChannelType, float64) bool
 
-var PersistPixelCache func(*Image, string, bool, *T.MagickOffsetType, *ExceptionInfo) bool
+var PersistPixelCache func(*Image, string, bool, *MagickOffsetType, *ExceptionInfo) bool
 
 var PolicyComponentGenesis func() bool
 
@@ -4308,19 +4300,19 @@ var PolicyComponentTerminus func()
 
 var PolynomialImage func(*Image, uint32, *float64, *ExceptionInfo) *Image
 
-var PolynomialImageChannel func(*Image, T.ChannelType, uint32, *float64, *ExceptionInfo) *Image
+var PolynomialImageChannel func(*Image, ChannelType, uint32, *float64, *ExceptionInfo) *Image
 
-var QueryMagickColorCompliance func(string, T.ComplianceType, *MagickPixelPacket, *ExceptionInfo) bool
+var QueryMagickColorCompliance func(string, ComplianceType, *MagickPixelPacket, *ExceptionInfo) bool
 
-var QueueAuthenticPixel func(*Image, int32, int32, uint32, uint32, bool, *T.NexusInfo, *ExceptionInfo) *T.PixelPacket
+var QueueAuthenticPixel func(*Image, int32, int32, uint32, uint32, bool, *NexusInfo, *ExceptionInfo) *PixelPacket
 
-var QueueAuthenticPixelCacheNexus func(*Image, int32, int32, uint32, uint32, bool, *T.NexusInfo, *ExceptionInfo) *T.PixelPacket
+var QueueAuthenticPixelCacheNexus func(*Image, int32, int32, uint32, uint32, bool, *NexusInfo, *ExceptionInfo) *PixelPacket
 
 var RandomComponentGenesis func() bool
 
 var RandomComponentTerminus func()
 
-var ReadBlobMSBLongLong func(*Image) T.MagickSizeType
+var ReadBlobMSBLongLong func(*Image) MagickSizeType
 
 var ReferencePixelCache func(Cache) Cache
 
@@ -4334,83 +4326,83 @@ var ResourceComponentGenesis func() bool
 
 var ResourceComponentTerminus func()
 
-var SeedPseudoRandomGenerator func(T.Size)
+var SeedPseudoRandomGenerator func(Size)
 
 var SemaphoreComponentGenesis func() bool
 
 var SemaphoreComponentTerminus func()
 
-var SetBlobExtent func(*Image, T.MagickSizeType) bool
+var SetBlobExtent func(*Image, MagickSizeType) bool
 
-var SetPixelCacheMethods func(Cache, *T.CacheMethods)
+var SetPixelCacheMethods func(Cache, *CacheMethods)
 
-var SetPixelCacheVirtualMethod func(*Image, T.VirtualPixelMethod) T.VirtualPixelMethod
+var SetPixelCacheVirtualMethod func(*Image, VirtualPixelMethod) VirtualPixelMethod
 
-var SetQuantumAlphaType func(*T.QuantumInfo, QuantumAlphaType)
+var SetQuantumAlphaType func(*QuantumInfo, QuantumAlphaType)
 
-var SetQuantumDepth func(*Image, *T.QuantumInfo, uint32) bool
+var SetQuantumDepth func(*Image, *QuantumInfo, uint32) bool
 
-var SetQuantumEndian func(*Image, *T.QuantumInfo, T.EndianType) bool
+var SetQuantumEndian func(*Image, *QuantumInfo, EndianType) bool
 
-var SetQuantumFormat func(*Image, *T.QuantumInfo, T.QuantumFormatType) bool
+var SetQuantumFormat func(*Image, *QuantumInfo, QuantumFormatType) bool
 
-var SetQuantumImageType func(*Image, T.QuantumType)
+var SetQuantumImageType func(*Image, QuantumType)
 
-var SetQuantumMinIsWhite func(*T.QuantumInfo, bool)
+var SetQuantumMinIsWhite func(*QuantumInfo, bool)
 
-var SetQuantumPack func(*T.QuantumInfo, bool)
+var SetQuantumPack func(*QuantumInfo, bool)
 
-var SetQuantumPad func(*Image, *T.QuantumInfo, uint32) bool
+var SetQuantumPad func(*Image, *QuantumInfo, uint32) bool
 
-var SetQuantumQuantum func(*T.QuantumInfo, uint32)
+var SetQuantumQuantum func(*QuantumInfo, uint32)
 
-var SetQuantumScale func(*T.QuantumInfo, float64)
+var SetQuantumScale func(*QuantumInfo, float64)
 
-var SetRandomKey func(*T.RandomInfo, uint32, *byte)
+var SetRandomKey func(*RandomInfo, uint32, *byte)
 
-var SetRandomSecretKey func(T.Size)
+var SetRandomSecretKey func(Size)
 
 var SetRandomTrueRandom func(bool)
 
-var SetResampleFilter func(*ResampleFilter, T.FilterTypes, float64)
+var SetResampleFilter func(*ResampleFilter, FilterTypes, float64)
 
 var SetSignatureDigest func(*SignatureInfo, *StringInfo)
 
-var SimilarityMetricImage func(*Image, *Image, T.MetricType, *T.RectangleInfo, *float64, *ExceptionInfo) *Image
+var SimilarityMetricImage func(*Image, *Image, MetricType, *RectangleInfo, *float64, *ExceptionInfo) *Image
 
-var SolarizeImageChannel func(*Image, T.ChannelType, float64, *ExceptionInfo) bool
+var SolarizeImageChannel func(*Image, ChannelType, float64, *ExceptionInfo) bool
 
-var SRGBCompandor func(T.MagickRealType) T.MagickRealType
+var SRGBCompandor func(MagickRealType) MagickRealType
 
 var StringInfoToHexString func(*StringInfo) string
 
 var StringToArrayOfDoubles func(string, *int32, *ExceptionInfo) []float64
 
-var SyncAuthenticPixelCacheNexus func(*Image, *T.NexusInfo, *ExceptionInfo) bool
+var SyncAuthenticPixelCacheNexus func(*Image, *NexusInfo, *ExceptionInfo) bool
 
-var TransparentPaintImageChroma func(*Image, *T.MagickPixelPacket, *T.MagickPixelPacket, T.Quantum, bool) bool
+var TransparentPaintImageChroma func(*Image, *MagickPixelPacket, *MagickPixelPacket, Quantum, bool) bool
 
 var TypeComponentGenesis func() bool
 
 var TypeComponentTerminus func()
 
-var UnityAddKernelInfo func(*T.KernelInfo, float64)
+var UnityAddKernelInfo func(*KernelInfo, float64)
 
-var WhiteThresholdImageChannel func(*Image, T.ChannelType, string, *ExceptionInfo) bool
+var WhiteThresholdImageChannel func(*Image, ChannelType, string, *ExceptionInfo) bool
 
-var WriteBlobMSBLongLong func(*Image, T.MagickSizeType) int32
+var WriteBlobMSBLongLong func(*Image, MagickSizeType) int32
 
 var XComponentGenesis func() bool
 
 var XComponentTerminus func()
 
-var AcquireMagickMatrix func(nptrs, size T.Size) **float64
+var AcquireMagickMatrix func(nptrs, size Size) **float64
 
-var AcquireMagickMemory func(size uint32) *T.Void
+var AcquireMagickMemory func(size uint32) *Void
 
-var AcquireMemory func(size uint32) *T.Void
+var AcquireMemory func(size uint32) *Void
 
-var AcquireQuantumMemory func(count, quantum uint32) *T.Void
+var AcquireQuantumMemory func(count, quantum uint32) *Void
 
 var AcquireString func(source string) string
 
@@ -4430,25 +4422,25 @@ var Base64Decode func(source string, length *uint32) *byte
 
 var Base64Encode func(blob *byte, blobLength uint32, encodeLength *uint32) string
 
-var BlobToFile func(filename string, blob *T.Void, length uint32, exception *ExceptionInfo) bool
+var BlobToFile func(filename string, blob *Void, length uint32, exception *ExceptionInfo) bool
 
 var CanonicalXMLContent func(content string, pedantic bool) string
 
-var ChopPathComponents func(path string, components T.Size)
+var ChopPathComponents func(path string, components Size)
 
-var CloneMemory func(destination, source *T.Void, size uint32) *T.Void
+var CloneMemory func(destination, source *Void, size uint32) *Void
 
 var CloneString func(destination []string, source string) string
 
 var CloseMagickLog func()
 
-var CompareHashmapString func(target, source *T.Void) bool
+var CompareHashmapString func(target, source *Void) bool
 
-var CompareHashmapStringInfo func(target, source *T.Void) bool
+var CompareHashmapStringInfo func(target, source *Void) bool
 
-var CompareSplayTreeString func(target, source *T.Void) int
+var CompareSplayTreeString func(target, source *Void) int
 
-var CompareSplayTreeStringInfo func(target, source *T.Void) int
+var CompareSplayTreeStringInfo func(target, source *Void) int
 
 var ConcatenateMagickString func(destination, source string, length uint32) uint32
 
@@ -4458,29 +4450,29 @@ var ConfigureFileToStringInfo func(filename string) *StringInfo
 
 var ConstantString func(source string) string
 
-var ConstituteImage func(columns, rows T.Size, map_ string, storage T.StorageType, pixels *T.Void, exception *ExceptionInfo) *Image
+var ConstituteImage func(columns, rows Size, map_ string, storage StorageType, pixels *Void, exception *ExceptionInfo) *Image
 
-var ConvertHSBToRGB func(hue, saturation, brightness float64, red, green, blue *T.Quantum)
+var ConvertHSBToRGB func(hue, saturation, brightness float64, red, green, blue *Quantum)
 
-var ConvertHSLToRGB func(hue, saturation, luminosity float64, red, green, blue *T.Quantum)
+var ConvertHSLToRGB func(hue, saturation, luminosity float64, red, green, blue *Quantum)
 
-var ConvertHWBToRGB func(hue, whiteness, blackness float64, red, green, blue *T.Quantum)
+var ConvertHWBToRGB func(hue, whiteness, blackness float64, red, green, blue *Quantum)
 
-var ConvertRGBToHSB func(red, green, blue T.Quantum, hue, saturation, brightness *float64)
+var ConvertRGBToHSB func(red, green, blue Quantum, hue, saturation, brightness *float64)
 
-var ConvertRGBToHSL func(red, green, blue T.Quantum, hue, saturation, luminosity *float64)
+var ConvertRGBToHSL func(red, green, blue Quantum, hue, saturation, luminosity *float64)
 
-var ConvertRGBToHWB func(red, green, blue T.Quantum, hue, whiteness, blackness *float64)
+var ConvertRGBToHWB func(red, green, blue Quantum, hue, whiteness, blackness *float64)
 
-var CopyMagickMemory func(destination, source *T.Void, size uint32) *T.Void
+var CopyMagickMemory func(destination, source *Void, size uint32) *Void
 
 var CopyMagickString func(destination, source string, length uint32) uint32
 
-var DefineImageRegistry func(type_ T.RegistryType, option string, exception *ExceptionInfo) bool
+var DefineImageRegistry func(type_ RegistryType, option string, exception *ExceptionInfo) bool
 
 var DeleteImageRegistry func(key string) bool
 
-var DeleteMagickRegistry func(id T.Long) bool
+var DeleteMagickRegistry func(id Long) bool
 
 var DestroyConstitute func()
 
@@ -4492,15 +4484,15 @@ var DestroyMagickRegistry func()
 
 var DestroyModuleList func()
 
-var DestroyMontageInfo func(montageInfo *T.MontageInfo) *T.MontageInfo
+var DestroyMontageInfo func(montageInfo *MontageInfo) *MontageInfo
 
-var DestroyQuantumInfo func(quantumInfo *T.QuantumInfo) *T.QuantumInfo
+var DestroyQuantumInfo func(quantumInfo *QuantumInfo) *QuantumInfo
 
 var DestroyString func(str string) string
 
 var DestroyStringList func(list []string) []string
 
-var DestroyThresholdMap func(map_ *T.ThresholdMap) *T.ThresholdMap
+var DestroyThresholdMap func(map_ *ThresholdMap) *ThresholdMap
 
 var DestroyXResources func()
 
@@ -4508,7 +4500,7 @@ var DestroyXWidget func()
 
 var EscapeString func(source string, escape int8) string
 
-var ExpandAffine func(affine *T.AffineMatrix) float64
+var ExpandAffine func(affine *AffineMatrix) float64
 
 var ExpandFilename func(path string)
 
@@ -4520,55 +4512,55 @@ var FileToString func(filename string, extent uint32, exception *ExceptionInfo) 
 
 var FileToStringInfo func(filename string, extent uint32, exception *ExceptionInfo) *StringInfo
 
-var FormatMagickSize func(size T.MagickSizeType, format string) T.Long
+var FormatMagickSize func(size MagickSizeType, format string) Long
 
-var FormatMagickString func(str string, length uint32, format string, va ...VArg) T.Long
+var FormatMagickString func(str string, length uint32, format string, va ...VArg) Long
 
-var FormatMagickStringList func(str string, length uint32, format string, operands VAList) T.Long
+var FormatMagickStringList func(str string, length uint32, format string, operands VAList) Long
 
-var FormatMagickTime func(time time_t, length uint32, timestamp string) T.Long
+var FormatMagickTime func(time Time, length uint32, timestamp string) Long
 
 var FormatString func(str, format string, va ...VArg)
 
 var FormatStringList func(str, format string, operands VAList)
 
-var FuzzyColorMatch func(p, q *T.PixelPacket, fuzz float64) uint
+var FuzzyColorMatch func(p, q *PixelPacket, fuzz float64) uint
 
-var GaussJordanElimination func(matrix, vectors **float64, rank, nvecs T.Size) bool
+var GaussJordanElimination func(matrix, vectors **float64, rank, nvecs Size) bool
 
-var GetAffineMatrix func(affineMatrix *T.AffineMatrix)
+var GetAffineMatrix func(affineMatrix *AffineMatrix)
 
 var GetClientName func() string
 
 var GetClientPath func() string
 
-var GetCoderInfo func(name string, exception *ExceptionInfo) *T.CoderInfo
+var GetCoderInfo func(name string, exception *ExceptionInfo) *CoderInfo
 
-var GetCoderInfoList func(pattern string, numberCoders *T.Size, exception *ExceptionInfo) **T.CoderInfo
+var GetCoderInfoList func(pattern string, numberCoders *Size, exception *ExceptionInfo) **CoderInfo
 
-var GetCoderList func(pattern string, numberCoders *T.Size, exception *ExceptionInfo) []string
+var GetCoderList func(pattern string, numberCoders *Size, exception *ExceptionInfo) []string
 
-var GetColorInfo func(name string, exception *ExceptionInfo) *T.ColorInfo
+var GetColorInfo func(name string, exception *ExceptionInfo) *ColorInfo
 
-var GetColorInfoList func(pattern string, numberColors *T.Size, exception *ExceptionInfo) **T.ColorInfo
+var GetColorInfoList func(pattern string, numberColors *Size, exception *ExceptionInfo) **ColorInfo
 
-var GetColorList func(pattern string, numberColors *T.Size, exception *ExceptionInfo) []string
+var GetColorList func(pattern string, numberColors *Size, exception *ExceptionInfo) []string
 
-var GetConfigureBlob func(filename, path string, length *uint32, exception *ExceptionInfo) *T.Void
+var GetConfigureBlob func(filename, path string, length *uint32, exception *ExceptionInfo) *Void
 
-var GetConfigureInfo func(name string, exception *ExceptionInfo) *T.ConfigureInfo
+var GetConfigureInfo func(name string, exception *ExceptionInfo) *ConfigureInfo
 
-var GetConfigureInfoList func(pattern string, numberOptions *T.Size, exception *ExceptionInfo) **T.ConfigureInfo
+var GetConfigureInfoList func(pattern string, numberOptions *Size, exception *ExceptionInfo) **ConfigureInfo
 
-var GetConfigureList func(pattern string, numberOptions *T.Size, exception *ExceptionInfo) []string
+var GetConfigureList func(pattern string, numberOptions *Size, exception *ExceptionInfo) []string
 
 var GetConfigureOptions func(filename string, exception *ExceptionInfo) *LinkedListInfo
 
 var GetConfigurePaths func(filename string, exception *ExceptionInfo) *LinkedListInfo
 
-var GetConfigureValue func(configureInfo *T.ConfigureInfo) string
+var GetConfigureValue func(configureInfo *ConfigureInfo) string
 
-var GetDelegateList func(pattern string, numberDelegates *T.Size, exception *ExceptionInfo) []string
+var GetDelegateList func(pattern string, numberDelegates *Size, exception *ExceptionInfo) []string
 
 var GetEnvironmentValue func(name string) string
 
@@ -4576,57 +4568,57 @@ var GetExceptionMessage func(errorCode int) string
 
 var GetExecutionPath func(path string, extent uint32) bool
 
-var GetGeometry func(geometry string, x, y *T.Long, width, height *T.Size) T.MagickStatusType
+var GetGeometry func(geometry string, x, y *Long, width, height *Size) MagickStatusType
 
-var GetImageFromMagickRegistry func(name string, id *T.Long, exception *ExceptionInfo) *Image
+var GetImageFromMagickRegistry func(name string, id *Long, exception *ExceptionInfo) *Image
 
 var GetImageMagick func(magick *byte, length uint32) string
 
-var GetImageRegistry func(type_ T.RegistryType, key string, exception *ExceptionInfo) *T.Void
+var GetImageRegistry func(type_ RegistryType, key string, exception *ExceptionInfo) *Void
 
-var GetLocaleExceptionMessage func(severity T.ExceptionType, tag string) string
+var GetLocaleExceptionMessage func(severity ExceptionType, tag string) string
 
-var GetLocaleInfo func(tag string, exception *ExceptionInfo) *T.LocaleInfo
+var GetLocaleInfo func(tag string, exception *ExceptionInfo) *LocaleInfo
 
-var GetLocaleInfoList func(pattern string, numberMessages *T.Size, exception *ExceptionInfo) []*T.LocaleInfo
+var GetLocaleInfoList func(pattern string, numberMessages *Size, exception *ExceptionInfo) []*LocaleInfo
 
-var GetLocaleList func(pattern string, numberMessages *T.Size, exception *ExceptionInfo) []string
+var GetLocaleList func(pattern string, numberMessages *Size, exception *ExceptionInfo) []string
 
 var GetLocaleMessage func(tag string) string
 
 var GetLocaleOptions func(filename string, exception *ExceptionInfo) *LinkedListInfo
 
-var GetLocaleValue func(localeInfo *T.LocaleInfo) string
+var GetLocaleValue func(localeInfo *LocaleInfo) string
 
-var GetLogInfoList func(pattern string, numberPreferences *T.Size, exception *ExceptionInfo) []*LogInfo
+var GetLogInfoList func(pattern string, numberPreferences *Size, exception *ExceptionInfo) []*LogInfo
 
-var GetLogList func(pattern string, numberPreferences *T.Size, exception *ExceptionInfo) []string
+var GetLogList func(pattern string, numberPreferences *Size, exception *ExceptionInfo) []string
 
 var GetLogName func() string
 
-var GetMagicInfo func(magic *byte, length uint32, exception *ExceptionInfo) *T.MagicInfo
+var GetMagicInfo func(magic *byte, length uint32, exception *ExceptionInfo) *MagicInfo
 
-var GetMagicInfoList func(pattern string, numberAliases *T.Size, exception *ExceptionInfo) []*T.MagicInfo
+var GetMagicInfoList func(pattern string, numberAliases *Size, exception *ExceptionInfo) []*MagicInfo
 
 var GetMagickCopyright func() string
 
-var GetMagickGeometry func(geometry string, x, y *T.Long, width, height *T.Size) uint
+var GetMagickGeometry func(geometry string, x, y *Long, width, height *Size) uint
 
 var GetMagickHomeURL func() string
 
 var GetMagickInfo func(name string, exception *ExceptionInfo) *MagickInfo
 
-var GetMagickInfoList func(pattern string, numberFormats *T.Size, exception *ExceptionInfo) []*MagickInfo
+var GetMagickInfoList func(pattern string, numberFormats *Size, exception *ExceptionInfo) []*MagickInfo
 
-var GetMagickList func(pattern string, numberFormats *T.Size, exception *ExceptionInfo) []string
+var GetMagickList func(pattern string, numberFormats *Size, exception *ExceptionInfo) []string
 
 var GetMagickPackageName func() string
 
-var GetMagickQuantumDepth func(depth *T.Size) string
+var GetMagickQuantumDepth func(depth *Size) string
 
-var GetMagickQuantumRange func(range_ *T.Size) string
+var GetMagickQuantumRange func(range_ *Size) string
 
-var GetMagickRegistry func(id T.Long, type_ *T.RegistryType, length *uint32, exception *ExceptionInfo) *T.Void
+var GetMagickRegistry func(id Long, type_ *RegistryType, length *uint32, exception *ExceptionInfo) *Void
 
 var GetMagickReleaseDate func() string
 
@@ -4634,75 +4626,75 @@ var GetMagickToken func(start string, end []string, token string)
 
 var GetMagickPrecision func() int
 
-var GetMagickVersion func(version *T.Size) string
+var GetMagickVersion func(version *Size) string
 
-var GetMagicList func(pattern string, numberAliases *T.Size, exception *ExceptionInfo) []string
+var GetMagicList func(pattern string, numberAliases *Size, exception *ExceptionInfo) []string
 
-var GetMagicName func(magicInfo *T.MagicInfo) string
+var GetMagicName func(magicInfo *MagicInfo) string
 
 var GetMimeDescription func(mimeInfo *MimeInfo) string
 
 var GetMimeInfo func(filename string, magic *byte, length uint32, exception *ExceptionInfo) *MimeInfo
 
-var GetMimeInfoList func(pattern string, numberAliases *T.Size, exception *ExceptionInfo) []*MimeInfo
+var GetMimeInfoList func(pattern string, numberAliases *Size, exception *ExceptionInfo) []*MimeInfo
 
-var GetMimeList func(pattern string, numberAliases *T.Size, exception *ExceptionInfo) []string
+var GetMimeList func(pattern string, numberAliases *Size, exception *ExceptionInfo) []string
 
 var GetMimeType func(mimeInfo *MimeInfo) string
 
-var GetModuleInfo func(tag string, exception *ExceptionInfo) *T.ModuleInfo
+var GetModuleInfo func(tag string, exception *ExceptionInfo) *ModuleInfo
 
-var GetModuleInfoList func(pattern string, numberModules *T.Size, exception *ExceptionInfo) **T.ModuleInfo
+var GetModuleInfoList func(pattern string, numberModules *Size, exception *ExceptionInfo) **ModuleInfo
 
-var GetModuleList func(pattern string, numberModules *T.Size, exception *ExceptionInfo) []string
+var GetModuleList func(pattern string, numberModules *Size, exception *ExceptionInfo) []string
 
-var GetMonitorHandler func() T.MonitorHandler
+var GetMonitorHandler func() MonitorHandler
 
 var GetNextImageRegistry func() string
 
-var GetOptimalKernelWidth func(radius, sigma float64) T.Size
+var GetOptimalKernelWidth func(radius, sigma float64) Size
 
-var GetOptimalKernelWidth1D func(radius, sigma float64) T.Size
+var GetOptimalKernelWidth1D func(radius, sigma float64) Size
 
-var GetOptimalKernelWidth2D func(radius, sigma float64) T.Size
+var GetOptimalKernelWidth2D func(radius, sigma float64) Size
 
 var GetPageGeometry func(pageGeometry string) string
 
-var GetPathComponent func(path string, type_ T.PathType, component string)
+var GetPathComponent func(path string, type_ PathType, component string)
 
-var GetPathComponents func(path string, numberComponents *T.Size) []string
+var GetPathComponents func(path string, numberComponents *Size) []string
 
 var GetRandomKey func(key *byte, length uint32)
 
 var GetRandomValue func() float64
 
-var GetThresholdMap func(mapId string, exception *ExceptionInfo) *T.ThresholdMap
+var GetThresholdMap func(mapId string, exception *ExceptionInfo) *ThresholdMap
 
-var GetThresholdMapFile func(xml, filename, mapId string, exception *ExceptionInfo) *T.ThresholdMap
+var GetThresholdMapFile func(xml, filename, mapId string, exception *ExceptionInfo) *ThresholdMap
 
-var GetTypeInfo func(name string, exception *ExceptionInfo) *T.TypeInfo
+var GetTypeInfo func(name string, exception *ExceptionInfo) *TypeInfo
 
-var GetTypeInfoByFamily func(family string, style T.StyleType, stretch T.StretchType, weight T.Size, exception *ExceptionInfo) *T.TypeInfo
+var GetTypeInfoByFamily func(family string, style StyleType, stretch StretchType, weight Size, exception *ExceptionInfo) *TypeInfo
 
-var GetTypeInfoList func(pattern string, numberFonts *T.Size, exception *ExceptionInfo) **T.TypeInfo
+var GetTypeInfoList func(pattern string, numberFonts *Size, exception *ExceptionInfo) **TypeInfo
 
-var GetTypeList func(pattern string, numberFonts *T.Size, exception *ExceptionInfo) []string
+var GetTypeList func(pattern string, numberFonts *Size, exception *ExceptionInfo) []string
 
 var GlobExpression func(expression, pattern string, caseInsensitive bool) bool
 
-var GravityAdjustGeometry func(width, height T.Size, gravity T.GravityType, region *T.RectangleInfo)
+var GravityAdjustGeometry func(width, height Size, gravity GravityType, region *RectangleInfo)
 
-var HashPointerType func(pointer *T.Void) uint32
+var HashPointerType func(pointer *Void) uint32
 
-var HashStringInfoType func(string *T.Void) uint32
+var HashStringInfoType func(string *Void) uint32
 
-var HashStringType func(string *T.Void) uint32
+var HashStringType func(string *Void) uint32
 
-var IdentityAffine func(affine *T.AffineMatrix)
+var IdentityAffine func(affine *AffineMatrix)
 
 var InitializeMagick func(path string)
 
-var InterpretImageFilename func(str string, length uint32, format string, value int) T.Long
+var InterpretImageFilename func(str string, length uint32, format string, value int) Long
 
 var InvokeDynamicImageFilter func(tag string, images **Image, argc int, argv []string, exception *ExceptionInfo) bool
 
@@ -4724,43 +4716,43 @@ var IsSceneGeometry func(geometry string, pedantic bool) bool
 
 var IsSubimage func(geometry string, pedantic uint) uint
 
-var LeastSquaresAddTerms func(matrix, vectors **float64, terms, results *float64, rank, nvecs T.Size)
+var LeastSquaresAddTerms func(matrix, vectors **float64, terms, results *float64, rank, nvecs Size)
 
-var LiberateMemory func(memory **T.Void)
+var LiberateMemory func(memory **Void)
 
-var ListFiles func(directory, pattern string, numberEntries *T.Size) []string
+var ListFiles func(directory, pattern string, numberEntries *Size) []string
 
 var LoadMimeLists func(filename string, exception *ExceptionInfo) bool
 
-var LocaleCompare func(p, q string) T.Long
+var LocaleCompare func(p, q string) Long
 
 var LocaleLower func(str string)
 
-var LocaleNCompare func(p, q string, length uint32) T.Long
+var LocaleNCompare func(p, q string, length uint32) Long
 
 var LocaleUpper func(str string)
 
-var LogMagickEvent func(type_ T.LogEventType, module, function string, line T.Size, format string, va ...VArg) bool
+var LogMagickEvent func(type_ LogEventType, module, function string, line Size, format string, va ...VArg) bool
 
-var LogMagickEventList func(type_ T.LogEventType, module, function string, line T.Size, format string, operands VAList) bool
+var LogMagickEventList func(type_ LogEventType, module, function string, line Size, format string, operands VAList) bool
 
 var MagickCoreGenesis func(path string, establishSignalHandlers bool)
 
 var MagickCoreTerminus func()
 
-var MagickError func(err T.ExceptionType, reason, description string)
+var MagickError func(err ExceptionType, reason, description string)
 
-var MagickFatalError func(err T.ExceptionType, reason, description string)
+var MagickFatalError func(err ExceptionType, reason, description string)
 
 var MagickIncarnate func(path string)
 
-var MagickMonitor func(text string, offset T.MagickOffsetType, span T.MagickSizeType, clientData *T.Void) bool
+var MagickMonitor func(text string, offset MagickOffsetType, span MagickSizeType, clientData *Void) bool
 
 var MagickToMime func(magick string) string
 
-var MagickWarning func(warning T.ExceptionType, reason, description string)
+var MagickWarning func(warning ExceptionType, reason, description string)
 
-var MapBlob func(file int, mode T.MapMode, offset T.MagickOffsetType, length uint32) *byte
+var MapBlob func(file int, mode MapMode, offset MagickOffsetType, length uint32) *byte
 
 var MapImages func(images, mapImage *Image, dither bool) bool
 
@@ -4770,9 +4762,9 @@ var MSBOrderLong func(buffer *byte, length uint32)
 
 var MSBOrderShort func(p *byte, length uint32)
 
-var MultilineCensus func(label string) T.Size
+var MultilineCensus func(label string) Size
 
-var NewHashmap func(capacity T.Size, hash func(*T.Void) uint32, compare func(*T.Void, *T.Void) *bool, relinquishKey, relinquishValue func(*T.Void) *T.Void) *HashmapInfo
+var NewHashmap func(capacity Size, hash func(*Void) uint32, compare func(*Void, *Void) *bool, relinquishKey, relinquishValue func(*Void) *Void) *HashmapInfo
 
 var NewImageList func() *Image
 
@@ -4784,47 +4776,47 @@ var OpenModule func(module string, exception *ExceptionInfo) bool
 
 var OpenModules func(exception *ExceptionInfo) bool
 
-var ParseAbsoluteGeometry func(geometry string, regionInfo *T.RectangleInfo) T.MagickStatusType
+var ParseAbsoluteGeometry func(geometry string, regionInfo *RectangleInfo) MagickStatusType
 
-var ParseAffineGeometry func(geometry string, affineMatrix *T.AffineMatrix) T.MagickStatusType
+var ParseAffineGeometry func(geometry string, affineMatrix *AffineMatrix) MagickStatusType
 
-var ParseChannelOption func(channels string) T.Long
+var ParseChannelOption func(channels string) Long
 
-var ParseGeometry func(geometry string, geometryInfo *T.GeometryInfo) T.MagickStatusType
+var ParseGeometry func(geometry string, geometryInfo *GeometryInfo) MagickStatusType
 
-var ParseImageGeometry func(geometry string, x, y *T.Long, width, height *T.Size) int
+var ParseImageGeometry func(geometry string, x, y *Long, width, height *Size) int
 
-var ParseMetaGeometry func(geometry string, x, y *T.Long, width, height *T.Size) T.MagickStatusType
+var ParseMetaGeometry func(geometry string, x, y *Long, width, height *Size) MagickStatusType
 
 var PostscriptGeometry func(page string) string
 
 var PrintStringInfo func(file *FILE, id string, stringInfo *StringInfo)
 
-var QueryColorDatabase func(name string, color *T.PixelPacket, exception *ExceptionInfo) bool
+var QueryColorDatabase func(name string, color *PixelPacket, exception *ExceptionInfo) bool
 
 var QueryMagickColor func(name string, color *MagickPixelPacket, exception *ExceptionInfo) bool
 
-var ReacquireMemory func(memory **T.Void, size uint32)
+var ReacquireMemory func(memory **Void, size uint32)
 
 var RegisterStaticModules func()
 
-var RelinquishMagickMatrix func(matrix **float64, nptrs T.Size) **float64
+var RelinquishMagickMatrix func(matrix **float64, nptrs Size) **float64
 
-var RelinquishMagickMemory func(memory *T.Void) *T.Void
+var RelinquishMagickMemory func(memory *Void) *Void
 
 var RelinquishUniqueFileResource func(path string) bool
 
-var RemoveImageRegistry func(key string) *T.Void
+var RemoveImageRegistry func(key string) *Void
 
 var ResetImageRegistryIterator func()
 
-var ResetMagickMemory func(memory *T.Void, byte int, size uint32) *T.Void
+var ResetMagickMemory func(memory *Void, byte int, size uint32) *Void
 
-var ResizeMagickMemory func(memory *T.Void, size uint32) *T.Void
+var ResizeMagickMemory func(memory *Void, size uint32) *Void
 
-var ResizeQuantumMemory func(memory *T.Void, count, quantum uint32) *T.Void
+var ResizeQuantumMemory func(memory *Void, count, quantum uint32) *Void
 
-var SetCacheThreshold func(size T.Size)
+var SetCacheThreshold func(size Size)
 
 var SetClientName func(name string) string
 
@@ -4834,11 +4826,11 @@ var SetErrorHandler func(handler ErrorHandler) ErrorHandler
 
 var SetFatalErrorHandler func(handler FatalErrorHandler) FatalErrorHandler
 
-var SetGeometryInfo func(geometryInfo *T.GeometryInfo)
+var SetGeometryInfo func(geometryInfo *GeometryInfo)
 
-var SetImageRegistry func(type_ T.RegistryType, key string, value *T.Void, exception *ExceptionInfo) bool
+var SetImageRegistry func(type_ RegistryType, key string, value *Void, exception *ExceptionInfo) bool
 
-var SetLogEventMask func(events string) T.LogEventType
+var SetLogEventMask func(events string) LogEventType
 
 var SetLogFormat func(format string)
 
@@ -4846,9 +4838,9 @@ var SetLogName func(name string) string
 
 var SetMagickInfo func(name string) *MagickInfo
 
-var SetMagickRegistry func(type_ T.RegistryType, blob *T.Void, length uint32, exception *ExceptionInfo) T.Long
+var SetMagickRegistry func(type_ RegistryType, blob *Void, length uint32, exception *ExceptionInfo) Long
 
-var SetMonitorHandler func(handler T.MonitorHandler) T.MonitorHandler
+var SetMonitorHandler func(handler MonitorHandler) MonitorHandler
 
 var SetWarningHandler func(handler WarningHandler) WarningHandler
 
@@ -4874,67 +4866,67 @@ var TemporaryFilename func(path string)
 
 var TransformImage func(image **Image, cropGeometry, imageGeometry string) bool
 
-var UnmapBlob func(map_ *T.Void, length uint32) bool
+var UnmapBlob func(map_ *Void, length uint32) bool
 
 var UnregisterMagickInfo func(name string) bool
 
 var UnregisterStaticModules func()
 
-var XDestroyResourceInfo func(resourceInfo *T.XResourceInfo)
+var XDestroyResourceInfo func(resourceInfo *XResourceInfo)
 
-var XGetAnnotateInfo func(annotateInfo *T.XAnnotateInfo)
+var XGetAnnotateInfo func(annotateInfo *XAnnotateInfo)
 
-var XGetImportInfo func(ximageInfo *T.XImportInfo)
+var XGetImportInfo func(ximageInfo *XImportInfo)
 
-var XGetMapInfo func(visualInfo *T.XVisualInfo, colormap T.Colormap, mapInfo *T.XStandardColormap)
+var XGetMapInfo func(visualInfo *XVisualInfo, colormap Colormap, mapInfo *XStandardColormap)
 
-var XInitImage func(ximage *T.XImage) T.Status
+var XInitImage func(ximage *XImage) Status
 
-var XMagickProgressMonitor func(tag string, quantum T.MagickOffsetType, span T.MagickSizeType, clientData *T.Void) bool
+var XMagickProgressMonitor func(tag string, quantum MagickOffsetType, span MagickSizeType, clientData *Void) bool
 
-var XQueryColorDatabase func(target string, color *T.XColor) bool
+var XQueryColorDatabase func(target string, color *XColor) bool
 
-var XrmCombineFileDatabase func(filename string, target *XrmDatabase, override bool) T.Status
+var XrmCombineFileDatabase func(filename string, target **XrmDatabase, override bool) Status
 
 var XSetLocaleModifiers func(modifiers string) string
 
-var XSetWindows func(windowsInfo *T.XWindows) *T.XWindows
+var XSetWindows func(windowsInfo *XWindows) *XWindows
 
 var XSupportsLocale func() bool
 
-var XUserPreferences func(resourceInfo *T.XResourceInfo)
+var XUserPreferences func(resourceInfo *XResourceInfo)
 
-var XWarning func(warning T.ExceptionType, reason, description string)
+var XWarning func(warning ExceptionType, reason, description string)
 
-var AcquireAlignedMemory func(count uint32, quantum uint32) *T.Void
+var AcquireAlignedMemory func(count uint32, quantum uint32) *Void
 
-var AcquireKernelBuiltIn func(type_ T.KernelInfoType, args T.GeometryInfo) *T.KernelInfo
+var AcquireKernelBuiltIn func(type_ KernelInfoType, args GeometryInfo) *KernelInfo
 
-var AcquireKernelInfo func(kernelString string) *T.KernelInfo
+var AcquireKernelInfo func(kernelString string) *KernelInfo
 
-var AcquireModuleInfo func(path, tag string) *T.ModuleInfo
+var AcquireModuleInfo func(path, tag string) *ModuleInfo
 
-var AcquireOneCacheViewVirtualPixel func(cacheView *CacheView, virtualPixelMethod T.VirtualPixelMethod, x, y int32, pixel *T.PixelPacket, exception *ExceptionInfo) bool
+var AcquireOneCacheViewVirtualPixel func(cacheView *CacheView, virtualPixelMethod VirtualPixelMethod, x, y int32, pixel *PixelPacket, exception *ExceptionInfo) bool
 
-var AcquirePixelCacheNexus func(numberThreads uint32) **T.NexusInfo
+var AcquirePixelCacheNexus func(numberThreads uint32) **NexusInfo
 
-var CloneKernelInfo func(kernel *T.KernelInfo) *T.KernelInfo
+var CloneKernelInfo func(kernel *KernelInfo) *KernelInfo
 
-var DestroyKernelInfo func(kernel *T.KernelInfo) *T.KernelInfo
+var DestroyKernelInfo func(kernel *KernelInfo) *KernelInfo
 
 var DestroyPixelCache func()
 
 var DuplicateImages func(images *Image, numberDuplicates uint32, scenes string, exception *ExceptionInfo) *Image
 
-var EvaluateImages func(images *Image, op T.MagickEvaluateOperator, value float64, exception *ExceptionInfo) bool
+var EvaluateImages func(images *Image, op MagickEvaluateOperator, value float64, exception *ExceptionInfo) bool
 
-var GetImageViewException func(pixelImage *ImageView, severity *T.ExceptionType) string
+var GetImageViewException func(pixelImage *ImageView, severity *ExceptionType) string
 
 var GetMagickFeatures func() string
 
 var GetMagickMemoryMethods func(a *AcquireMemoryHandler, r *ResizeMemoryHandler, destroyMemoryHandler *DestroyMemoryHandler)
 
-var HSLTransform func(hue, saturation, lightness float64, red, green, blue *T.Quantum)
+var HSLTransform func(hue, saturation, lightness float64, red, green, blue *Quantum)
 
 var InitializeModuleList func(exception *ExceptionInfo)
 
@@ -4948,43 +4940,43 @@ var NewImageViewRegion func(i *Image, x, y int32, width, height uint32) *ImageVi
 
 var OpenMagickStream func(path, mode string) *FILE
 
-var QueryColorCompliance func(name string, compliance T.ComplianceType, color *T.PixelPacket, exception *ExceptionInfo) bool
+var QueryColorCompliance func(name string, compliance ComplianceType, color *PixelPacket, exception *ExceptionInfo) bool
 
 var RegistryComponentTerminus func()
 
-var RelinquishAlignedMemory func(memory *T.Void) *T.Void
+var RelinquishAlignedMemory func(memory *Void) *Void
 
 var ReplaceImageInListReturnLast func(images **Image, replace *Image)
 
-var ScaleGeometryKernelInfo func(kernel *T.KernelInfo, scalingFactor float64, normalizeFlags T.MagickStatusType)
+var ScaleGeometryKernelInfo func(kernel *KernelInfo, scalingFactor float64, normalizeFlags MagickStatusType)
 
-var ScaleKernelInfo func(kernel *T.KernelInfo, scalingFactor float64, normalizeFlags T.MagickStatusType)
+var ScaleKernelInfo func(kernel *KernelInfo, scalingFactor float64, normalizeFlags MagickStatusType)
 
 var SetMagickMemoryMethods func(a AcquireMemoryHandler, r ResizeMemoryHandler, d DestroyMemoryHandler)
 
 var SetMagickPrecision func(precision int) int
 
-var ShowKernelInfo func(kernel *T.KernelInfo)
+var ShowKernelInfo func(kernel *KernelInfo)
 
 var SmushImages func(images *Image, stack bool, exception *ExceptionInfo) *Image
 
-var TransformHSL func(red, green, blue T.Quantum, hue, saturation, lightness *float64)
+var TransformHSL func(red, green, blue Quantum, hue, saturation, lightness *float64)
 
-var ZeroKernelNans func(kernel *T.KernelInfo)
+var ZeroKernelNans func(kernel *KernelInfo)
 
 var Exit func(int) int
 
 var IsWindows95 func() bool
 
-var NTCloseDirectory func(*T.DIR) int
+var NTCloseDirectory func(*DIR) int
 
-var NTCloseLibrary func(*T.Void) int
+var NTCloseLibrary func(*Void) int
 
 var NTControlHandler func() int
 
 var NTElapsedTime func() float64
 
-var NTErrorHandler func(T.ExceptionType, string, string) // Return
+var NTErrorHandler func(ExceptionType, string, string) // Return
 var NTExitLibrary func() int
 
 var NTGetExecutionPath func(string, uint32) bool
@@ -4993,12 +4985,12 @@ var NTGetLastError func() string
 
 var NTGetLibraryError func() string
 
-var NTGetLibrarySymbol func(*T.Void, string) *T.Void //* Return?
+var NTGetLibrarySymbol func(*Void, string) *Void //* Return?
 var NTGetModulePath func(string, string) bool
 
 var NTGhostscriptDLL func(string, int) int
 
-var NTGhostscriptDLLVectors func() *T.GhostInfo
+var NTGhostscriptDLLVectors func() *GhostInfo
 
 var NTGhostscriptEXE func(string, int) int
 
@@ -5014,11 +5006,11 @@ var NTIsMagickConflict func(string) bool
 
 var NTLoadTypeLists func(*SplayTreeInfo, *ExceptionInfo) bool
 
-var NTMapMemory func(string, uint32, int, int, int, T.MagickOffsetType) **T.Void //** Return?
-var NTOpenDirectory func(string) *T.DIR
+var NTMapMemory func(string, uint32, int, int, int, MagickOffsetType) **Void //** Return?
+var NTOpenDirectory func(string) *DIR
 
-var NTOpenLibrary func(string) ***T.Void //*** Return?
-var NTReadDirectory func(*T.DIR) *dirent
+var NTOpenLibrary func(string) ***Void //*** Return?
+var NTReadDirectory func(*DIR) *Dirent
 
 var NTRegistryKeyLookup func(string) string
 
@@ -5026,26 +5018,28 @@ var NTReportEvent func(string, bool) bool
 
 var NTResourceToBlob func(string) *byte
 
-var NTSeekDirectory func(*T.DIR, T.Long) ***T.Void //*** Return?
+var NTSeekDirectory func(*DIR, Long) ***Void //*** Return?
 var NTSetSearchPath func(string) int
 
-var NTSyncMemory func(*T.Void, uint32, int) int
+var NTSyncMemory func(*Void, uint32, int) int
 
 var NTSystemCommand func(string) int
 
-var NTSystemConfiguration func(int) T.Long
+var NTSystemConfiguration func(int) Long
 
-var NTTellDirectory func(*T.DIR) T.Long
+var NTTellDirectory func(*DIR) Long
 
-var NTTruncateFile func(int, off_t) int
+var NTTruncateFile func(int, Off) int
 
-var NTUnmapMemory func(*T.Void, uint32) int
+var NTUnmapMemory func(*Void, uint32) int
 
 var NTUserTime func() float64
 
-var NTWarningHandler func(T.ExceptionType, string, string) ***T.Void //*** Return?
+var NTWarningHandler func(ExceptionType, string, string) ***Void //*** Return?
 
-var PlasmaImageProxy func(image *Image, image_view *CacheView, random_info *T.RandomInfo, segment *T.SegmentInfo, attenuate, depth uint32) bool
+var PlasmaImageProxy func(image *Image, image_view *CacheView, random_info *RandomInfo, segment *SegmentInfo, attenuate, depth uint32) bool
+
+var GetColorCompliance func(name string, compliance ComplianceType, exception *ExceptionInfo) *ColorInfo
 
 func init() {
 	AddDllApis(DLL, false, allApis)
@@ -5439,7 +5433,7 @@ var allApis = Apis{
 	{"GetCoderInfo", &GetCoderInfo},
 	{"GetCoderInfoList", &GetCoderInfoList},
 	{"GetCoderList", &GetCoderList},
-	// Undocumented {"GetColorCompliance", &GetColorCompliance},
+	{"GetColorCompliance", &GetColorCompliance},
 	{"GetColorInfo", &GetColorInfo},
 	{"GetColorInfoList", &GetColorInfoList},
 	{"GetColorList", &GetColorList},
@@ -6371,3 +6365,2062 @@ var allData = Data{
 	{"SaveImageTag", (*byte)(nil)},
 	{"DefaultResolution", (*float64)(nil)},
 }
+
+type CacheInfo struct {
+	// StorageClass             ClassType
+	// Colorspace               ColorspaceType
+	// Channels                 Size
+	// Type                     CacheType
+	// Mode                     MapMode
+	// Mapped                   MagickBooleanType
+	// Columns, Rows            Size
+	// Offset                   MagickOffsetType
+	// Length                   MagickSizeType
+	// VirtualPixelMethod       VirtualPixelMethod
+	// VirtualPixelColor        MagickPixelPacket
+	// NumberThreads            Size
+	// NexusInfo                **NexusInfo
+	// Pixels                   *PixelPacket
+	// Indexes                  *IndexPacket
+	// ActiveIndexChannel       MagickBooleanType
+	// File                     int
+	// Filename                 [MaxTextExtent]Char
+	// CacheFilename            [MaxTextExtent]Char
+	// Methods                  CacheMethods
+	// RandomInfo               *RandomInfo
+	// NumberConnections        Size
+	// ServerInfo               *Void
+	// Synchronize, Debug       MagickBooleanType
+	// Id                       MagickThreadType
+	// ReferenceCount           SSize
+	// Semaphore, FileSemaphore *SemaphoreInfo
+	// Timestamp                Time
+	// Signature                Size
+}
+
+type XWindows struct {
+	// display            *Display
+	// map_info           *XStandardColormap
+	// icon_map           *XStandardColormap
+	// visual_info        *XVisualInfo
+	// icon_visual        *XVisualInfo
+	// pixel_info         *XPixelInfo
+	// icon_pixel         *XPixelInfo
+	// font_info          *XFontStruct
+	// icon_resources     *XResourceInfo
+	// class_hints        *XClassHint
+	// manager_hints      *XWMHints
+	// context            XWindowInfo
+	// group_leader       XWindowInfo
+	// backdrop           XWindowInfo
+	// icon               XWindowInfo
+	// image              XWindowInfo
+	// info               XWindowInfo
+	// magnify            XWindowInfo
+	// pan                XWindowInfo
+	// command            XWindowInfo
+	// widget             XWindowInfo
+	// popup              XWindowInfo
+	// wm_protocols       Atom
+	// wm_delete_window   Atom
+	// wm_take_focus      Atom
+	// im_protocols       Atom
+	// im_remote_command  Atom
+	// im_update_widget   Atom
+	// im_update_colormap Atom
+	// im_former_image    Atom
+	// im_retain_colors   Atom
+	// im_next_image      Atom
+	// im_exit            Atom
+	// dnd_protocols      Atom
+}
+
+type XWindowInfo struct {
+	// Id               Window
+	// Root             Window
+	// Visual           *Visual
+	// StorageClass     uint
+	// Depth            uint
+	// VisualInfo       *XVisualInfo
+	// MapInfo          *XStandardColormap
+	// PixelInfo        *XPixelInfo
+	// FontInfo         *XFontStruct
+	// AnnotateContext  GC
+	// HighlightContext GC
+	// WidgetContext    GC
+	// Cursor           Cursor
+	// BusyCursor       Cursor
+	// Name             *string
+	// Geometry         *string
+	// IconName         *string
+	// IconGeometry     *string
+	// CropGeometry     *string
+	// Data             Size
+	// Flags            Size
+	// X                int
+	// Y                int
+	// Width            uint
+	// Height           uint
+	// MinWidth         uint
+	// MinHeight        uint
+	// WidthInc         uint
+	// HeightInc        uint
+	// BorderWidth      uint
+	// UsePixmap        MagickBooleanType
+	// Immutable        MagickBooleanType
+	// Shape            MagickBooleanType
+	// SharedMemory     MagickBooleanType
+	// Screen           int
+	// Ximage           *XImage
+	// MatteImage       *XImage
+	// HighlightStipple Pixmap
+	// ShadowStipple    Pixmap
+	// Pixmap           Pixmap
+	// Pixmaps          *Pixmap
+	// MattePixmap      Pixmap
+	// MattePixmaps     *Pixmap
+	// Attributes       XSetWindowAttributes // NOT POINTER
+	// WindowChanges    XWindowChanges // NOT POINTER
+	// SegmentInfo      *Void
+	// Mask             Long
+	// Orphan           MagickBooleanType
+	// Mapped           MagickBooleanType
+	// Stasis           MagickBooleanType
+	// Image            *Image
+	// Destroy          MagickBooleanType
+}
+
+type XResourceInfo struct {
+	ResourceDatabase *XrmDatabase
+	ImageInfo        *ImageInfo
+	QuantizeInfo     *QuantizeInfo
+	Colors           Size
+	CloseServer      MagickBooleanType
+	Backdrop         MagickBooleanType
+	BackgroundColor  *string
+	BorderColor      *string
+	ClientName       *string
+	Colormap         XColormapType
+	BorderWidth      uint
+	Delay            Size
+	ColorRecovery    MagickBooleanType
+	ConfirmExit      MagickBooleanType
+	ConfirmEdit      MagickBooleanType
+	DisplayGamma     *string
+	Font             *string
+	FontName         [MaxNumberFonts]*string
+	ForegroundColor  *string
+	DisplayWarnings  MagickBooleanType
+	GammaCorrect     MagickBooleanType
+	IconGeometry     *string
+	Iconic           MagickBooleanType
+	Immutable        MagickBooleanType
+	ImageGeometry    *string
+	MapType          *string
+	MatteColor       *string
+	Name             *string
+	Magnify          uint
+	Pause            uint
+	PenColors        [MaxNumberPens]*string
+	TextFont         *string
+	Title            *string
+	Quantum          int
+	Update           uint
+	UsePixmap        MagickBooleanType
+	UseSharedMemory  MagickBooleanType
+	UndoCache        Size
+	VisualType       *string
+	WindowGroup      *string
+	WindowId         *string
+	WriteFilename    *string
+	CopyImage        *Image
+	Gravity          int
+	HomeDirectory    [MaxTextExtent]Char
+}
+
+type AffineMatrix struct {
+	Sx, Rx, Ry, Sy, Tx, Ty float64
+}
+type AlignType Enum
+
+const (
+	UndefinedAlign AlignType = iota
+	LeftAlign
+	CenterAlign
+	RightAlign
+)
+
+type AlphaChannelType Enum
+
+const (
+	UndefinedAlphaChannel AlphaChannelType = iota
+	ActivateAlphaChannel
+	BackgroundAlphaChannel
+	CopyAlphaChannel
+	DeactivateAlphaChannel
+	ExtractAlphaChannel
+	OpaqueAlphaChannel
+	ResetAlphaChannel
+	SetAlphaChannel
+	ShapeAlphaChannel
+	TransparentAlphaChannel
+	FlattenAlphaChannel
+	RemoveAlphaChannel
+)
+
+type AnnotationStencil Enum
+
+const (
+	ForegroundStencil AnnotationStencil = iota
+	BackgroundStencil
+	OpaqueStencil
+	TransparentStencil
+)
+
+type BlobMode Enum
+
+const (
+	UndefinedBlobMode BlobMode = iota
+	ReadBlobMode
+	ReadBinaryBlobMode
+	WriteBlobMode
+	WriteBinaryBlobMode
+	AppendBlobMode
+	AppendBinaryBlobMode
+)
+
+type CacheMethods struct {
+	// GetVirtualPixelHandler          GetVirtualPixelHandler
+	// GetVirtualPixelsHandler         GetVirtualPixelsHandler
+	// GetVirtualIndexesFromHandler    GetVirtualIndexesFromHandler
+	// GetOneVirtualPixelFromHandler   GetOneVirtualPixelFromHandler
+	// GetAuthenticPixelsHandler       GetAuthenticPixelsHandler
+	// GetAuthenticIndexesFromHandler  GetAuthenticIndexesFromHandler
+	// GetOneAuthenticPixelFromHandler GetOneAuthenticPixelFromHandler
+	// GetAuthenticPixelsFromHandler   GetAuthenticPixelsFromHandler
+	// QueueAuthenticPixelsHandler     QueueAuthenticPixelsHandler
+	// SyncAuthenticPixelsHandler      SyncAuthenticPixelsHandler
+	// DestroyPixelHandler             DestroyPixelHandler
+}
+
+type CacheType Enum
+
+const (
+	UndefinedCache CacheType = iota
+	MemoryCache
+	MapCache
+	DiskCache
+	PingCache
+	DistributedCache
+)
+
+type ChannelStatistics struct {
+	Depth Size
+	Minima,
+	Maxima,
+	Sum,
+	SumSquared,
+	SumCubed,
+	SumFourthPower,
+	Mean,
+	Variance,
+	StandardDeviation,
+	Kurtosis,
+	Skewness float64
+}
+type ChannelFeatures struct {
+	AngularSecondMoment,
+	Contrast,
+	Correlation,
+	VarianceSumOfSquares,
+	InverseDifferenceMoment,
+	SumAverage,
+	SumVariance,
+	SumEntropy,
+	Entropy,
+	DifferenceVariance,
+	DifferenceEntropy,
+	MeasureOfCorrelation1,
+	MeasureOfCorrelation2,
+	MaximumCorrelationCoefficient [4]float64
+}
+
+type ChannelType Enum
+
+const (
+	RedChannel ChannelType = 1 << iota
+	GreenChannel
+	BlueChannel
+	AlphaChannel
+	_
+	BlackChannel
+	TrueAlphaChannel
+	RGBChannels
+	SyncChannels
+
+	DefaultChannels = ((AllChannels | SyncChannels) & ^OpacityChannel)
+
+	UndefinedChannel ChannelType = 0
+	GrayChannel                  = RedChannel
+	CyanChannel                  = RedChannel
+	MagentaChannel               = GreenChannel
+	YellowChannel                = BlueChannel
+	OpacityChannel               = AlphaChannel
+	matteChannel                 = AlphaChannel // Deprecated
+	IndexChannel                 = BlackChannel
+	GrayChannels                 = RGBChannels
+
+	CompositeChannels ChannelType = 0x2F
+	AllChannels       ChannelType = 0x7ffffff
+)
+
+type ChromaticityInfo struct {
+	RedPrimary,
+	GreenPrimary,
+	BluePrimary,
+	WhitePoint PrimaryInfo
+}
+
+type ClassType Enum
+
+const (
+	UndefinedClass ClassType = iota
+	DirectClass
+	PseudoClass
+)
+
+type ClipPathUnits Enum
+
+const (
+	UndefinedPathUnits ClipPathUnits = iota
+	UserSpace
+	UserSpaceOnUse
+	ObjectBoundingBox
+)
+
+type CoderInfo struct {
+	Path      *string
+	Magick    *string
+	Name      *string
+	Exempt    MagickBooleanType
+	Stealth   MagickBooleanType
+	Previous  *CoderInfo
+	next      *CoderInfo // Deprecated
+	Signature Size
+}
+type ColorInfo struct {
+	Path       *string
+	Name       *string
+	Compliance ComplianceType
+	Color      MagickPixelPacket
+	Exempt     MagickBooleanType
+	Stealth    MagickBooleanType
+	Previous   *ColorInfo
+	next       *ColorInfo // Deprecated
+	Signature  UnsignedLong
+}
+type ColorPacket struct {
+	Pixel PixelPacket
+	Index IndexPacket
+	Count MagickSizeType
+}
+type ColorspaceType Enum
+
+const (
+	UndefinedColorspace ColorspaceType = iota
+	RGBColorspace
+	GRAYColorspace
+	TransparentColorspace
+	OHTAColorspace
+	LabColorspace
+	XYZColorspace
+	YCbCrColorspace
+	YCCColorspace
+	YIQColorspace
+	YPbPrColorspace
+	YUVColorspace
+	CMYKColorspace
+	SRGBColorspace
+	HSBColorspace
+	HSLColorspace
+	HWBColorspace
+	Rec601LumaColorspace
+	Rec601YCbCrColorspace
+	Rec709LumaColorspace
+	Rec709YCbCrColorspace
+	LogColorspace
+	CMYColorspace
+	LuvColorspace
+	HCLColorspace
+	LCHColorspace
+	LMSColorspace
+	LCHabColorspace
+	LCHuvColorspace
+	scRGBColorspace
+	HSIColorspace
+	HSVColorspace
+	HCLpColorspace
+	YDbDrColorspace
+)
+
+type CommandOption Enum
+
+const (
+	MagickUndefinedOptions CommandOption = iota - 1
+	MagickAlignOptions
+	MagickAlphaOptions
+	MagickBooleanOptions
+	MagickCacheOptions
+	MagickChannelOptions
+	MagickClassOptions
+	MagickClipPathOptions
+	MagickCoderOptions
+	MagickColorOptions
+	MagickColorspaceOptions
+	MagickCommandOptions
+	MagickComposeOptions
+	MagickCompressOptions
+	MagickConfigureOptions
+	MagickDataTypeOptions
+	MagickDebugOptions
+	MagickDecorateOptions
+	MagickDelegateOptions
+	MagickDirectionOptions
+	MagickDisposeOptions
+	MagickDistortOptions
+	MagickDitherOptions
+	MagickEndianOptions
+	MagickEvaluateOptions
+	MagickFillRuleOptions
+	MagickFilterOptions
+	MagickFontOptions
+	MagickFontsOptions
+	MagickFormatOptions
+	MagickFunctionOptions
+	MagickGravityOptions
+	MagickIntentOptions
+	MagickInterlaceOptions
+	MagickInterpolateOptions
+	MagickKernelOptions
+	MagickLayerOptions
+	MagickLineCapOptions
+	MagickLineJoinOptions
+	MagickListOptions
+	MagickLocaleOptions
+	MagickLogEventOptions
+	MagickLogOptions
+	MagickMagicOptions
+	MagickMethodOptions
+	MagickMetricOptions
+	MagickMimeOptions
+	MagickModeOptions
+	MagickModuleOptions
+	MagickMorphologyOptions
+	MagickNoiseOptions
+	MagickOrientationOptions
+	MagickPixelIntensityOptions
+	MagickPolicyOptions
+	MagickPolicyDomainOptions
+	MagickPolicyRightsOptions
+	MagickPreviewOptions
+	MagickPrimitiveOptions
+	MagickQuantumFormatOptions
+	MagickResolutionOptions
+	MagickResourceOptions
+	MagickSparseColorOptions
+	MagickStatisticOptions
+	MagickStorageOptions
+	MagickStretchOptions
+	MagickStyleOptions
+	MagickThresholdOptions
+	MagickTypeOptions
+	MagickValidateOptions
+	MagickVirtualPixelOptionsOptions
+	MagickComplexOptions
+	MagickIntensityOptions
+)
+
+type ComplianceType Enum
+
+const (
+	SVGCompliance ComplianceType = 1 << iota
+	X11Compliance
+	XPMCompliance
+	AllCompliance       ComplianceType = 0x7FFFFFFF
+	UndefinedCompliance ComplianceType = 0
+	NoCompliance                       = UndefinedCompliance
+)
+
+type CompositeOperator Enum
+
+const (
+	UndefinedCompositeOp CompositeOperator = iota
+	NoCompositeOp
+	ModulusAddCompositeOp
+	AtopCompositeOp
+	BlendCompositeOp
+	BumpmapCompositeOp
+	ChangeMaskCompositeOp
+	ClearCompositeOp
+	ColorBurnCompositeOp
+	ColorDodgeCompositeOp
+	ColorizeCompositeOp
+	CopyBlackCompositeOp
+	CopyBlueCompositeOp
+	CopyCompositeOp
+	CopyCyanCompositeOp
+	CopyGreenCompositeOp
+	CopyMagentaCompositeOp
+	CopyOpacityCompositeOp
+	CopyRedCompositeOp
+	CopyYellowCompositeOp
+	DarkenCompositeOp
+	DstAtopCompositeOp
+	DstCompositeOp
+	DstInCompositeOp
+	DstOutCompositeOp
+	DstOverCompositeOp
+	DifferenceCompositeOp
+	DisplaceCompositeOp
+	DissolveCompositeOp
+	ExclusionCompositeOp
+	HardLightCompositeOp
+	HueCompositeOp
+	InCompositeOp
+	LightenCompositeOp
+	LinearLightCompositeOp
+	LuminizeCompositeOp
+	MinusDstCompositeOp
+	ModulateCompositeOp
+	MultiplyCompositeOp
+	OutCompositeOp
+	OverCompositeOp
+	OverlayCompositeOp
+	PlusCompositeOp
+	ReplaceCompositeOp
+	SaturateCompositeOp
+	ScreenCompositeOp
+	SoftLightCompositeOp
+	SrcAtopCompositeOp
+	SrcCompositeOp
+	SrcInCompositeOp
+	SrcOutCompositeOp
+	SrcOverCompositeOp
+	ModulusSubtractCompositeOp
+	ThresholdCompositeOp
+	XorCompositeOp
+	DivideDstCompositeOp
+	DistortCompositeOp
+	BlurCompositeOp
+	PegtopLightCompositeOp
+	VividLightCompositeOp
+	PinLightCompositeOp
+	LinearDodgeCompositeOp
+	LinearBurnCompositeOp
+	MathematicsCompositeOp
+	DivideSrcCompositeOp
+	MinusSrcCompositeOp
+	DarkenIntensityCompositeOp
+	LightenIntensityCompositeOp
+)
+
+type CompressionType Enum
+
+const (
+	UndefinedCompression CompressionType = iota
+	NoCompression
+	BZipCompression
+	DXT1Compression
+	DXT3Compression
+	DXT5Compression
+	FaxCompression
+	Group4Compression
+	JPEGCompression
+	JPEG2000Compression
+	LosslessJPEGCompression
+	LZWCompression
+	RLECompression
+	ZipCompression
+	ZipSCompression
+	PizCompression
+	Pxr24Compression
+	B44Compression
+	B44ACompression
+	LZMACompression
+	JBIG1Compression
+	JBIG2Compression
+)
+
+type ConfigureInfo struct {
+	Path      *string
+	Name      *string
+	Value     *string
+	Exempt    MagickBooleanType
+	Stealth   MagickBooleanType
+	Previous  *ConfigureInfo
+	next      *ConfigureInfo // Deprecated
+	Signature Size
+}
+
+type DecorationType Enum
+
+const (
+	UndefinedDecoration DecorationType = iota
+	NoDecoration
+	UnderlineDecoration
+	OverlineDecoration
+	LineThroughDecoration
+)
+
+type DirectionType Enum
+
+const (
+	UndefinedDirection DirectionType = iota
+	RightToLeftDirection
+	LeftToRightDirection
+)
+
+type DisposeType Enum
+
+const (
+	UnrecognizedDispose DisposeType = iota
+	NoneDispose
+	BackgroundDispose
+	PreviousDispose
+	UndefinedDispose = UnrecognizedDispose
+)
+
+type DistortImageMethod Enum
+
+const (
+	UndefinedDistortion DistortImageMethod = iota
+	AffineDistortion
+	AffineProjectionDistortion
+	ScaleRotateTranslateDistortion
+	PerspectiveDistortion
+	PerspectiveProjectionDistortion
+	BilinearForwardDistortion
+	BilinearReverseDistortion
+	PolynomialDistortion
+	ArcDistortion
+	PolarDistortion
+	DePolarDistortion
+	Cylinder2PlaneDistortion
+	Plane2CylinderDistortion
+	BarrelDistortion
+	BarrelInverseDistortion
+	ShepardsDistortion
+	ResizeDistortion
+	SentinelDistortion
+	BilinearDistortion = BilinearForwardDistortion
+)
+
+type DitherMethod Enum
+
+const (
+	UndefinedDitherMethod DitherMethod = iota
+	NoDitherMethod
+	RiemersmaDitherMethod
+	FloydSteinbergDitherMethod
+)
+
+type DrawInfo struct {
+	Primitive        *string
+	Geometry         *string
+	Viewbox          RectangleInfo
+	Affine           AffineMatrix
+	Gravity          GravityType
+	Fill             PixelPacket
+	Stroke           PixelPacket
+	StrokeWidth      float64
+	Gradient         GradientInfo
+	FillPattern      *Image
+	Tile             *Image
+	StrokePattern    *Image
+	StrokeAntialias  MagickBooleanType
+	TextAntialias    MagickBooleanType
+	FillRule         FillRule
+	Linecap          LineCap
+	Linejoin         LineJoin
+	Miterlimit       Size
+	DashOffset       float64
+	Decorate         DecorationType
+	Compose          CompositeOperator
+	Text             *string
+	Face             Size
+	Font             *string
+	Metrics          *string
+	Family           *string
+	Style            StyleType
+	Stretch          StretchType
+	Weight           Size
+	Encoding         *string
+	Pointsize        float64
+	Density          *string
+	Align            AlignType
+	Undercolor       PixelPacket
+	BorderColor      PixelPacket
+	ServerName       *string
+	DashPattern      *float64
+	ClipMask         *string
+	Bounds           SegmentInfo
+	ClipUnits        ClipPathUnits
+	Opacity          Quantum
+	Render           MagickBooleanType
+	ElementReference ElementReference
+	Debug            MagickBooleanType
+	Signature        Size
+	Kerning          float64
+	InterwordSpacing float64
+	InterlineSpacing float64
+	Direction        DirectionType
+}
+type DuplexTransferImageViewMethod func(
+	*ImageView, *ImageView, *ImageView, SSize, int,
+	*Void) MagickBooleanType
+type DuplexTransferPixelViewMethod func(
+	*PixelView, *PixelView, *PixelView, *Void) bool
+type DuplexTransferWandViewMethod func(
+	*WandView, *WandView, *WandView, SSize, int, *Void) bool
+
+type ElementReference struct {
+	Id        *string
+	Type      ReferenceType
+	Gradient  GradientInfo
+	Signature Size
+	Previous  *ElementReference
+	Next      *ElementReference
+}
+type ElementType Enum
+
+const (
+	UndefinedElement ElementType = iota
+	PointElement
+	LineElement
+	RectangleElement
+	FillRectangleElement
+	CircleElement
+	FillCircleElement
+	EllipseElement
+	FillEllipseElement
+	PolygonElement
+	FillPolygonElement
+	ColorElement
+	MatteElement
+	TextElement
+	ImageElement
+)
+
+type EndianType Enum
+
+const (
+	UndefinedEndian EndianType = iota
+	LSBEndian
+	MSBEndian
+)
+
+type ErrorInfo struct {
+	MeanErrorPerPixel,
+	NormalizedMeanError,
+	NormalizedMaximumError float64
+}
+type ExceptionInfo struct {
+	Severity    ExceptionType
+	ErrorNumber int
+	Reason      *string
+	Description *string
+	Exceptions  *Void
+	Relinquish  MagickBooleanType
+	Semaphore   *SemaphoreInfo
+	Signature   Size
+}
+
+type ExceptionType Enum
+
+const (
+	UndefinedException        ExceptionType = 0
+	WarningException          ExceptionType = 300
+	ResourceLimitWarning      ExceptionType = 300
+	TypeWarning               ExceptionType = 305
+	OptionWarning             ExceptionType = 310
+	DelegateWarning           ExceptionType = 315
+	MissingDelegateWarning    ExceptionType = 320
+	CorruptImageWarning       ExceptionType = 325
+	FileOpenWarning           ExceptionType = 330
+	BlobWarning               ExceptionType = 335
+	StreamWarning             ExceptionType = 340
+	CacheWarning              ExceptionType = 345
+	CoderWarning              ExceptionType = 350
+	FilterWarning             ExceptionType = 352
+	ModuleWarning             ExceptionType = 355
+	DrawWarning               ExceptionType = 360
+	ImageWarning              ExceptionType = 365
+	WandWarning               ExceptionType = 370
+	RandomWarning             ExceptionType = 375
+	XServerWarning            ExceptionType = 380
+	MonitorWarning            ExceptionType = 385
+	RegistryWarning           ExceptionType = 390
+	ConfigureWarning          ExceptionType = 395
+	PolicyWarning             ExceptionType = 399
+	ErrorException            ExceptionType = 400
+	ResourceLimitError        ExceptionType = 400
+	TypeError                 ExceptionType = 405
+	OptionError               ExceptionType = 410
+	DelegateError             ExceptionType = 415
+	MissingDelegateError      ExceptionType = 420
+	CorruptImageError         ExceptionType = 425
+	FileOpenError             ExceptionType = 430
+	BlobError                 ExceptionType = 435
+	StreamError               ExceptionType = 440
+	CacheError                ExceptionType = 445
+	CoderError                ExceptionType = 450
+	FilterError               ExceptionType = 452
+	ModuleError               ExceptionType = 455
+	DrawError                 ExceptionType = 460
+	ImageError                ExceptionType = 465
+	WandError                 ExceptionType = 470
+	RandomError               ExceptionType = 475
+	XServerError              ExceptionType = 480
+	MonitorError              ExceptionType = 485
+	RegistryError             ExceptionType = 490
+	ConfigureError            ExceptionType = 495
+	PolicyError               ExceptionType = 499
+	FatalErrorException       ExceptionType = 700
+	ResourceLimitFatalError   ExceptionType = 700
+	TypeFatalError            ExceptionType = 705
+	OptionFatalError          ExceptionType = 710
+	DelegateFatalError        ExceptionType = 715
+	MissingDelegateFatalError ExceptionType = 720
+	CorruptImageFatalError    ExceptionType = 725
+	FileOpenFatalError        ExceptionType = 730
+	BlobFatalError            ExceptionType = 735
+	StreamFatalError          ExceptionType = 740
+	CacheFatalError           ExceptionType = 745
+	CoderFatalError           ExceptionType = 750
+	FilterFatalError          ExceptionType = 752
+	ModuleFatalError          ExceptionType = 755
+	DrawFatalError            ExceptionType = 760
+	ImageFatalError           ExceptionType = 765
+	WandFatalError            ExceptionType = 770
+	RandomFatalError          ExceptionType = 775
+	XServerFatalError         ExceptionType = 780
+	MonitorFatalError         ExceptionType = 785
+	RegistryFatalError        ExceptionType = 790
+	ConfigureFatalError       ExceptionType = 795
+	PolicyFatalError          ExceptionType = 799
+)
+
+type FillRule Enum
+
+const (
+	UndefinedRule FillRule = iota
+	EvenOddRule
+	NonZeroRule
+)
+
+type FilterTypes Enum
+
+const (
+	UndefinedFilter FilterTypes = iota
+	PointFilter
+	BoxFilter
+	TriangleFilter
+	HermiteFilter
+	HanningFilter
+	HammingFilter
+	BlackmanFilter
+	GaussianFilter
+	QuadraticFilter
+	CubicFilter
+	CatromFilter
+	MitchellFilter
+	JincFilter
+	SincFilter
+	SincFastFilter
+	KaiserFilter
+	WelshFilter
+	ParzenFilter
+	BohmanFilter
+	BartlettFilter
+	LagrangeFilter
+	LanczosFilter
+	LanczosSharpFilter
+	Lanczos2Filter
+	Lanczos2SharpFilter
+	RobidouxFilter
+	RobidouxSharpFilter
+	CosineFilter
+	SplineFilter
+	LanczosRadiusFilter
+	SentinelFilter
+)
+
+type FrameInfo struct {
+	Width, Height                Size
+	X, Y, InnerBevel, OuterBevel SSize
+}
+type GeometryInfo struct{ Rho, Sigma, Xi, Psi, Chi float64 }
+type GhostInfo struct {
+	exit           func(*struct{}) int
+	initWithArgs   func(*struct{}, int, **Char) int
+	newInstance    func(**struct{}, *Void) int
+	runString      func(*struct{}, string, int, *int) int
+	deleteInstance func(*struct{})
+}
+type GradientInfo struct {
+	Type           GradientType
+	BoundingBox    RectangleInfo
+	GradientVector SegmentInfo
+	Stops          *StopInfo
+	NumberStops    Size
+	Spread         SpreadMethod
+	Debug          MagickBooleanType
+	Signature      Size
+	Center         PointInfo
+	Radius         MagickRealType
+}
+type GradientType Enum
+
+const (
+	UndefinedGradient GradientType = iota
+	LinearGradient
+	RadialGradient
+)
+
+type GravityType Enum
+
+const (
+	UndefinedGravity GravityType = iota
+	NorthWestGravity
+	NorthGravity
+	NorthEastGravity
+	WestGravity
+	CenterGravity
+	EastGravity
+	SouthWestGravity
+	SouthGravity
+	SouthEastGravity
+	StaticGravity
+	ForgetGravity = UndefinedGravity
+)
+
+type Image struct {
+	StorageClass           ClassType
+	Colorspace             ColorspaceType
+	Compression            CompressionType
+	Quality                Size
+	Orientation            OrientationType
+	Taint_                 MagickBooleanType
+	Matte                  MagickBooleanType
+	Columns                Size
+	Rows                   Size
+	Depth_                 Size
+	Colors                 Size
+	Colormap               *PixelPacket
+	BackgroundColor        PixelPacket
+	BorderColor            PixelPacket
+	MatteColor             PixelPacket
+	Gamma_                 float64
+	Chromaticity           ChromaticityInfo
+	RenderingIntent        RenderingIntent
+	Profiles               *Void
+	Units                  ResolutionType
+	Montage                *string
+	Directory              *string
+	Geometry_              *string
+	Offset                 SSize
+	XResolution            float64
+	YResolution            float64
+	Page                   RectangleInfo
+	ExtractInfo            RectangleInfo
+	TileInfo               RectangleInfo
+	Bias                   float64
+	Blur_                  float64
+	Fuzz                   float64
+	Filter_                FilterTypes
+	Interlace              InterlaceType
+	Endian                 EndianType
+	Gravity                GravityType
+	Compose                CompositeOperator
+	Dispose_               DisposeType
+	ClipMask_              *Image
+	Scene                  Size
+	Delay                  Size
+	TicksPerSecond         SSize
+	Iterations             Size
+	TotalColors            Size
+	StartLoop              SSize
+	Error                  ErrorInfo
+	Timer                  TimerInfo
+	ProgressMonitor        MagickProgressMonitor
+	ClientData             *Void
+	Cache                  *Void
+	Attributes             *Void
+	Ascii85                *Ascii85Info
+	Filename               [MaxTextExtent]Char
+	MagickFilename         [MaxTextExtent]Char
+	Magick                 [MaxTextExtent]Char
+	MagickColumns          Size
+	MagickRows             Size
+	Exception_             ExceptionInfo
+	Debug                  MagickBooleanType
+	ReferenceCount         SSize
+	Semaphore              *SemaphoreInfo
+	ColorProfile           ProfileInfo
+	IptcProfile            ProfileInfo
+	GenericProfile         *ProfileInfo
+	GenericProfiles        Size
+	Signature_             Size
+	Previous               *Image
+	List                   *Image
+	Next                   *Image
+	Interpolate            InterpolatePixelMethod
+	BlackPointCompensation MagickBooleanType
+	TransparentColor       PixelPacket
+	Mask_                  *Image
+	TileOffset             RectangleInfo
+	Properties             *Void
+	Artifacts              *Void
+	Type_                  ImageType
+	Dither                 MagickBooleanType
+	Extent_                MagickSizeType
+	Ping                   MagickBooleanType
+	Channels_              Size
+	Timestamp              Time
+	Intensity              PixelIntensityMethod
+}
+type ImageAttribute struct {
+	Key         *string
+	Value       *string
+	Compression MagickBooleanType
+	Previous    *ImageAttribute
+	next        *ImageAttribute // Deprecated
+}
+type ImageInfo struct {
+	Compression        CompressionType
+	Orientation        OrientationType
+	Temporary          MagickBooleanType
+	Adjoin             MagickBooleanType
+	Affirm             MagickBooleanType
+	Antialias          MagickBooleanType
+	Size               *string
+	Extract            *string
+	Page               *string
+	Scenes             *string
+	Scene              Size
+	NumberScenes       Size
+	Depth              Size
+	Interlace          InterlaceType
+	Endian             EndianType
+	Units              ResolutionType
+	Quality            Size
+	SamplingFactor     *string
+	ServerName         *string
+	Font               *string
+	Texture            *string
+	Density            *string
+	Pointsize          float64
+	Fuzz               float64
+	BackgroundColor    PixelPacket
+	BorderColor        PixelPacket
+	MatteColor         PixelPacket
+	Dither             MagickBooleanType
+	Monochrome         MagickBooleanType
+	Colors             Size
+	Colorspace         ColorspaceType
+	Type               ImageType
+	PreviewType        PreviewType
+	Group              SSize
+	Ping               MagickBooleanType
+	Verbose            MagickBooleanType
+	View               *string
+	Authenticate       *string
+	Channel            ChannelType
+	Attributes         *Image
+	Options            *Void
+	ProgressMonitor    MagickProgressMonitor
+	ClientData         *Void
+	Cache              *Void
+	Stream             StreamHandler
+	File               *FILE
+	Blob               *Void
+	Length             Size
+	Magick             [MaxTextExtent]Char
+	Unique             [MaxTextExtent]Char
+	Zero               [MaxTextExtent]Char
+	Filename           [MaxTextExtent]Char
+	Debug              MagickBooleanType
+	Tile               *string
+	Subimage           Size
+	Subrange           Size
+	Pen                PixelPacket
+	Signature          Size
+	VirtualPixelMethod VirtualPixelMethod
+	TransparentColor   PixelPacket
+	Profile            *Void
+	Synchronize        MagickBooleanType
+}
+type ImageLayerMethod Enum
+
+const (
+	UndefinedLayer ImageLayerMethod = iota
+	CoalesceLayer
+	CompareAnyLayer
+	CompareClearLayer
+	CompareOverlayLayer
+	DisposeLayer
+	OptimizeLayer
+	OptimizeImageLayer
+	OptimizePlusLayer
+	OptimizeTransLayer
+	RemoveDupsLayer
+	RemoveZeroLayer
+	CompositeLayer
+	MergeLayer
+	FlattenLayer
+	MosaicLayer
+	TrimBoundsLayer
+)
+
+type ImageType Enum
+
+const (
+	UndefinedType ImageType = iota
+	BilevelType
+	GrayscaleType
+	GrayscaleMatteType
+	PaletteType
+	PaletteMatteType
+	TrueColorType
+	TrueColorMatteType
+	ColorSeparationType
+	ColorSeparationMatteType
+	OptimizeType
+	PaletteBilevelMatteType
+)
+
+type InterlaceType Enum
+
+const (
+	UndefinedInterlace InterlaceType = iota
+	NoInterlace
+	LineInterlace
+	PlaneInterlace
+	PartitionInterlace
+	GIFInterlace
+	JPEGInterlace
+	PNGInterlace
+)
+
+type InterpolatePixelMethod Enum
+
+const (
+	UndefinedInterpolatePixel InterpolatePixelMethod = iota
+	AverageInterpolatePixel
+	BicubicInterpolatePixel
+	BilinearInterpolatePixel
+	FilterInterpolatePixel
+	IntegerInterpolatePixel
+	MeshInterpolatePixel
+	NearestNeighborInterpolatePixel
+	SplineInterpolatePixel
+	Average9InterpolatePixel
+	Average16InterpolatePixel
+	BlendInterpolatePixel
+	BackgroundInterpolatePixel
+	CatromInterpolatePixel
+)
+
+type KernelInfo struct {
+	Type          KernelInfoType
+	Width, Height Size
+	X, Y          SSize
+	Values        *float64
+	Minimum,
+	Maximum,
+	NegativeRange,
+	PositiveRange,
+	Angle float64
+	Next      *KernelInfo
+	Signature Size
+}
+type KernelInfoType Enum
+
+const (
+	UndefinedKernel KernelInfoType = iota
+	UnityKernel
+	GaussianKernel
+	DoGKernel
+	LoGKernel
+	BlurKernel
+	CometKernel
+	LaplacianKernel
+	SobelKernel
+	FreiChenKernel
+	RobertsKernel
+	PrewittKernel
+	CompassKernel
+	KirschKernel
+	DiamondKernel
+	SquareKernel
+	RectangleKernel
+	OctagonKernel
+	DiskKernel
+	PlusKernel
+	CrossKernel
+	RingKernel
+	PeaksKernel
+	EdgesKernel
+	CornersKernel
+	DiagonalsKernel
+	LineEndsKernel
+	LineJunctionsKernel
+	RidgesKernel
+	ConvexHullKernel
+	ThinSEKernel
+	SkeletonKernel
+	ChebyshevKernel
+	ManhattanKernel
+	OctagonalKernel
+	EuclideanKernel
+	UserDefinedKernel
+	BinomialKernel
+)
+
+type LineCap Enum
+
+const (
+	UndefinedCap LineCap = iota
+	ButtCap
+	RoundCap
+	SquareCap
+)
+
+type LineJoin Enum
+
+const (
+	UndefinedJoin LineJoin = iota
+	MiterJoin
+	RoundJoin
+	BevelJoin
+)
+
+type LocaleInfo struct {
+	Path      *string
+	Tag       *string
+	Message   *string
+	Stealth   MagickBooleanType
+	Previous  *LocaleInfo
+	next      *LocaleInfo // Deprecated
+	Signature Size
+}
+
+type LogEventType Enum
+
+const (
+	TraceEvent LogEventType = 1 << iota
+	AnnotateEvent
+	BlobEvent
+	CacheEvent
+	CoderEvent
+	ConfigureEvent
+	DeprecateEvent
+	DrawEvent
+	ExceptionEvent
+	ImageEvent
+	LocaleEvent
+	ModuleEvent
+	PolicyEvent
+	ResourceEvent
+	TransformEvent
+	_ // See UserEvent
+	WandEvent
+	X11Event
+	AccelerateEvent
+	UndefinedEvents LogEventType = 0
+	NoEvents                     = UndefinedEvents
+	UserEvent       LogEventType = 0x9000 // Weird
+	AllEvents       LogEventType = 0x7FFFFFFF
+)
+
+// Changed to bool for uses other than in structs
+type MagickBooleanType Enum
+
+const (
+	MagickFalse MagickBooleanType = iota
+	MagickTrue
+)
+
+type MagickCommand func(*ImageInfo, int, []string, []string, *ExceptionInfo) bool
+
+type MagickFunction Enum
+
+const (
+	UndefinedFunction MagickFunction = iota
+	PolynomialFunction
+	SinusoidFunction
+	ArcsinFunction
+	ArctanFunction
+)
+
+type MagicInfo struct {
+	Path      *string
+	Name      *string
+	Target    *string
+	Magic     *byte
+	Length    Size
+	Offset    MagickOffsetType
+	Exempt    MagickBooleanType
+	Stealth   MagickBooleanType
+	Previous  *MagicInfo
+	next      *MagicInfo // Deprecated
+	Signature Size
+}
+
+type MagickEvaluateOperator Enum
+
+const (
+	UndefinedEvaluateOperator MagickEvaluateOperator = iota
+	AddEvaluateOperator
+	AndEvaluateOperator
+	DivideEvaluateOperator
+	LeftShiftEvaluateOperator
+	MaxEvaluateOperator
+	MinEvaluateOperator
+	MultiplyEvaluateOperator
+	OrEvaluateOperator
+	RightShiftEvaluateOperator
+	SetEvaluateOperator
+	SubtractEvaluateOperator
+	XorEvaluateOperator
+	PowEvaluateOperator
+	LogEvaluateOperator
+	ThresholdEvaluateOperator
+	ThresholdBlackEvaluateOperator
+	ThresholdWhiteEvaluateOperator
+	GaussianNoiseEvaluateOperator
+	ImpulseNoiseEvaluateOperator
+	LaplacianNoiseEvaluateOperator
+	MultiplicativeNoiseEvaluateOperator
+	PoissonNoiseEvaluateOperator
+	UniformNoiseEvaluateOperator
+	CosineEvaluateOperator
+	SineEvaluateOperator
+	AddModulusEvaluateOperator
+	MeanEvaluateOperator
+	AbsEvaluateOperator
+	ExponentialEvaluateOperator
+	MedianEvaluateOperator
+	SumEvaluateOperator
+)
+
+type MagickPixelPacket struct {
+	StorageClass ClassType
+	Colorspace   ColorspaceType
+	Matte        MagickBooleanType
+	Fuzz         float64
+	Depth        Size
+	Red          MagickRealType
+	Green        MagickRealType
+	Blue         MagickRealType
+	Opacity      MagickRealType
+	Index        MagickRealType
+}
+
+type MagickProgressMonitor func(string, MagickOffsetType, MagickSizeType, *Void) bool
+
+type MapMode Enum
+
+const (
+	ReadMode MapMode = iota
+	WriteMode
+	IOMode
+)
+
+type MetricType Enum
+
+const (
+	UndefinedMetric MetricType = iota
+	AbsoluteErrorMetric
+	MeanAbsoluteErrorMetric
+	MeanErrorPerPixelMetric
+	MeanSquaredErrorMetric
+	PeakAbsoluteErrorMetric
+	PeakSignalToNoiseRatioMetric
+	RootMeanSquaredErrorMetric
+	NormalizedCrossCorrelationErrorMetric
+	FuzzErrorMetric
+	UndefinedErrorMetric = UndefinedMetric
+)
+
+type ModuleInfo struct {
+	Path             *string
+	Tag              *string
+	Handle           *Void
+	UnregisterModule func()
+	RegisterModule   func() Size
+	LoadTime         Time
+	Stealth          MagickBooleanType
+	Previous         *ModuleInfo
+	next             *ModuleInfo // Deprecated
+	Signature        Size
+}
+
+type MonitorHandler func(string, MagickOffsetType, MagickSizeType, *ExceptionInfo) bool
+type MontageInfo struct {
+	Geometry        *string
+	Tile            *string
+	Title           *string
+	Frame           *string
+	Texture         *string
+	Font            *string
+	Pointsize       float64
+	BorderWidth     Size
+	Shadow          MagickBooleanType
+	Fill            PixelPacket
+	Stroke          PixelPacket
+	BackgroundColor PixelPacket
+	BorderColor     PixelPacket
+	MatteColor      PixelPacket
+	Gravity         GravityType
+	Filename        [MaxTextExtent]Char
+	Debug           MagickBooleanType
+	Signature       Size
+}
+type MontageMode Enum
+
+const (
+	UndefinedMode MontageMode = iota
+	FrameMode
+	UnframeMode
+	ConcatenateMode
+)
+
+type MorphologyMethod Enum
+
+const (
+	UndefinedMorphology MorphologyMethod = iota
+	ConvolveMorphology
+	CorrelateMorphology
+	ErodeMorphology
+	DilateMorphology
+	ErodeIntensityMorphology
+	DilateIntensityMorphology
+	DistanceMorphology
+	OpenMorphology
+	CloseMorphology
+	OpenIntensityMorphology
+	CloseIntensityMorphology
+	SmoothMorphology
+	EdgeInMorphology
+	EdgeOutMorphology
+	EdgeMorphology
+	TopHatMorphology
+	BottomHatMorphology
+	HitAndMissMorphology
+	ThinningMorphology
+	ThickenMorphology
+	VoronoiMorphology
+	IterativeDistanceMorphology
+)
+
+type NexusInfo struct {
+	Mapped              MagickBooleanType
+	Region              RectangleInfo
+	Length              MagickSizeType
+	Cache               *PixelPacket
+	Pixels              *PixelPacket
+	AuthenticPixelCache MagickBooleanType
+	Indexes             *IndexPacket
+	Signature           Size
+}
+
+type NoiseType Enum
+
+const (
+	UndefinedNoise NoiseType = iota
+	UniformNoise
+	GaussianNoise
+	MultiplicativeGaussianNoise
+	ImpulseNoise
+	LaplacianNoise
+	PoissonNoise
+	RandomNoise
+)
+
+type OrientationType Enum
+
+const (
+	UndefinedOrientation OrientationType = iota
+	TopLeftOrientation
+	TopRightOrientation
+	BottomRightOrientation
+	BottomLeftOrientation
+	LeftTopOrientation
+	RightTopOrientation
+	RightBottomOrientation
+	LeftBottomOrientation
+)
+
+type PaintMethod Enum
+
+const (
+	UndefinedMethod PaintMethod = iota
+	PointMethod
+	ReplaceMethod
+	FloodfillMethod
+	FillToBorderMethod
+	ResetMethod
+)
+
+type PathType Enum
+
+const (
+	UndefinedPath PathType = iota
+	MagickPath
+	RootPath
+	HeadPath
+	TailPath
+	BasePath
+	ExtensionPath
+	SubimagePath
+	CanonicalPath
+)
+
+// Little-endian
+type PixelPacket struct {
+	Blue, Green, Red, Opacity Quantum
+}
+
+type PixelPacketBE struct {
+	Red, Green, Blue, Opacity Quantum
+}
+
+type PointInfo struct {
+	X, Y float64
+}
+
+type PolicyDomain Enum
+
+const (
+	UndefinedPolicyDomain PolicyDomain = iota
+	CoderPolicyDomain
+	DelegatePolicyDomain
+	FilterPolicyDomain
+	PathPolicyDomain
+	ResourcePolicyDomain
+	SystemPolicyDomain
+)
+
+type PolicyRights Enum
+
+const (
+	ReadPolicyRights PolicyRights = 1 << iota
+	WritePolicyRights
+	ExecutePolicyRights
+	UndefinedPolicyRights PolicyRights = 0
+	NoPolicyRights                     = UndefinedPolicyRights
+)
+
+type PreviewType Enum
+
+const (
+	UndefinedPreview PreviewType = iota
+	RotatePreview
+	ShearPreview
+	RollPreview
+	HuePreview
+	SaturationPreview
+	BrightnessPreview
+	GammaPreview
+	SpiffPreview
+	DullPreview
+	GrayscalePreview
+	QuantizePreview
+	DespecklePreview
+	ReduceNoisePreview
+	AddNoisePreview
+	SharpenPreview
+	BlurPreview
+	ThresholdPreview
+	EdgeDetectPreview
+	SpreadPreview
+	SolarizePreview
+	ShadePreview
+	RaisePreview
+	SegmentPreview
+	SwirlPreview
+	ImplodePreview
+	WavePreview
+	OilPaintPreview
+	CharcoalDrawingPreview
+	JPEGPreview
+)
+
+type PrimaryInfo struct {
+	X, Y, Z float64
+}
+
+type PrimitiveInfo struct {
+	Point       PointInfo
+	Coordinates Size
+	Primitive   PrimitiveType
+	Method      PaintMethod
+	Text        *string
+}
+
+type PrimitiveType Enum
+
+const (
+	UndefinedPrimitive PrimitiveType = iota
+	PointPrimitive
+	LinePrimitive
+	RectanglePrimitive
+	RoundRectanglePrimitive
+	ArcPrimitive
+	EllipsePrimitive
+	CirclePrimitive
+	PolylinePrimitive
+	PolygonPrimitive
+	BezierPrimitive
+	ColorPrimitive
+	MattePrimitive
+	TextPrimitive
+	ImagePrimitive
+	PathPrimitive
+)
+
+type ProfileInfo struct {
+	Name      *string
+	Length    Size
+	Info      *byte
+	Signature Size
+}
+
+type QuantizeInfo struct {
+	NumberColors Size
+	TreeDepth    Size
+	Dither       MagickBooleanType
+	Colorspace   ColorspaceType
+	MeasureError MagickBooleanType
+	Signature    Size
+	DitherMethod DitherMethod
+}
+
+type QuantumAlphaType Enum
+
+const (
+	UndefinedQuantumAlpha QuantumAlphaType = iota
+	AssociatedQuantumAlpha
+	DisassociatedQuantumAlpha
+)
+
+type QuantumFormatType Enum
+
+const (
+	UndefinedQuantumFormat QuantumFormatType = iota
+	FloatingPointQuantumFormat
+	SignedQuantumFormat
+	UnsignedQuantumFormat
+)
+
+type QuantumInfo struct {
+	Depth         Size
+	Quantum       Size
+	Format        QuantumFormatType
+	Minimum       float64
+	Maximum       float64
+	Scale         float64
+	Pad           Size
+	MinIsWhite    MagickBooleanType
+	Pack          MagickBooleanType
+	AlphaType     QuantumAlphaType
+	NumberThreads Size
+	Pixels        **byte
+	Extent        Size
+	Endian        EndianType
+	State         QuantumState
+	Semaphore     *SemaphoreInfo
+	Signature     Size
+}
+
+type QuantumState struct {
+	InverseScale float64
+	Pixel        uint
+	Bits         Size
+	Mask         *uint
+}
+
+type QuantumType Enum
+
+const (
+	UndefinedQuantum QuantumType = iota
+	AlphaQuantum
+	BlackQuantum
+	BlueQuantum
+	CMYKAQuantum
+	CMYKQuantum
+	CyanQuantum
+	GrayAlphaQuantum
+	GrayQuantum
+	GreenQuantum
+	IndexAlphaQuantum
+	IndexQuantum
+	MagentaQuantum
+	OpacityQuantum
+	RedQuantum
+	RGBAQuantum
+	BGRAQuantum
+	RGBOQuantum
+	RGBQuantum
+	YellowQuantum
+	grayPadQuantum // Deprecated
+	RGBPadQuantum
+	CbYCrYQuantum
+	CbYCrQuantum
+	CbYCrAQuantum
+	CMYKOQuantum
+	BGRQuantum
+	BGROQuantum
+)
+
+type RectangleInfo struct {
+	Width, Height Size
+	X, Y          Long
+}
+
+type ReferenceType Enum
+
+const (
+	UndefinedReference ReferenceType = iota
+	GradientReference
+)
+
+type RegistryType Enum
+
+const (
+	UndefinedRegistryType RegistryType = iota
+	ImageRegistryType
+	ImageInfoRegistryType
+	StringRegistryType
+)
+
+type RenderingIntent Enum
+
+const (
+	UndefinedIntent RenderingIntent = iota
+	SaturationIntent
+	PerceptualIntent
+	AbsoluteIntent
+	RelativeIntent
+)
+
+type ResolutionType Enum
+
+const (
+	UndefinedResolution ResolutionType = iota
+	PixelsPerInchResolution
+	PixelsPerCentimeterResolution
+)
+
+type ResourceType Enum
+
+const (
+	UndefinedResource ResourceType = iota
+	AreaResource
+	DiskResource
+	FileResource
+	MapResource
+	MemoryResource
+	ThreadResource
+	TimeResource
+	ThrottleResource
+)
+
+type SegmentInfo struct {
+	X1, Y1, X2, Y2 float64
+}
+
+type SparseColorMethod Enum
+
+const (
+	// Without the type, godoc doesn't recognise ownership
+	UndefinedColorInterpolate   SparseColorMethod = SparseColorMethod(UndefinedDistortion)
+	BarycentricColorInterpolate                   = SparseColorMethod(AffineDistortion)
+	BilinearColorInterpolate                      = SparseColorMethod(BilinearReverseDistortion)
+	PolynomialColorInterpolate                    = SparseColorMethod(PolynomialDistortion)
+	ShepardsColorInterpolate                      = SparseColorMethod(ShepardsDistortion)
+	VoronoiColorInterpolate                       = SparseColorMethod(SentinelDistortion)
+	InverseColorInterpolate                       = VoronoiColorInterpolate + 1
+)
+
+type SpreadMethod Enum
+
+const (
+	UndefinedSpread SpreadMethod = iota
+	PadSpread
+	ReflectSpread
+	RepeatSpread
+)
+
+type StatisticType Enum
+
+const (
+	UndefinedStatistic StatisticType = iota
+	GradientStatistic
+	MaximumStatistic
+	MeanStatistic
+	MedianStatistic
+	MinimumStatistic
+	ModeStatistic
+	NonpeakStatistic
+	StandardDeviationStatistic
+)
+
+type StopInfo struct {
+	Color  MagickPixelPacket
+	Offset MagickRealType
+}
+
+type StorageType Enum
+
+const (
+	UndefinedPixel StorageType = iota
+	CharPixel
+	float64Pixel
+	FloatPixel
+	IntegerPixel
+	LongPixel
+	QuantumPixel
+	ShortPixel
+)
+
+type StreamHandler func(*Image, *Void, Size) Size
+
+type StretchType Enum
+
+const (
+	UndefinedStretch StretchType = iota
+	NormalStretch
+	UltraCondensedStretch
+	ExtraCondensedStretch
+	CondensedStretch
+	SemiCondensedStretch
+	SemiExpandedStretch
+	ExpandedStretch
+	ExtraExpandedStretch
+	UltraExpandedStretch
+	AnyStretch
+)
+
+type StringInfo struct {
+	Path_     [MaxTextExtent]Char
+	Datum_    *byte
+	Length_   Size
+	Signature Size
+}
+type StyleType Enum
+
+const (
+	UndefinedStyle StyleType = iota
+	NormalStyle
+	ItalicStyle
+	ObliqueStyle
+	AnyStyle
+)
+
+type Timer struct {
+	Start,
+	Stop,
+	Total float64
+}
+type TimerInfo struct {
+	User      Timer
+	Elapsed   Timer
+	State     TimerState
+	Signature Size
+}
+type TimerState Enum
+
+const (
+	UndefinedTimerState TimerState = iota
+	StoppedTimerState
+	RunningTimerState
+)
+
+type TransferImageViewMethod func(*ImageView, *ImageView, SSize, int, *Void) MagickBooleanType
+type TransferPixelViewMethod func(*PixelView, *PixelView, *Void) bool
+type TransferWandViewMethod func(*WandView, *WandView, SSize, int, *Void) bool
+type TypeInfo struct {
+	Face        Size
+	Path        *string
+	Name        *string
+	Description *string
+	Family      *string
+	Style       StyleType
+	Stretch     StretchType
+	Weight      Size
+	Encoding    *string
+	Foundry     *string
+	Format      *string
+	Metrics     *string
+	Glyphs      *string
+	Stealth     MagickBooleanType
+	Previous    *TypeInfo
+	next        *TypeInfo // Deprecated
+	Signature   Size
+}
+type TypeMetric struct {
+	PixelsPerEm        PointInfo
+	Ascent             float64
+	Descent            float64
+	Width              float64
+	Height             float64
+	MaxAdvance         float64
+	UnderlinePosition  float64
+	UnderlineThickness float64
+	Bounds             SegmentInfo
+	Origin             PointInfo
+}
+type UpdateImageViewMethod func(*ImageView, SSize, int, *Void) MagickBooleanType
+type UpdatePixelViewMethod func(*PixelView, *Void) bool
+type UpdateWandViewMethod func(*WandView, SSize, int, *Void) bool
+type VirtualPixelMethod Enum
+
+const (
+	UndefinedVirtualPixelMethod VirtualPixelMethod = iota
+	BackgroundVirtualPixelMethod
+	constantVirtualPixelMethod // Deprecated
+	DitherVirtualPixelMethod
+	EdgeVirtualPixelMethod
+	MirrorVirtualPixelMethod
+	RandomVirtualPixelMethod
+	TileVirtualPixelMethod
+	TransparentVirtualPixelMethod
+	MaskVirtualPixelMethod
+	BlackVirtualPixelMethod
+	GrayVirtualPixelMethod
+	WhiteVirtualPixelMethod
+	HorizontalTileVirtualPixelMethod
+	VerticalTileVirtualPixelMethod
+	HorizontalTileEdgeVirtualPixelMethod
+	VerticalTileEdgeVirtualPixelMethod
+	CheckerTileVirtualPixelMethod
+)
+
+// const WLUT_WIDTH = 1024
+
+type XAnnotateInfo struct {
+	X        int
+	Y        int
+	Width    uint
+	Height   uint
+	Degrees  float64
+	FontInfo *XFontStruct
+	Text     *string
+	Stencil  AnnotationStencil
+	Geometry [MaxTextExtent]Char
+	Next     *XAnnotateInfo
+	Previous *XAnnotateInfo
+}
+
+type XColormapType Enum
+
+const (
+	UndefinedColormap XColormapType = iota
+	PrivateColormap
+	SharedColormap
+)
+
+type XDrawInfo struct {
+	X                 int
+	Y                 int
+	Width             uint
+	Height            uint
+	Degrees           float64
+	Stencil           AnnotationStencil
+	Element           ElementType
+	Stipple           Pixmap
+	LineWidth         uint
+	LineInfo          XSegment
+	NumberCoordinates uint
+	RectangleInfo     RectangleInfo
+	CoordinateInfo    *XPoint
+	Geometry          [MaxTextExtent]Char
+}
+
+type XImportInfo struct {
+	Frame   MagickBooleanType
+	Borders MagickBooleanType
+	Screen  MagickBooleanType
+	Descend MagickBooleanType
+	Silent  MagickBooleanType
+}
+
+type XPixelInfo struct {
+	Colors           SSize
+	Pixels           *UnsignedLong
+	ForegroundColor  XColor
+	BackgroundColor  XColor
+	BorderColor      XColor
+	MatteColor       XColor
+	HighlightColor   XColor
+	ShadowColor      XColor
+	DepthColor       XColor
+	TroughColor      XColor
+	BoxColor         XColor
+	PenColor         XColor
+	PenColors        [MaxNumberPens]XColor
+	AnnotateContext  GC
+	HighlightContext GC
+	WidgetContext    GC
+	BoxIndex         UnsignedShort
+	PenIndex         UnsignedShort
+}
+
+type DelegateInfo struct {
+	Path           *string
+	Decode         *string
+	Encode         *string
+	Commands_      *string
+	Mode_          SSize
+	ThreadSupport_ MagickBooleanType
+	Spawn          MagickBooleanType
+	Stealth        MagickBooleanType
+	Previous       *DelegateInfo
+	next           *DelegateInfo // Deprecated
+	Signature      Size
+}
+
+type MagickInfo struct {
+	Name            *string
+	Description_    *string
+	Version         *string
+	Note            *string
+	Module          *string
+	ImageInfo       *ImageInfo
+	Decoder_        *DecodeImageHandler
+	Encoder_        *EncodeImageHandler
+	Magick          *IsImageFormatHandler
+	ClientData      *Void
+	Adjoin_         MagickBooleanType
+	Raw             MagickBooleanType
+	EndianSupport_  MagickBooleanType
+	BlobSupport_    MagickBooleanType
+	SeekableStream_ MagickBooleanType
+	FormatType      MagickFormatType
+	ThreadSupport_  MagickStatusType
+	Stealth         MagickBooleanType
+	Previous        *MagickInfo
+	next            *MagickInfo // Deprecated
+	Signature       Size
+	MimeType        *string
+}
+
+type MagickFormatType Enum
+
+const (
+	UndefinedFormatType MagickFormatType = iota
+	ImplicitFormatType
+	ExplicitFormatType
+)
