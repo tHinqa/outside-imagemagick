@@ -12,3 +12,7 @@ func TestInit(t *testing.T) {
 func TestMime(t *testing.T) {
 	t.Log(GetMimeList("*", new(Size), new(ExceptionInfo)))
 }
+
+func TestEnum(t *testing.T) {
+	t.Logf("%T", VoronoiColorInterpolate)
+}

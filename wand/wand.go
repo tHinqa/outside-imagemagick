@@ -13,35 +13,37 @@ import (
 
 // Opaque
 type (
-	CacheView   struct{}
-	DrawingWand struct{}
-	PixelView   struct{}
-	Void        struct{}
+	CacheView     struct{}
+	DrawingWand   struct{}
+	MagickWand    struct{}
+	PixelIterator struct{}
+	PixelView     struct{}
+	PixelWand     struct{}
+	Void          struct{}
+	WandView      struct{}
 )
 
 type (
 	DuplexTransferPixelViewMethod func(*PixelView, *PixelView, *PixelView, *Void) bool
+	DuplexTransferWandViewMethod  func(*WandView, *WandView, *WandView, I.SSize, int, *Void) bool
 	GetPixelViewMethod            func(*PixelView, *Void) bool
-	GetWandViewMethod             func(*I.WandView, I.SSize, int, *Void) bool
+	GetWandViewMethod             func(*WandView, I.SSize, int, *Void) bool
 	SetPixelViewMethod            func(*PixelView, *Void) bool
-	SetWandViewMethod             func(*I.WandView, I.SSize, int, *Void) bool
+	SetWandViewMethod             func(*WandView, I.SSize, int, *Void) bool
 	TransferPixelViewMethod       func(*PixelView, *PixelView, *Void) bool
+	TransferWandViewMethod        func(*WandView, *WandView, I.SSize, int, *Void) bool
 	UpdatePixelViewMethod         func(*PixelView, *Void) bool
+	UpdateWandViewMethod          func(*WandView, I.SSize, int, *Void) bool
 )
 
 type (
-	DrawInfo I.DrawInfo
-
+	Enum              int
+	DrawInfo          I.DrawInfo
 	ExceptionInfo     I.ExceptionInfo
 	FILE              I.FILE
 	Image             I.Image
 	ImageInfo         I.ImageInfo
-	ImageView         struct{}
 	MagickPixelPacket I.MagickPixelPacket
-	MagickWand        struct{}
-	PixelIterator     I.Fixme
-	PixelWand         struct{}
-	WandView          struct{}
 )
 
 var NewMagickWand func() *MagickWand
@@ -1046,9 +1048,9 @@ func (m *MagickWand) Modulate(brightness, saturation, hue float64) bool {
 	return ModulateImage(m, brightness, saturation, hue)
 }
 
-var MontageImage func(m *MagickWand, drawingWand DrawingWand, tileGeometry, thumbnailGeometry string, mode I.MontageMode, frame string) *MagickWand
+var MontageImage func(m *MagickWand, drawingWand DrawingWand, tileGeometry, thumbnailGeometry string, mode MontageMode, frame string) *MagickWand
 
-func (m *MagickWand) Montage(drawingWand DrawingWand, tileGeometry, thumbnailGeometry string, mode I.MontageMode, frame string) *MagickWand {
+func (m *MagickWand) Montage(drawingWand DrawingWand, tileGeometry, thumbnailGeometry string, mode MontageMode, frame string) *MagickWand {
 	return MontageImage(m, drawingWand, tileGeometry, thumbnailGeometry, mode, frame)
 }
 
@@ -2862,9 +2864,9 @@ var DestroyWandView func(w *WandView) *WandView
 
 func (w *WandView) Destroy() *WandView { return DestroyWandView(w) }
 
-var DuplexTransferWandViewIterator func(w *WandView, duplex, destination *WandView, transfer I.DuplexTransferWandViewMethod, context *Void) bool
+var DuplexTransferWandViewIterator func(w *WandView, duplex, destination *WandView, transfer DuplexTransferWandViewMethod, context *Void) bool
 
-func (w *WandView) DuplexTransferIterator(duplex, destination *WandView, transfer I.DuplexTransferWandViewMethod, context *Void) bool {
+func (w *WandView) DuplexTransferIterator(duplex, destination *WandView, transfer DuplexTransferWandViewMethod, context *Void) bool {
 	return DuplexTransferWandViewIterator(w, duplex, destination, transfer, context)
 }
 
@@ -2910,15 +2912,15 @@ var SetWandViewThreads func(w *WandView, numberThreads uint32)
 
 func (w *WandView) SetThreads(numberThreads uint32) { SetWandViewThreads(w, numberThreads) }
 
-var TransferWandViewIterator func(w *WandView, destination *WandView, transfer I.TransferWandViewMethod, context *Void) bool
+var TransferWandViewIterator func(w *WandView, destination *WandView, transfer TransferWandViewMethod, context *Void) bool
 
-func (w *WandView) TransferIterator(destination *WandView, transfer I.TransferWandViewMethod, context *Void) bool {
+func (w *WandView) TransferIterator(destination *WandView, transfer TransferWandViewMethod, context *Void) bool {
 	return TransferWandViewIterator(w, destination, transfer, context)
 }
 
-var UpdateWandViewIterator func(w *WandView, update I.UpdateWandViewMethod, context *Void) bool
+var UpdateWandViewIterator func(w *WandView, update UpdateWandViewMethod, context *Void) bool
 
-func (w *WandView) UpdateIterator(update I.UpdateWandViewMethod, context *Void) bool {
+func (w *WandView) UpdateIterator(update UpdateWandViewMethod, context *Void) bool {
 	return UpdateWandViewIterator(w, update, context)
 }
 
@@ -4140,3 +4142,12 @@ func (p *PixelIterator) Exception(severity *I.ExceptionType) string {
 
 // Deprecated.
 var ClipPathImage func(m *MagickWand, pathname string, inside bool) bool
+
+type MontageMode Enum
+
+const (
+	UndefinedMode MontageMode = iota
+	FrameMode
+	UnframeMode
+	ConcatenateMode
+)

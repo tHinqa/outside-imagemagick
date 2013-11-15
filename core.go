@@ -34,15 +34,15 @@ type (
 
 // X
 type (
-	Atom              UnsignedLong
-	Colormap          UnsignedLong
-	Cursor            UnsignedLong
-	Display           struct{}
-	LinkedListInfo    struct{}
-	Pixmap            UnsignedLong
-	PolicyInfo        struct{}
-	Status            int
-	Visual            struct{}
+	Atom           UnsignedLong
+	Colormap       UnsignedLong
+	Cursor         UnsignedLong
+	Display        struct{}
+	LinkedListInfo struct{}
+	Pixmap         UnsignedLong
+	PolicyInfo     struct{}
+	Status         int
+	// Visual            struct{}
 	Window            UnsignedLong
 	XClassHint        struct{}
 	XColor            struct{}
@@ -98,7 +98,6 @@ type (
 	ThresholdMap   struct{}
 	TokenInfo      struct{}
 	Void           struct{}
-	WandView       struct{}
 	XMLTreeInfo    struct{}
 )
 type (
@@ -106,7 +105,6 @@ type (
 	DecodeImageHandler            func(*ImageInfo, *ExceptionInfo) *Image
 	DestroyMemoryHandler          func(*Void)
 	DuplexTransferImageViewMethod func(*ImageView, *ImageView, *ImageView, SSize, int, *Void) MagickBooleanType
-	DuplexTransferWandViewMethod  func(*WandView, *WandView, *WandView, SSize, int, *Void) bool
 	EncodeImageHandler            func(*ImageInfo, *Image) bool
 	ErrorHandler                  func(ExceptionType, string, string)
 	FatalErrorHandler             func(ExceptionType, string, string)
@@ -119,9 +117,7 @@ type (
 	SetImageViewMethod            func(*ImageView, SSize, int, *Void) MagickBooleanType
 	StreamHandler                 func(*Image, *Void, Size) Size
 	TransferImageViewMethod       func(*ImageView, *ImageView, SSize, int, *Void) MagickBooleanType
-	TransferWandViewMethod        func(*WandView, *WandView, SSize, int, *Void) bool
 	UpdateImageViewMethod         func(*ImageView, SSize, int, *Void) MagickBooleanType
-	UpdateWandViewMethod          func(*WandView, SSize, int, *Void) bool
 	WarningHandler                func(ExceptionType, string, string)
 )
 
@@ -5272,6 +5268,7 @@ type XResourceInfo struct {
 	Gravity          int
 	HomeDirectory    [MaxTextExtent]Char
 }
+
 type AffineMatrix struct {
 	Sx, Rx, Ry, Sy, Tx, Ty float64
 }
@@ -5361,6 +5358,7 @@ type ChannelStatistics struct {
 	Kurtosis,
 	Skewness float64
 }
+
 type ChannelFeatures struct {
 	AngularSecondMoment,
 	Contrast,
@@ -5802,6 +5800,7 @@ type DrawInfo struct {
 	InterlineSpacing float64
 	Direction        DirectionType
 }
+
 type ElementReference struct {
 	Id        *string
 	Type      ReferenceType
@@ -5810,6 +5809,7 @@ type ElementReference struct {
 	Previous  *ElementReference
 	Next      *ElementReference
 }
+
 type ElementType Enum
 
 const (
@@ -5853,6 +5853,7 @@ type ExceptionInfo struct {
 	Semaphore   *SemaphoreInfo
 	Signature   Size
 }
+
 type ExceptionType Enum
 
 const (
@@ -5977,6 +5978,7 @@ type FrameInfo struct {
 	Width, Height                Size
 	X, Y, InnerBevel, OuterBevel SSize
 }
+
 type GeometryInfo struct{ Rho, Sigma, Xi, Psi, Chi float64 }
 type GhostInfo struct {
 	exit           func(*struct{}) int
@@ -5997,6 +5999,7 @@ type GradientInfo struct {
 	Center         PointInfo
 	Radius         MagickRealType
 }
+
 type GradientType Enum
 
 const (
@@ -6107,6 +6110,7 @@ type Image struct {
 	Timestamp              Time
 	Intensity              PixelIntensityMethod
 }
+
 type ImageAttribute struct {
 	Key         *string
 	Value       *string
@@ -6178,6 +6182,7 @@ type ImageInfo struct {
 	Profile            *Void
 	Synchronize        MagickBooleanType
 }
+
 type ImageLayerMethod Enum
 
 const (
@@ -6262,6 +6267,7 @@ type KernelInfo struct {
 	Next      *KernelInfo
 	Signature Size
 }
+
 type KernelInfoType Enum
 
 const (
@@ -6332,6 +6338,7 @@ type LocaleInfo struct {
 	next      *LocaleInfo // Deprecated
 	Signature Size
 }
+
 type LogEventType Enum
 
 const (
@@ -6440,6 +6447,7 @@ type MagickPixelPacket struct {
 	Opacity      MagickRealType
 	Index        MagickRealType
 }
+
 type MapMode Enum
 
 const (
@@ -6496,14 +6504,6 @@ type MontageInfo struct {
 	Debug           MagickBooleanType
 	Signature       Size
 }
-type MontageMode Enum
-
-const (
-	UndefinedMode MontageMode = iota
-	FrameMode
-	UnframeMode
-	ConcatenateMode
-)
 
 type MorphologyMethod Enum
 
@@ -6602,9 +6602,11 @@ type PixelPacket struct {
 type PixelPacketBE struct {
 	Red, Green, Blue, Opacity Quantum
 }
+
 type PointInfo struct {
 	X, Y float64
 }
+
 type PolicyDomain Enum
 
 const (
@@ -6665,6 +6667,7 @@ const (
 type PrimaryInfo struct {
 	X, Y, Z float64
 }
+
 type PrimitiveInfo struct {
 	Point       PointInfo
 	Coordinates Size
@@ -6699,6 +6702,7 @@ type ProfileInfo struct {
 	Info      *byte
 	Signature Size
 }
+
 type QuantizeInfo struct {
 	NumberColors Size
 	TreeDepth    Size
@@ -6787,6 +6791,7 @@ type RectangleInfo struct {
 	Width, Height Size
 	X, Y          SSize
 }
+
 type ReferenceType Enum
 
 const (
@@ -6838,6 +6843,7 @@ const (
 type SegmentInfo struct {
 	X1, Y1, X2, Y2 float64
 }
+
 type SparseColorMethod Enum
 
 const (
@@ -6878,6 +6884,7 @@ type StopInfo struct {
 	Color  MagickPixelPacket
 	Offset MagickRealType
 }
+
 type StorageType Enum
 
 const (
@@ -6996,7 +7003,6 @@ const (
 	CheckerTileVirtualPixelMethod
 )
 
-// const WLUT_WIDTH = 1024
 type XAnnotateInfo struct {
 	X        int
 	Y        int
@@ -7034,6 +7040,7 @@ type XDrawInfo struct {
 	CoordinateInfo    *XPoint
 	Geometry          [MaxTextExtent]Char
 }
+
 type XImportInfo struct {
 	Frame   MagickBooleanType
 	Borders MagickBooleanType
@@ -7061,6 +7068,7 @@ type XPixelInfo struct {
 	BoxIndex         UnsignedShort
 	PenIndex         UnsignedShort
 }
+
 type DelegateInfo struct {
 	Path           *string
 	Decode         *string
@@ -7098,6 +7106,7 @@ type MagickInfo struct {
 	Signature       Size
 	MimeType        *string
 }
+
 type MagickFormatType Enum
 
 const (
