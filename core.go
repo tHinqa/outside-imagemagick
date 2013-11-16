@@ -12,7 +12,6 @@ import (
 
 type Quantum uint16         // byte uint16 uint32
 type MagickRealType float32 // float64
-
 const (
 	MaxNumberFonts = 11
 	MaxNumberPens  = 11
@@ -20,16 +19,13 @@ const (
 )
 
 type (
-	CompositeMethod      Fixme
-	DIR                  Fixme
-	Dirent               Fixme
-	FILE                 Fixme
-	PixelIntensityMethod Fixme
-	Stat                 Fixme
-	Time                 Fixme // time_t
-	Timeval              Fixme
-	Timezone             Fixme
-	WString              Fixme
+	CompositeMethod Fixme // Not in bin distribution .h
+	DIR             Fixme
+	Dirent          Fixme
+	FILE            Fixme
+	Stat            Fixme
+	Time            Long // 32/64 dep
+	WString         Fixme
 )
 
 // X
@@ -60,7 +56,7 @@ type (
 type (
 	// Placeholder type to be rectified.
 	Fixme            uintptr
-	Char             int8
+	Char             byte // int8
 	Enum             int
 	IndexPacket      Quantum
 	Long             int    // TODO(t):long on gcc vs msc 32 vs 64
@@ -2514,8 +2510,7 @@ var RemoveNodeFromSplayTree func(s *SplayTreeInfo, key *Void) *Void
 var ResetSplayTreeIterator func(s *SplayTreeInfo)
 var ResetSplayTree func(s *SplayTreeInfo)
 
-func (s *SplayTreeInfo) Reset() { ResetSplayTree(s) }
-
+func (s *SplayTreeInfo) Reset()                         { ResetSplayTree(s) }
 func (s *SplayTreeInfo) AddValue(key, value *Void) bool { return AddValueToSplayTree(s, key, value) }
 func (s *SplayTreeInfo) Clone(cloneKey, cloneValue func(*Void) *Void) *SplayTreeInfo {
 	return CloneSplayTree(s, cloneKey, cloneValue)
@@ -3145,8 +3140,16 @@ func (i *Image) DistortResizeImage(columns, rows uint32, e *ExceptionInfo) *Imag
 }
 func (i *Image) DuplicateBlob(duplicate *Image) { DuplicateBlob(i, duplicate) }
 
-var FormatLocaleFile func(*FILE, string, ...VArg) int32
-var FormatLocaleFileList func(*FILE, string, VAList) int32
+var FormatLocaleFile func(f *FILE, format string, va ...VArg) int32
+var FormatLocaleFileList func(f *FILE, format string, va VAList) int32
+
+func (f *FILE) FormatLocaleFile(format string, va ...VArg) int32 {
+	return FormatLocaleFile(f, format, va)
+}
+func (f *FILE) FormatLocaleFileList(format string, va VAList) int32 {
+	return FormatLocaleFileList(f, format, va)
+}
+
 var FormatLocaleString func(string, uint32, string, ...VArg) int32
 var FormatLocaleStringList func(string, uint32, string, VAList) int32
 var GenerateDifferentialNoise func(*RandomInfo, Quantum, NoiseType, MagickRealType) float64
@@ -3232,7 +3235,10 @@ var IsPathAccessible func(string) bool
 var IsRightsAuthorized func(PolicyDomain, PolicyRights, string) bool
 var IsStringNotFalse func(string) bool
 var IsStringTrue func(string) bool
-var ListPolicyInfo func(*FILE, *ExceptionInfo) bool
+var ListPolicyInfo func(f *FILE, e *ExceptionInfo) bool
+
+func (f *FILE) ListPolicyInfo(e *ExceptionInfo) bool { return ListPolicyInfo(f, e) }
+
 var LocaleComponentGenesis func() bool
 var LocaleComponentTerminus func()
 var LogComponentGenesis func() bool
@@ -3355,7 +3361,6 @@ func (i *Image) SolarizeImageChannel(c ChannelType, threshold float64, e *Except
 }
 
 var SRGBCompandor func(MagickRealType) MagickRealType
-
 var StringInfoToHexString func(*StringInfo) string
 var StringToArrayOfDoubles func(string, *int32, *ExceptionInfo) []float64
 var SyncAuthenticPixelCacheNexus func(i *Image, n *NexusInfo, e *ExceptionInfo) bool
@@ -3621,6 +3626,11 @@ var ParseMetaGeometry func(geometry string, x, y *Long, width, height *Size) Mag
 // Deprecated
 var PostscriptGeometry func(page string) string
 var PrintStringInfo func(file *FILE, id string, stringInfo *StringInfo)
+
+func (f *FILE) PrintStringInfo(id string, stringInfo *StringInfo) {
+	PrintStringInfo(f, id, stringInfo)
+}
+
 var QueryColorDatabase func(name string, color *PixelPacket, exception *ExceptionInfo) bool
 var QueryMagickColor func(name string, color *MagickPixelPacket, exception *ExceptionInfo) bool
 var ReacquireMemory func(memory **Void, size uint32)
@@ -5268,7 +5278,6 @@ type XResourceInfo struct {
 	Gravity          int
 	HomeDirectory    [MaxTextExtent]Char
 }
-
 type AffineMatrix struct {
 	Sx, Rx, Ry, Sy, Tx, Ty float64
 }
@@ -5358,7 +5367,6 @@ type ChannelStatistics struct {
 	Kurtosis,
 	Skewness float64
 }
-
 type ChannelFeatures struct {
 	AngularSecondMoment,
 	Contrast,
@@ -5800,7 +5808,6 @@ type DrawInfo struct {
 	InterlineSpacing float64
 	Direction        DirectionType
 }
-
 type ElementReference struct {
 	Id        *string
 	Type      ReferenceType
@@ -5809,7 +5816,6 @@ type ElementReference struct {
 	Previous  *ElementReference
 	Next      *ElementReference
 }
-
 type ElementType Enum
 
 const (
@@ -5853,7 +5859,6 @@ type ExceptionInfo struct {
 	Semaphore   *SemaphoreInfo
 	Signature   Size
 }
-
 type ExceptionType Enum
 
 const (
@@ -5978,7 +5983,6 @@ type FrameInfo struct {
 	Width, Height                Size
 	X, Y, InnerBevel, OuterBevel SSize
 }
-
 type GeometryInfo struct{ Rho, Sigma, Xi, Psi, Chi float64 }
 type GhostInfo struct {
 	exit           func(*struct{}) int
@@ -5999,7 +6003,6 @@ type GradientInfo struct {
 	Center         PointInfo
 	Radius         MagickRealType
 }
-
 type GradientType Enum
 
 const (
@@ -6025,7 +6028,7 @@ const (
 	ForgetGravity = UndefinedGravity
 )
 
-type Image struct {
+type Image struct { // FIX
 	StorageClass           ClassType
 	Colorspace             ColorspaceType
 	Compression            CompressionType
@@ -6050,6 +6053,7 @@ type Image struct {
 	Directory              *string
 	Geometry_              *string
 	Offset                 SSize
+	_                      int32 // padding
 	XResolution            float64
 	YResolution            float64
 	Page                   RectangleInfo
@@ -6072,12 +6076,14 @@ type Image struct {
 	TotalColors            Size
 	StartLoop              SSize
 	Error                  ErrorInfo
+	_                      int32 // padding
 	Timer                  TimerInfo
-	ProgressMonitor        MagickProgressMonitor
+	ProgressMonitor        *MagickProgressMonitor // FIX
 	ClientData             *Void
 	Cache                  *Void
 	Attributes             *Void
 	Ascii85                *Ascii85Info
+	_                      int32 // padding
 	Filename               [MaxTextExtent]Char
 	MagickFilename         [MaxTextExtent]Char
 	Magick                 [MaxTextExtent]Char
@@ -6108,9 +6114,8 @@ type Image struct {
 	Ping                   MagickBooleanType
 	Channels_              Size
 	Timestamp              Time
-	Intensity              PixelIntensityMethod
+	Intensity              PixelIntensityMethod // Weird content
 }
-
 type ImageAttribute struct {
 	Key         *string
 	Value       *string
@@ -6182,7 +6187,6 @@ type ImageInfo struct {
 	Profile            *Void
 	Synchronize        MagickBooleanType
 }
-
 type ImageLayerMethod Enum
 
 const (
@@ -6267,7 +6271,6 @@ type KernelInfo struct {
 	Next      *KernelInfo
 	Signature Size
 }
-
 type KernelInfoType Enum
 
 const (
@@ -6338,7 +6341,6 @@ type LocaleInfo struct {
 	next      *LocaleInfo // Deprecated
 	Signature Size
 }
-
 type LogEventType Enum
 
 const (
@@ -6447,7 +6449,6 @@ type MagickPixelPacket struct {
 	Opacity      MagickRealType
 	Index        MagickRealType
 }
-
 type MapMode Enum
 
 const (
@@ -6504,7 +6505,6 @@ type MontageInfo struct {
 	Debug           MagickBooleanType
 	Signature       Size
 }
-
 type MorphologyMethod Enum
 
 const (
@@ -6602,11 +6602,9 @@ type PixelPacket struct {
 type PixelPacketBE struct {
 	Red, Green, Blue, Opacity Quantum
 }
-
 type PointInfo struct {
 	X, Y float64
 }
-
 type PolicyDomain Enum
 
 const (
@@ -6667,7 +6665,6 @@ const (
 type PrimaryInfo struct {
 	X, Y, Z float64
 }
-
 type PrimitiveInfo struct {
 	Point       PointInfo
 	Coordinates Size
@@ -6702,7 +6699,6 @@ type ProfileInfo struct {
 	Info      *byte
 	Signature Size
 }
-
 type QuantizeInfo struct {
 	NumberColors Size
 	TreeDepth    Size
@@ -6791,7 +6787,6 @@ type RectangleInfo struct {
 	Width, Height Size
 	X, Y          SSize
 }
-
 type ReferenceType Enum
 
 const (
@@ -6843,7 +6838,6 @@ const (
 type SegmentInfo struct {
 	X1, Y1, X2, Y2 float64
 }
-
 type SparseColorMethod Enum
 
 const (
@@ -6884,7 +6878,6 @@ type StopInfo struct {
 	Color  MagickPixelPacket
 	Offset MagickRealType
 }
-
 type StorageType Enum
 
 const (
@@ -7040,7 +7033,6 @@ type XDrawInfo struct {
 	CoordinateInfo    *XPoint
 	Geometry          [MaxTextExtent]Char
 }
-
 type XImportInfo struct {
 	Frame   MagickBooleanType
 	Borders MagickBooleanType
@@ -7068,7 +7060,6 @@ type XPixelInfo struct {
 	BoxIndex         UnsignedShort
 	PenIndex         UnsignedShort
 }
-
 type DelegateInfo struct {
 	Path           *string
 	Decode         *string
@@ -7106,7 +7097,6 @@ type MagickInfo struct {
 	Signature       Size
 	MimeType        *string
 }
-
 type MagickFormatType Enum
 
 const (
@@ -7114,3 +7104,22 @@ const (
 	ImplicitFormatType
 	ExplicitFormatType
 )
+
+type PixelIntensityMethod Enum
+
+const (
+	UndefinedPixelIntensityMethod PixelIntensityMethod = iota
+	AveragePixelIntensityMethod
+	BrightnessPixelIntensityMethod
+	LightnessPixelIntensityMethod
+	Rec601LumaPixelIntensityMethod
+	Rec601LuminancePixelIntensityMethod
+	Rec709LumaPixelIntensityMethod
+	Rec709LuminancePixelIntensityMethod
+	RMSPixelIntensityMethod
+	MSPixelIntensityMethod
+)
+
+type Timezone struct{ MinutesWest, DstTime int }
+
+type Timeval struct{ Sec, USec Long }
