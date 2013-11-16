@@ -5852,8 +5852,8 @@ type ErrorInfo struct {
 type ExceptionInfo struct {
 	Severity    ExceptionType
 	ErrorNumber int
-	Reason      *string
-	Description *string
+	Reason      POVString
+	Description POVString
 	Exceptions  *Void
 	Relinquish  MagickBooleanType
 	Semaphore   *SemaphoreInfo

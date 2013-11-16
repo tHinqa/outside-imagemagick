@@ -2,7 +2,7 @@ package core
 
 import (
 	// . "fmt"
-	// . "github.com/tHinqa/outside"
+	. "github.com/tHinqa/outside"
 	"os"
 	"testing"
 	"unsafe"
@@ -20,6 +20,7 @@ func aTestInit(t *testing.T) {
 	}
 	// InitializeMagick("") // Deprecated
 	MagickCoreGenesis("", true)
+	defer MagickCoreTerminus()
 	if !IsMagickInstantiated() {
 		t.Log("IsMagickInstantiated() returned false; expected true")
 	}
@@ -36,35 +37,31 @@ func StringToArray(o *[MaxTextExtent]Char, i string) {
 func TestCopy(t *testing.T) {
 	// InitializeMagick("")     // Deprecated or
 	MagickCoreGenesis("", true)
+	defer MagickCoreTerminus()
 	ii := AcquireImageInfo() // ~ ii := CloneImageInfo(nil)
-	var e = new(ExceptionInfo)
-	GetExceptionInfo(e)
-	StringToArray(&ii.Filename, "wizard.jpg")
+	e := AcquireExceptionInfo()
+	e.Get()
+	r := "wizard.jpg"
+	StringToArray(&ii.Filename, r)
 	i := ii.ReadImage(e)
 	if i == nil {
-		t.Error("read failed\n")
+		t.Log(*e.Reason)
 	}
+	e.Get()
+	defer i.Destroy()
 	w1 := "_.png"
 	StringToArray(&i.Filename, w1)
 	if !ii.WriteImage(i) {
-		t.Error("write failed")
+		t.Error(CStrToString((uintptr)(unsafe.Pointer(i.Exception_.Reason)))) // TODO(t): Struct within struct
 	} else if e := os.Remove(w1); e != nil {
 		t.Error(e)
 	}
 	w2 := "_.bmp"
 	if !ii.WriteImages(i, w2, e) {
-		t.Error("write failed")
+		t.Error(*e.Reason)
 	} else if e := os.Remove(w2); e != nil {
 		t.Error(e)
 	}
-	var (
-		tv = new(Timeval)
-		tz = new(Timezone)
-	)
-	Gettimeofday(tv, tz)
-	t.Logf("%+v %+v\n", tv, tz)
-	Gettimeofday(tv, tz)
-	t.Logf("%+v %+v\n", tv, tz)
 }
 
 func aTestMime(t *testing.T) {
