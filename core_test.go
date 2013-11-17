@@ -1,7 +1,6 @@
 package core
 
 import (
-	// . "fmt"
 	. "github.com/tHinqa/outside"
 	"os"
 	"testing"
@@ -39,15 +38,15 @@ func TestCopy(t *testing.T) {
 	MagickCoreGenesis("", true)
 	defer MagickCoreTerminus()
 	ii := AcquireImageInfo() // ~ ii := CloneImageInfo(nil)
+	defer ii.Destroy()
 	e := AcquireExceptionInfo()
 	e.Get()
 	r := "wizard.jpg"
 	StringToArray(&ii.Filename, r)
 	i := ii.ReadImage(e)
 	if i == nil {
-		t.Log(*e.Reason)
+		t.Fatal(*e.Reason)
 	}
-	e.Get()
 	defer i.Destroy()
 	w1 := "_.png"
 	StringToArray(&i.Filename, w1)
@@ -73,5 +72,5 @@ func aTestMime(t *testing.T) {
 
 func aTestOffset(t *testing.T) {
 	var i Image
-	t.Logf("%X\n", unsafe.Offsetof(i.Extent_))
+	t.Logf("%X\n", unsafe.Offsetof(i.ProgressMonitor))
 }

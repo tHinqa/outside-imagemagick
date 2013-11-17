@@ -5192,11 +5192,11 @@ type XWindowInfo struct {
 	// WidgetContext    GC
 	// Cursor           Cursor
 	// BusyCursor       Cursor
-	// Name             *string
-	// Geometry         *string
-	// IconName         *string
-	// IconGeometry     *string
-	// CropGeometry     *string
+	// Name             *PVString
+	// Geometry         *PVString
+	// IconName         *PVString
+	// IconGeometry     *PVString
+	// CropGeometry     *PVString
 	// Data             Size
 	// Flags            Size
 	// X                int
@@ -5238,42 +5238,42 @@ type XResourceInfo struct {
 	Colors           Size
 	CloseServer      MagickBooleanType
 	Backdrop         MagickBooleanType
-	BackgroundColor  *string
-	BorderColor      *string
-	ClientName       *string
+	BackgroundColor  PVString
+	BorderColor      PVString
+	ClientName       PVString
 	Colormap         XColormapType
 	BorderWidth      uint
 	Delay            Size
 	ColorRecovery    MagickBooleanType
 	ConfirmExit      MagickBooleanType
 	ConfirmEdit      MagickBooleanType
-	DisplayGamma     *string
-	Font             *string
-	FontName         [MaxNumberFonts]*string
-	ForegroundColor  *string
+	DisplayGamma     PVString
+	Font             PVString
+	FontName         [MaxNumberFonts]*Char //TODO(t): handle
+	ForegroundColor  PVString
 	DisplayWarnings  MagickBooleanType
 	GammaCorrect     MagickBooleanType
-	IconGeometry     *string
+	IconGeometry     PVString
 	Iconic           MagickBooleanType
 	Immutable        MagickBooleanType
-	ImageGeometry    *string
-	MapType          *string
-	MatteColor       *string
-	Name             *string
+	ImageGeometry    PVString
+	MapType          PVString
+	MatteColor       PVString
+	Name             PVString
 	Magnify          uint
 	Pause            uint
-	PenColors        [MaxNumberPens]*string
-	TextFont         *string
-	Title            *string
+	PenColors        [MaxNumberPens]*Char //TODO(t): handle
+	TextFont         PVString
+	Title            PVString
 	Quantum          int
 	Update           uint
 	UsePixmap        MagickBooleanType
 	UseSharedMemory  MagickBooleanType
 	UndoCache        Size
-	VisualType       *string
-	WindowGroup      *string
-	WindowId         *string
-	WriteFilename    *string
+	VisualType       PVString
+	WindowGroup      PVString
+	WindowId         PVString
+	WriteFilename    PVString
 	CopyImage        *Image
 	Gravity          int
 	HomeDirectory    [MaxTextExtent]Char
@@ -5433,9 +5433,9 @@ const (
 )
 
 type CoderInfo struct {
-	Path      *string
-	Magick    *string
-	Name      *string
+	Path      PVString
+	Magick    PVString
+	Name      PVString
 	Exempt    MagickBooleanType
 	Stealth   MagickBooleanType
 	Previous  *CoderInfo
@@ -5443,8 +5443,8 @@ type CoderInfo struct {
 	Signature Size
 }
 type ColorInfo struct {
-	Path       *string
-	Name       *string
+	Path       PVString
+	Name       PVString
 	Compliance ComplianceType
 	Color      MagickPixelPacket
 	Exempt     MagickBooleanType
@@ -5686,9 +5686,9 @@ const (
 )
 
 type ConfigureInfo struct {
-	Path      *string
-	Name      *string
-	Value     *string
+	Path      PVString
+	Name      PVString
+	Value     PVString
 	Exempt    MagickBooleanType
 	Stealth   MagickBooleanType
 	Previous  *ConfigureInfo
@@ -5758,8 +5758,8 @@ const (
 )
 
 type DrawInfo struct {
-	Primitive        *string
-	Geometry         *string
+	Primitive        PVString
+	Geometry         PVString
 	Viewbox          RectangleInfo
 	Affine           AffineMatrix
 	Gravity          GravityType
@@ -5779,23 +5779,23 @@ type DrawInfo struct {
 	DashOffset       float64
 	Decorate         DecorationType
 	Compose          CompositeOperator
-	Text             *string
+	Text             PVString
 	Face             Size
-	Font             *string
-	Metrics          *string
-	Family           *string
+	Font             PVString
+	Metrics          PVString
+	Family           PVString
 	Style            StyleType
 	Stretch          StretchType
 	Weight           Size
-	Encoding         *string
+	Encoding         PVString
 	Pointsize        float64
-	Density          *string
+	Density          PVString
 	Align            AlignType
 	Undercolor       PixelPacket
 	BorderColor      PixelPacket
-	ServerName       *string
+	ServerName       PVString
 	DashPattern      *float64
-	ClipMask         *string
+	ClipMask         PVString
 	Bounds           SegmentInfo
 	ClipUnits        ClipPathUnits
 	Opacity          Quantum
@@ -5809,7 +5809,7 @@ type DrawInfo struct {
 	Direction        DirectionType
 }
 type ElementReference struct {
-	Id        *string
+	Id        PVString
 	Type      ReferenceType
 	Gradient  GradientInfo
 	Signature Size
@@ -6028,7 +6028,7 @@ const (
 	ForgetGravity = UndefinedGravity
 )
 
-type Image struct { // FIX
+type Image struct {
 	StorageClass           ClassType
 	Colorspace             ColorspaceType
 	Compression            CompressionType
@@ -6049,9 +6049,9 @@ type Image struct { // FIX
 	RenderingIntent        RenderingIntent
 	Profiles               *Void
 	Units                  ResolutionType
-	Montage                *string
-	Directory              *string
-	Geometry_              *string
+	Montage                *CString // NOTE(t): If PVString crash on i.Destroy()
+	Directory              *CString
+	Geometry_              *CString
 	Offset                 SSize
 	_                      int32 // padding
 	XResolution            float64
@@ -6078,7 +6078,7 @@ type Image struct { // FIX
 	Error                  ErrorInfo
 	_                      int32 // padding
 	Timer                  TimerInfo
-	ProgressMonitor        *MagickProgressMonitor // FIX
+	ProgressMonitor        *MagickProgressMonitor //TODO(T): PURE FUNC CAUSES DESTRUCT TO CRASH
 	ClientData             *Void
 	Cache                  *Void
 	Attributes             *Void
@@ -6117,8 +6117,8 @@ type Image struct { // FIX
 	Intensity              PixelIntensityMethod // Weird content
 }
 type ImageAttribute struct {
-	Key         *string
-	Value       *string
+	Key         PVString
+	Value       PVString
 	Compression MagickBooleanType
 	Previous    *ImageAttribute
 	next        *ImageAttribute // Deprecated
@@ -6130,10 +6130,10 @@ type ImageInfo struct {
 	Adjoin             MagickBooleanType
 	Affirm             MagickBooleanType
 	Antialias          MagickBooleanType
-	Size               *string
-	Extract            *string
-	Page               *string
-	Scenes             *string
+	Size               PVString
+	Extract            PVString
+	Page               PVString
+	Scenes             PVString
 	Scene              Size
 	NumberScenes       Size
 	Depth              Size
@@ -6141,11 +6141,11 @@ type ImageInfo struct {
 	Endian             EndianType
 	Units              ResolutionType
 	Quality            Size
-	SamplingFactor     *string
-	ServerName         *string
-	Font               *string
-	Texture            *string
-	Density            *string
+	SamplingFactor     PVString
+	ServerName         PVString
+	Font               PVString
+	Texture            PVString
+	Density            PVString
 	Pointsize          float64
 	Fuzz               float64
 	BackgroundColor    PixelPacket
@@ -6160,8 +6160,8 @@ type ImageInfo struct {
 	Group              SSize
 	Ping               MagickBooleanType
 	Verbose            MagickBooleanType
-	View               *string
-	Authenticate       *string
+	View               PVString
+	Authenticate       PVString
 	Channel            ChannelType
 	Attributes         *Image
 	Options            *Void
@@ -6177,7 +6177,7 @@ type ImageInfo struct {
 	Zero               [MaxTextExtent]Char
 	Filename           [MaxTextExtent]Char
 	Debug              MagickBooleanType
-	Tile               *string
+	Tile               PVString
 	Subimage           Size
 	Subrange           Size
 	Pen                PixelPacket
@@ -6333,9 +6333,9 @@ const (
 )
 
 type LocaleInfo struct {
-	Path      *string
-	Tag       *string
-	Message   *string
+	Path      PVString
+	Tag       PVString
+	Message   PVString
 	Stealth   MagickBooleanType
 	Previous  *LocaleInfo
 	next      *LocaleInfo // Deprecated
@@ -6388,9 +6388,9 @@ const (
 )
 
 type MagicInfo struct {
-	Path      *string
-	Name      *string
-	Target    *string
+	Path      PVString
+	Name      PVString
+	Target    PVString
 	Magic     *byte
 	Length    Size
 	Offset    MagickOffsetType
@@ -6474,8 +6474,8 @@ const (
 )
 
 type ModuleInfo struct {
-	Path             *string
-	Tag              *string
+	Path             PVString
+	Tag              PVString
 	Handle           *Void
 	UnregisterModule func()
 	RegisterModule   func() Size
@@ -6486,12 +6486,12 @@ type ModuleInfo struct {
 	Signature        Size
 }
 type MontageInfo struct {
-	Geometry        *string
-	Tile            *string
-	Title           *string
-	Frame           *string
-	Texture         *string
-	Font            *string
+	Geometry        PVString
+	Tile            PVString
+	Title           PVString
+	Frame           PVString
+	Texture         PVString
+	Font            PVString
 	Pointsize       float64
 	BorderWidth     Size
 	Shadow          MagickBooleanType
@@ -6670,7 +6670,7 @@ type PrimitiveInfo struct {
 	Coordinates Size
 	Primitive   PrimitiveType
 	Method      PaintMethod
-	Text        *string
+	Text        PVString
 }
 type PrimitiveType Enum
 
@@ -6694,7 +6694,7 @@ const (
 )
 
 type ProfileInfo struct {
-	Name      *string
+	Name      PVString
 	Length    Size
 	Info      *byte
 	Signature Size
@@ -6944,18 +6944,18 @@ const (
 
 type TypeInfo struct {
 	Face        Size
-	Path        *string
-	Name        *string
-	Description *string
-	Family      *string
+	Path        PVString
+	Name        PVString
+	Description PVString
+	Family      PVString
 	Style       StyleType
 	Stretch     StretchType
 	Weight      Size
-	Encoding    *string
-	Foundry     *string
-	Format      *string
-	Metrics     *string
-	Glyphs      *string
+	Encoding    PVString
+	Foundry     PVString
+	Format      PVString
+	Metrics     PVString
+	Glyphs      PVString
 	Stealth     MagickBooleanType
 	Previous    *TypeInfo
 	next        *TypeInfo // Deprecated
@@ -7003,7 +7003,7 @@ type XAnnotateInfo struct {
 	Height   uint
 	Degrees  float64
 	FontInfo *XFontStruct
-	Text     *string
+	Text     PVString
 	Stencil  AnnotationStencil
 	Geometry [MaxTextExtent]Char
 	Next     *XAnnotateInfo
@@ -7061,10 +7061,10 @@ type XPixelInfo struct {
 	PenIndex         UnsignedShort
 }
 type DelegateInfo struct {
-	Path           *string
-	Decode         *string
-	Encode         *string
-	Commands_      *string
+	Path           PVString
+	Decode         PVString
+	Encode         PVString
+	Commands_      PVString
 	Mode_          SSize
 	ThreadSupport_ MagickBooleanType
 	Spawn          MagickBooleanType
@@ -7074,11 +7074,11 @@ type DelegateInfo struct {
 	Signature      Size
 }
 type MagickInfo struct {
-	Name            *string
-	Description_    *string
-	Version         *string
-	Note            *string
-	Module          *string
+	Name            PVString
+	Description_    PVString
+	Version         PVString
+	Note            PVString
+	Module          PVString
 	ImageInfo       *ImageInfo
 	Decoder_        *DecodeImageHandler
 	Encoder_        *EncodeImageHandler
@@ -7095,7 +7095,7 @@ type MagickInfo struct {
 	Previous        *MagickInfo
 	next            *MagickInfo // Deprecated
 	Signature       Size
-	MimeType        *string
+	MimeType        PVString
 }
 type MagickFormatType Enum
 
