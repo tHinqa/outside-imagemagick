@@ -1,7 +1,7 @@
 package core
 
 import (
-	. "github.com/tHinqa/outside"
+	// . "github.com/tHinqa/outside"
 	"os"
 	"testing"
 	"unsafe"
@@ -51,7 +51,7 @@ func TestCopy(t *testing.T) {
 	w1 := "_.png"
 	StringToArray(&i.Filename, w1)
 	if !ii.WriteImage(i) {
-		t.Error(CStrToString((uintptr)(unsafe.Pointer(i.Exception_.Reason)))) // TODO(t): Struct within struct
+		t.Error(i.Exception_.Reason)
 	} else if e := os.Remove(w1); e != nil {
 		t.Error(e)
 	}
