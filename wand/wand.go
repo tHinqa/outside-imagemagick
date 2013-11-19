@@ -24,6 +24,12 @@ type (
 )
 
 type (
+	String2 string // for SizeArg
+)
+
+func (String2) SizeArg() int { return 2 }
+
+type (
 	DuplexTransferPixelViewMethod func(*PixelView, *PixelView, *PixelView, *Void) bool
 	DuplexTransferWandViewMethod  func(*WandView, *WandView, *WandView, I.SSize, int, *Void) bool
 	GetPixelViewMethod            func(*PixelView, *Void) bool
@@ -3016,11 +3022,14 @@ var GetVersion func(version *uint32) string
 
 var QueryConfigureOption func(option string) string
 
-var QueryConfigureOptions func(pattern string, numberOptions *uint32) []string
+//NOTE(t): Will woek with []string return (is a nil terminated array)
+var QueryConfigureOptions func(pattern string, numberOptions *uint32) []String2
 
-var QueryFonts func(pattern string, numberFonts *uint32) []string
+//NOTE(t): Will woek with []string return (is a nil terminated array)
+var QueryFonts func(pattern string, numberFonts *uint32) []String2
 
-var QueryFormats func(pattern string, numberFormats *uint32) []string
+//NOTE(t): Will woek with []string return (is a nil terminated array)
+var QueryFormats func(pattern string, numberFormats *uint32) []String2
 
 var RelinquishMemory func(resource *Void) *Void
 

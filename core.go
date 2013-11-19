@@ -2862,13 +2862,13 @@ func (e *ExceptionInfo) Throw(severity ExceptionType, reason, description string
 
 var ThrowMagickException func(e *ExceptionInfo, module, function string, line Size, severity ExceptionType, tag, format string, va ...VArg) bool
 
-func (e *ExceptionInfo) ThrowMagick(module, function string, line Size, severity ExceptionType, tag, format string, va ...VArg) bool {
+func (e *ExceptionInfo) ThrowException(module, function string, line Size, severity ExceptionType, tag, format string, va ...VArg) bool {
 	return ThrowMagickException(e, module, function, line, severity, tag, format, va)
 }
 
 var ThrowMagickExceptionList func(e *ExceptionInfo, module, function string, line Size, severity ExceptionType, tag, format string, operands VAList) bool
 
-func (e *ExceptionInfo) ThrowMagickList(module, function string, line Size, severity ExceptionType, tag, format string, operands VAList) bool {
+func (e *ExceptionInfo) ThrowExceptionkList(module, function string, line Size, severity ExceptionType, tag, format string, operands VAList) bool {
 	return ThrowMagickExceptionList(e, module, function, line, severity, tag, format, operands)
 }
 
@@ -5500,79 +5500,156 @@ const (
 type CommandOption Enum
 
 const (
-	MagickUndefinedOptions CommandOption = iota - 1
-	MagickAlignOptions
-	MagickAlphaOptions
-	MagickBooleanOptions
-	MagickCacheOptions
-	MagickChannelOptions
-	MagickClassOptions
-	MagickClipPathOptions
-	MagickCoderOptions
-	MagickColorOptions
-	MagickColorspaceOptions
-	MagickCommandOptions
-	MagickComposeOptions
-	MagickCompressOptions
-	MagickConfigureOptions
-	MagickDataTypeOptions
-	MagickDebugOptions
-	MagickDecorateOptions
-	MagickDelegateOptions
-	MagickDirectionOptions
-	MagickDisposeOptions
-	MagickDistortOptions
-	MagickDitherOptions
-	MagickEndianOptions
-	MagickEvaluateOptions
-	MagickFillRuleOptions
-	MagickFilterOptions
-	MagickFontOptions
-	MagickFontsOptions
-	MagickFormatOptions
-	MagickFunctionOptions
-	MagickGravityOptions
-	MagickIntentOptions
-	MagickInterlaceOptions
-	MagickInterpolateOptions
-	MagickKernelOptions
-	MagickLayerOptions
-	MagickLineCapOptions
-	MagickLineJoinOptions
-	MagickListOptions
-	MagickLocaleOptions
-	MagickLogEventOptions
-	MagickLogOptions
-	MagickMagicOptions
-	MagickMethodOptions
-	MagickMetricOptions
-	MagickMimeOptions
-	MagickModeOptions
-	MagickModuleOptions
-	MagickMorphologyOptions
-	MagickNoiseOptions
-	MagickOrientationOptions
-	MagickPixelIntensityOptions
-	MagickPolicyOptions
-	MagickPolicyDomainOptions
-	MagickPolicyRightsOptions
-	MagickPreviewOptions
-	MagickPrimitiveOptions
-	MagickQuantumFormatOptions
-	MagickResolutionOptions
-	MagickResourceOptions
-	MagickSparseColorOptions
-	MagickStatisticOptions
-	MagickStorageOptions
-	MagickStretchOptions
-	MagickStyleOptions
-	MagickThresholdOptions
-	MagickTypeOptions
-	MagickValidateOptions
-	MagickVirtualPixelOptionsOptions
-	MagickComplexOptions
-	MagickIntensityOptions
+	UndefinedOptions CommandOption = iota - 1
+	AlignOptions
+	AlphaOptions
+	BooleanOptions
+	CacheOptions
+	ChannelOptions
+	ClassOptions
+	ClipPathOptions
+	CoderOptions
+	ColorOptions
+	ColorspaceOptions
+	CommandOptions
+	ComposeOptions
+	CompressOptions
+	ConfigureOptions
+	DataTypeOptions
+	DebugOptions
+	DecorateOptions
+	DelegateOptions
+	DirectionOptions
+	DisposeOptions
+	DistortOptions
+	DitherOptions
+	EndianOptions
+	EvaluateOptions
+	FillRuleOptions
+	FilterOptions
+	FontOptions
+	FontsOptions
+	FormatOptions
+	FunctionOptions
+	GravityOptions
+	IntentOptions
+	InterlaceOptions
+	InterpolateOptions
+	KernelOptions
+	LayerOptions
+	LineCapOptions
+	LineJoinOptions
+	ListOptions
+	LocaleOptions
+	LogEventOptions
+	LogOptions
+	MagicOptions
+	MethodOptions
+	MetricOptions
+	MimeOptions
+	ModeOptions
+	ModuleOptions
+	MorphologyOptions
+	NoiseOptions
+	OrientationOptions
+	PixelIntensityOptions
+	PolicyOptions
+	PolicyDomainOptions
+	PolicyRightsOptions
+	PreviewOptions
+	PrimitiveOptions
+	QuantumFormatOptions
+	ResolutionOptions
+	ResourceOptions
+	SparseColorOptions
+	StatisticOptions
+	StorageOptions
+	StretchOptions
+	StyleOptions
+	ThresholdOptions
+	TypeOptions
+	ValidateOptions
+	VirtualPixelOptionsOptions
+	ComplexOptions
+	IntensityOptions
 )
+
+func (c CommandOption) String() string {
+	return CommandOptionString[c]
+}
+
+var CommandOptionString = []string{
+	"AlignOptions",
+	"AlphaOptions",
+	"BooleanOptions",
+	"CacheOptions",
+	"ChannelOptions",
+	"ClassOptions",
+	"ClipPathOptions",
+	"CoderOptions",
+	"ColorOptions",
+	"ColorspaceOptions",
+	"CommandOptions",
+	"ComposeOptions",
+	"CompressOptions",
+	"ConfigureOptions",
+	"DataTypeOptions",
+	"DebugOptions",
+	"DecorateOptions",
+	"DelegateOptions",
+	"DirectionOptions",
+	"DisposeOptions",
+	"DistortOptions",
+	"DitherOptions",
+	"EndianOptions",
+	"EvaluateOptions",
+	"FillRuleOptions",
+	"FilterOptions",
+	"FontOptions",
+	"FontsOptions",
+	"FormatOptions",
+	"FunctionOptions",
+	"GravityOptions",
+	"IntentOptions",
+	"InterlaceOptions",
+	"InterpolateOptions",
+	"KernelOptions",
+	"LayerOptions",
+	"LineCapOptions",
+	"LineJoinOptions",
+	"ListOptions",
+	"LocaleOptions",
+	"LogEventOptions",
+	"LogOptions",
+	"MagicOptions",
+	"MethodOptions",
+	"MetricOptions",
+	"MimeOptions",
+	"ModeOptions",
+	"ModuleOptions",
+	"MorphologyOptions",
+	"NoiseOptions",
+	"OrientationOptions",
+	"PixelIntensityOptions",
+	"PolicyOptions",
+	"PolicyDomainOptions",
+	"PolicyRightsOptions",
+	"PreviewOptions",
+	"PrimitiveOptions",
+	"QuantumFormatOptions",
+	"ResolutionOptions",
+	"ResourceOptions",
+	"SparseColorOptions",
+	"StatisticOptions",
+	"StorageOptions",
+	"StretchOptions",
+	"StyleOptions",
+	"ThresholdOptions",
+	"TypeOptions",
+	"ValidateOptions",
+	"VirtualPixelOptionsOptions",
+	"ComplexOptions",
+	"IntensityOptions"}
 
 type ComplianceType Enum
 

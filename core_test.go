@@ -74,3 +74,15 @@ func aTestOffset(t *testing.T) {
 	var i Image
 	t.Logf("%X\n", unsafe.Offsetof(i.ProgressMonitor))
 }
+
+// Weird order problems results (6.8.0 bin)
+func TestCommandOptions(t *testing.T) {
+	for i := AlignOptions; i <= IntensityOptions; i++ {
+		t.Logf("%s %d: %s", i, int(i), i.Options())
+	}
+}
+
+func TestListFiles(t *testing.T) {
+	var n Size
+	t.Log(ListFiles(".", "*", &n))
+}

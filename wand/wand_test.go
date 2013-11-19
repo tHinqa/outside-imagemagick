@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestInit(t *testing.T) {
+func aTestInit(t *testing.T) {
 	var w *MagickWand
 	t.Log(QueryConfigureOption("NAME"),
 		QueryConfigureOption("VERSION"))
@@ -33,11 +33,11 @@ func TestQuery(t *testing.T) {
 	os := QueryConfigureOptions("*", &n)
 	t.Log(n, os)
 	for i, o := range os {
-		t.Log(i, ":", o, ":", QueryConfigureOption(o))
+		t.Log(i, ":", o, ":", QueryConfigureOption(string(o)))
 	}
 }
 
-func TestMagickWand(t *testing.T) {
+func aTestMagickWand(t *testing.T) {
 	w := NewMagickWand()
 	defer w.Destroy()
 	if w.New(1, 1, w.BackgroundColor()) {
