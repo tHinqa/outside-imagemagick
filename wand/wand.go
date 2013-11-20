@@ -24,12 +24,6 @@ type (
 )
 
 type (
-	String2 string // for SizeArg
-)
-
-func (String2) SizeArg() int { return 2 }
-
-type (
 	DuplexTransferPixelViewMethod func(*PixelView, *PixelView, *PixelView, *Void) bool
 	DuplexTransferWandViewMethod  func(*WandView, *WandView, *WandView, I.SSize, int, *Void) bool
 	GetPixelViewMethod            func(*PixelView, *Void) bool
@@ -584,9 +578,9 @@ var GetCompressionQuality func(m *MagickWand) uint32
 
 func (m *MagickWand) CompressionQuality() uint32 { return GetCompressionQuality(m) }
 
-var GetException func(m *MagickWand, severity *I.ExceptionType) string
+var GetException func(m *MagickWand, severity *I.ExceptionType) I.String
 
-func (m *MagickWand) Exception(severity *I.ExceptionType) string {
+func (m *MagickWand) Exception(severity *I.ExceptionType) I.String {
 	return GetException(m, severity)
 }
 
@@ -594,17 +588,17 @@ var GetExceptionType func(m *MagickWand) I.ExceptionType
 
 func (m *MagickWand) ExceptionType() I.ExceptionType { return GetExceptionType(m) }
 
-var GetFilename func(m *MagickWand) string
+var GetFilename func(m *MagickWand) I.String
 
-func (m *MagickWand) Filename() string { return GetFilename(m) }
+func (m *MagickWand) Filename() I.String { return GetFilename(m) }
 
-var GetFont func(m *MagickWand) string
+var GetFont func(m *MagickWand) I.String
 
-func (m *MagickWand) Font() string { return GetFont(m) }
+func (m *MagickWand) Font() I.String { return GetFont(m) }
 
-var GetFormat func(m *MagickWand) string
+var GetFormat func(m *MagickWand) I.String
 
-func (m *MagickWand) Format() string { return GetFormat(m) }
+func (m *MagickWand) Format() I.String { return GetFormat(m) }
 
 var GetGravity func(m *MagickWand) I.GravityType
 
@@ -622,9 +616,9 @@ var GetImageArtifact func(m *MagickWand, artifact string) string
 
 func (m *MagickWand) Artifact(artifact string) string { return GetImageArtifact(m, artifact) }
 
-var GetImageArtifacts func(m *MagickWand, pattern, numberArtifacts *uint32) string
+var GetImageArtifacts func(m *MagickWand, pattern string, numberArtifacts *uint32) I.StrSlice3
 
-func (m *MagickWand) Artifacts(pattern, numberArtifacts *uint32) string {
+func (m *MagickWand) Artifacts(pattern string, numberArtifacts *uint32) I.StrSlice3 {
 	return GetImageArtifacts(m, pattern, numberArtifacts)
 }
 
@@ -744,13 +738,13 @@ func (m *MagickWand) Distortion(reference *MagickWand, metric I.MetricType, dist
 	return GetImageDistortion(m, reference, metric, distortion)
 }
 
-var GetImageFilename func(m *MagickWand) string
+var GetImageFilename func(m *MagickWand) I.String
 
-func (m *MagickWand) ImageFilename() string { return GetImageFilename(m) }
+func (m *MagickWand) ImageFilename() I.String { return GetImageFilename(m) }
 
-var GetImageFormat func(m *MagickWand) string
+var GetImageFormat func(m *MagickWand) I.String
 
-func (m *MagickWand) ImageFormat() string { return GetImageFormat(m) }
+func (m *MagickWand) ImageFormat() I.String { return GetImageFormat(m) }
 
 var GetImageFuzz func(m *MagickWand) float64
 
@@ -826,15 +820,15 @@ func (m *MagickWand) Profile(name string, length *uint32) *byte {
 	return GetImageProfile(m, name, length)
 }
 
-var GetImageProfiles func(m *MagickWand, pattern, numberProfiles *uint32) string
+var GetImageProfiles func(m *MagickWand, pattern string, numberProfiles *uint32) I.StrSlice3
 
-func (m *MagickWand) Profiles(pattern, numberProfiles *uint32) string {
+func (m *MagickWand) Profiles(pattern string, numberProfiles *uint32) I.StrSlice3 {
 	return GetImageProfiles(m, pattern, numberProfiles)
 }
 
-var GetImageProperties func(m *MagickWand, pattern, numberProperties *uint32) string
+var GetImageProperties func(m *MagickWand, pattern string, numberProperties *uint32) I.StrSlice3
 
-func (m *MagickWand) Properties(pattern, numberProperties *uint32) string {
+func (m *MagickWand) Properties(pattern string, numberProperties *uint32) I.StrSlice3 {
 	return GetImageProperties(m, pattern, numberProperties)
 }
 
@@ -868,9 +862,9 @@ var GetImageScene func(m *MagickWand) uint32
 
 func (m *MagickWand) ImageScene() uint32 { return GetImageScene(m) }
 
-var GetImageSignature func(m *MagickWand) string
+var GetImageSignature func(m *MagickWand) I.String
 
-func (m *MagickWand) ImageSignature() string { return GetImageSignature(m) }
+func (m *MagickWand) ImageSignature() I.String { return GetImageSignature(m) }
 
 var GetImageTicksPerSecond func(m *MagickWand) uint32
 
@@ -920,13 +914,13 @@ var GetNumberImages func(m *MagickWand) uint32
 
 func (m *MagickWand) NumberImages() uint32 { return GetNumberImages(m) }
 
-var GetOption func(m *MagickWand, key string) string
+var GetOption func(m *MagickWand, key string) I.String
 
-func (m *MagickWand) Option(key string) string { return GetOption(m, key) }
+func (m *MagickWand) Option(key string) I.String { return GetOption(m, key) }
 
-var GetOptions func(m *MagickWand, pattern, numberOptions *uint32) string
+var GetOptions func(m *MagickWand, pattern string, numberOptions *uint32) I.StrSlice3
 
-func (m *MagickWand) Options(pattern, numberOptions *uint32) string {
+func (m *MagickWand) Options(pattern string, numberOptions *uint32) I.StrSlice3 {
 	return GetOptions(m, pattern, numberOptions)
 }
 
@@ -2032,17 +2026,17 @@ var DrawGetBorderColor func(d *DrawingWand, borderColor *PixelWand)
 
 func (d *DrawingWand) BorderColor(borderColor *PixelWand) { DrawGetBorderColor(d, borderColor) }
 
-var DrawGetClipPath func(d *DrawingWand) string
+var DrawGetClipPath func(d *DrawingWand) I.String
 
-func (d *DrawingWand) ClipPath() string { return DrawGetClipPath(d) }
+func (d *DrawingWand) ClipPath() I.String { return DrawGetClipPath(d) }
 
 var DrawGetClipUnits func(d *DrawingWand) I.ClipPathUnits
 
 func (d *DrawingWand) ClipUnits() I.ClipPathUnits { return DrawGetClipUnits(d) }
 
-var DrawGetException func(d *DrawingWand, severity *I.ExceptionType) string
+var DrawGetException func(d *DrawingWand, severity *I.ExceptionType) I.String
 
-func (d *DrawingWand) Exception(severity *I.ExceptionType) string {
+func (d *DrawingWand) Exception(severity *I.ExceptionType) I.String {
 	return DrawGetException(d, severity)
 }
 
@@ -2062,13 +2056,13 @@ var DrawGetFillRule func(d *DrawingWand) I.FillRule
 
 func (d *DrawingWand) FillRule() I.FillRule { return DrawGetFillRule(d) }
 
-var DrawGetFont func(d *DrawingWand) string
+var DrawGetFont func(d *DrawingWand) I.String
 
-func (d *DrawingWand) Font() string { return DrawGetFont(d) }
+func (d *DrawingWand) Font() I.String { return DrawGetFont(d) }
 
-var DrawGetFontFamily func(d *DrawingWand) string
+var DrawGetFontFamily func(d *DrawingWand) I.String
 
-func (d *DrawingWand) FontFamily() string { return DrawGetFontFamily(d) }
+func (d *DrawingWand) FontFamily() I.String { return DrawGetFontFamily(d) }
 
 var DrawGetFontResolution func(d *DrawingWand, x, y *float64) bool
 
@@ -2150,9 +2144,9 @@ var DrawGetTextDecoration func(d *DrawingWand) I.DecorationType
 
 func (d *DrawingWand) TextDecoration() I.DecorationType { return DrawGetTextDecoration(d) }
 
-var DrawGetTextEncoding func(d *DrawingWand) string
+var DrawGetTextEncoding func(d *DrawingWand) I.String
 
-func (d *DrawingWand) TextEncoding() string { return DrawGetTextEncoding(d) }
+func (d *DrawingWand) TextEncoding() I.String { return DrawGetTextEncoding(d) }
 
 var DrawGetTextInterwordSpacing func(d *DrawingWand) float64
 
@@ -2166,9 +2160,9 @@ var DrawGetTextUnderColor func(d *DrawingWand, underColor *PixelWand)
 
 func (d *DrawingWand) TextUnderColor(underColor *PixelWand) { DrawGetTextUnderColor(d, underColor) }
 
-var DrawGetVectorGraphics func(d *DrawingWand) string
+var DrawGetVectorGraphics func(d *DrawingWand) I.String
 
-func (d *DrawingWand) VectorGraphics() string { return DrawGetVectorGraphics(d) }
+func (d *DrawingWand) VectorGraphics() I.String { return DrawGetVectorGraphics(d) }
 
 var DrawLine func(d *DrawingWand, sx, sy, ex, ey float64)
 
@@ -2592,13 +2586,13 @@ var PixelGetBlueQuantum func(p *PixelWand) I.Quantum
 
 func (p *PixelWand) BlueQuantum() I.Quantum { return PixelGetBlueQuantum(p) }
 
-var PixelGetColorAsNormalizedString func(p *PixelWand) string
+var PixelGetColorAsNormalizedString func(p *PixelWand) I.String
 
-func (p *PixelWand) ColorAsNormalizedString() string { return PixelGetColorAsNormalizedString(p) }
+func (p *PixelWand) ColorAsNormalizedString() I.String { return PixelGetColorAsNormalizedString(p) }
 
-var PixelGetColorAsString func(p *PixelWand) string
+var PixelGetColorAsString func(p *PixelWand) I.String
 
-func (p *PixelWand) ColorAsString() string { return PixelGetColorAsString(p) }
+func (p *PixelWand) ColorAsString() I.String { return PixelGetColorAsString(p) }
 
 var PixelGetColorCount func(p *PixelWand) uint32
 
@@ -2612,9 +2606,11 @@ var PixelGetCyanQuantum func(p *PixelWand) I.Quantum
 
 func (p *PixelWand) CyanQuantum() I.Quantum { return PixelGetCyanQuantum(p) }
 
-var PixelGetException func(p *PixelWand, severity *I.ExceptionType) string
+var PixelGetException func(p *PixelWand, severity *I.ExceptionType) I.String
 
-func (p *PixelWand) Exception(severity *I.ExceptionType) string { return PixelGetException(p, severity) }
+func (p *PixelWand) Exception(severity *I.ExceptionType) I.String {
+	return PixelGetException(p, severity)
+}
 
 var PixelGetExceptionType func(p *PixelWand) I.ExceptionType
 
@@ -2810,9 +2806,9 @@ func (p *PixelIterator) CurrentRow(numberWands *uint32) []*PixelWand {
 	return PixelGetCurrentIteratorRow(p, numberWands)
 }
 
-var PixelGetIteratorException func(p *PixelIterator, severity *I.ExceptionType) string
+var PixelGetIteratorException func(p *PixelIterator, severity *I.ExceptionType) I.String
 
-func (p *PixelIterator) IteratoException(severity *I.ExceptionType) string {
+func (p *PixelIterator) IteratoException(severity *I.ExceptionType) I.String {
 	return PixelGetIteratorException(p, severity)
 }
 
@@ -2876,9 +2872,9 @@ func (w *WandView) DuplexTransferIterator(duplex, destination *WandView, transfe
 	return DuplexTransferWandViewIterator(w, duplex, destination, transfer, context)
 }
 
-var GetWandViewException func(w *WandView, severity *I.ExceptionType) string
+var GetWandViewException func(w *WandView, severity *I.ExceptionType) I.String
 
-func (w *WandView) Exception(severity *I.ExceptionType) string {
+func (w *WandView) Exception(severity *I.ExceptionType) I.String {
 	return GetWandViewException(w, severity)
 }
 
@@ -3008,7 +3004,7 @@ func (i *Image) Destroy() *Image { return DestroyImage(i) }
 
 var GetCopyright func() string
 
-var GetHomeURL func() string
+var GetHomeURL func() I.String
 
 var GetPackageName func() string
 
@@ -3020,16 +3016,16 @@ var GetReleaseDate func() string
 
 var GetVersion func(version *uint32) string
 
-var QueryConfigureOption func(option string) string
+var QueryConfigureOption func(option string) I.String
 
 //NOTE(t): Will woek with []string return (is a nil terminated array)
-var QueryConfigureOptions func(pattern string, numberOptions *uint32) []String2
+var QueryConfigureOptions func(pattern string, numberOptions *uint32) I.StrSlice2
 
 //NOTE(t): Will woek with []string return (is a nil terminated array)
-var QueryFonts func(pattern string, numberFonts *uint32) []String2
+var QueryFonts func(pattern string, numberFonts *uint32) I.StrSlice2
 
 //NOTE(t): Will woek with []string return (is a nil terminated array)
-var QueryFormats func(pattern string, numberFormats *uint32) []String2
+var QueryFormats func(pattern string, numberFormats *uint32) I.StrSlice2
 
 var RelinquishMemory func(resource *Void) *Void
 

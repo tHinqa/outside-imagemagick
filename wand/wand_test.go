@@ -33,7 +33,7 @@ func TestQuery(t *testing.T) {
 	os := QueryConfigureOptions("*", &n)
 	t.Log(n, os)
 	for i, o := range os {
-		t.Log(i, ":", o, ":", QueryConfigureOption(string(o)))
+		t.Log(i, ":", o, ":", QueryConfigureOption(o))
 	}
 }
 

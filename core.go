@@ -117,6 +117,34 @@ type (
 	WarningHandler                func(ExceptionType, string, string)
 )
 
+//NOTE(t): SizeArgs not necessary; will work with []string return (is a nil terminated array)
+
+//Special type for outside
+type (
+	String    string
+	StrSlice  []string
+	StrSlice2 []string
+	StrSlice3 []string
+)
+
+//Helper for outside
+func (StrSlice2) SizeArg() int { return 2 }
+
+//Helper for outside
+func (StrSlice3) SizeArg() int { return 3 }
+
+//Helper for outside
+func (String) Dispose(s *Char) { DestroyString(s) }
+
+//Helper for outside
+func (StrSlice) Dispose(l **Char) { DestroyStringList(l) }
+
+//Helper for outside
+func (StrSlice2) Dispose(l **Char) { DestroyStringList(l) }
+
+//Helper for outside
+func (StrSlice3) Dispose(l **Char) { DestroyStringList(l) }
+
 // TODO(t): image *Image; images *Image; images **Image distinctions
 var AccelerateConvolveImage func(*Image, *KernelInfo, *Image, *ExceptionInfo) bool
 
@@ -430,7 +458,7 @@ var GetImageMean func(i *Image, mean, standardDeviation *float64, exception *Exc
 // Deprecated
 var GetImagePixels func(i *Image, x, y SSize, columns, rows Size) *PixelPacket
 var GetImageProfile func(i *Image, name string) *StringInfo
-var GetImageProperty func(i *Image, property string) string
+var GetImageProperty func(i *Image, property string) String
 var GetImageQuantizeError func(i *Image) bool
 var GetImageQuantumDepth func(i *Image, constrain bool) Size
 var GetImageRange func(i *Image, minima, maxima *float64, exception *ExceptionInfo) bool
@@ -1066,7 +1094,7 @@ func (i *Image) ImagePixels(x, y SSize, columns, rows Size) *PixelPacket {
 	return GetImagePixels(i, x, y, columns, rows)
 }
 func (i *Image) Profile(name string) *StringInfo { return GetImageProfile(i, name) }
-func (i *Image) Property(property string) string { return GetImageProperty(i, property) }
+func (i *Image) Property(property string) String { return GetImageProperty(i, property) }
 func (i *Image) QuantizeError() bool             { return GetImageQuantizeError(i) }
 func (i *Image) QuantumDepth(constrain bool) Size {
 	return GetImageQuantumDepth(i, constrain)
@@ -2763,9 +2791,9 @@ var SplitStringInfo func(s *StringInfo, offset uint32) *StringInfo
 
 func (s *StringInfo) Split(offset uint32) *StringInfo { return SplitStringInfo(s, offset) }
 
-var StringInfoToString func(s *StringInfo) string
+var StringInfoToString func(s *StringInfo) String
 
-func (s *StringInfo) String() string { return StringInfoToString(s) }
+func (s *StringInfo) String() String { return StringInfoToString(s) }
 
 var ListCoderInfo func(f *FILE, exception *ExceptionInfo) bool
 
@@ -3156,7 +3184,7 @@ var GenerateDifferentialNoise func(*RandomInfo, Quantum, NoiseType, MagickRealTy
 var GetAuthenticPixelCacheNexus func(*Image, int32, int32, uint32, uint32, *NexusInfo, *ExceptionInfo) *PixelPacket
 var GetCacheViewExtent func(*CacheView) MagickSizeType
 var GetCommandOptionFlags func(CommandOption, bool, string) int32
-var GetConfigureOption func(string) string
+var GetConfigureOption func(string) String
 var GetImageExtent func(i *Image) MagickSizeType
 var GetImageKurtosis func(i *Image, kurtosis, skewness *float64, e *ExceptionInfo) bool
 var GetImagePixelCacheType func(i *Image) CacheType
@@ -3192,8 +3220,8 @@ func (i *Image) CacheType() CacheType                   { return GetPixelCacheTy
 func (i *Image) CacheVirtualMethod() VirtualPixelMethod { return GetPixelCacheVirtualMethod(i) }
 
 var GetPolicyInfoList func(string, *uint32, *ExceptionInfo) []*PolicyInfo
-var GetPolicyList func(string, *uint32, *ExceptionInfo) []string
-var GetPolicyValue func(string) string
+var GetPolicyList func(pattern string, numberPolicies *uint32, e *ExceptionInfo) StrSlice2
+var GetPolicyValue func(string) String
 var GetPseudoRandomValue func(*RandomInfo) float64
 var GetQuantumEndian func(*QuantumInfo) EndianType
 var GetQuantumExtent func(*Image, *QuantumInfo, QuantumType) uint32
@@ -3256,7 +3284,7 @@ var MimeComponentGenesis func() bool
 var MimeComponentTerminus func()
 var ModuleComponentGenesis func() bool
 var ModuleComponentTerminus func()
-var NTArgvToUTF8 func(argc int, argv []WString) []string
+var NTArgvToUTF8 func(argc int, argv []WString) StrSlice
 var NTGatherRandomData func(uint32, *byte) bool
 var ParseRegionGeometry func(i *Image, geometry string, r *RectangleInfo, e *ExceptionInfo) MagickStatusType
 var PerceptibleImage func(i *Image, epsilon float64) bool
@@ -3361,7 +3389,7 @@ func (i *Image) SolarizeImageChannel(c ChannelType, threshold float64, e *Except
 }
 
 var SRGBCompandor func(MagickRealType) MagickRealType
-var StringInfoToHexString func(*StringInfo) string
+var StringInfoToHexString func(*StringInfo) String
 var StringToArrayOfDoubles func(string, *int32, *ExceptionInfo) []float64
 var SyncAuthenticPixelCacheNexus func(i *Image, n *NexusInfo, e *ExceptionInfo) bool
 var TransparentPaintImageChroma func(i *Image, low, high *MagickPixelPacket, opacity Quantum, invert bool) bool
@@ -3394,24 +3422,26 @@ var AcquireMagickMemory func(size uint32) *Void
 // Deprecated
 var AcquireMemory func(size uint32) *Void
 var AcquireQuantumMemory func(count, quantum uint32) *Void
-var AcquireString func(source string) string
+
+// NOTE(t):Pointless var AcquireString func(source string) String
 var AcquireStringInfo func(length uint32) *StringInfo
 var AcquireUniqueFilename func(path string) bool
 var AcquireUniqueFileResource func(path string) int
 var AcquireUniqueSymbolicLink func(source, destination string) bool
 
 // Deprecated
-var AllocateString func(source string) string
+// NOTE(t):Pointless var AllocateString func(source string) String
 var AppendImageFormat func(format, filename string)
 var Base64Decode func(source string, length *uint32) *byte
-var Base64Encode func(blob *byte, blobLength uint32, encodeLength *uint32) string
+var Base64Encode func(blob *byte, blobLength uint32, encodeLength *uint32) String
 var BlobToFile func(filename string, blob *Void, length uint32, exception *ExceptionInfo) bool
-var CanonicalXMLContent func(content string, pedantic bool) string
+var CanonicalXMLContent func(content string, pedantic bool) String
 var ChopPathComponents func(path string, components Size)
 
 // Deprecated
 var CloneMemory func(destination, source *Void, size uint32) *Void
-var CloneString func(destination []string, source string) string
+
+// NOTE(t):Pointless var CloneString func(destination **Char, source string) String
 var CloseMagickLog func()
 var CompareHashmapString func(target, source *Void) bool
 var CompareHashmapStringInfo func(target, source *Void) bool
@@ -3420,7 +3450,8 @@ var CompareSplayTreeStringInfo func(target, source *Void) int
 var ConcatenateMagickString func(destination, source string, length uint32) uint32
 var ConcatenateString func(destination []string, source string) bool
 var ConfigureFileToStringInfo func(filename string) *StringInfo
-var ConstantString func(source string) string
+
+// NOTE(t):Pointless var ConstantString func(source string) string
 var ConstituteImage func(columns, rows Size, map_ string, storage StorageType, pixels *Void, exception *ExceptionInfo) *Image
 var ConvertHSBToRGB func(hue, saturation, brightness float64, red, green, blue *Quantum)
 var ConvertHSLToRGB func(hue, saturation, luminosity float64, red, green, blue *Quantum)
@@ -3444,17 +3475,17 @@ var DestroyMagickRegistry func()
 var DestroyModuleList func()
 var DestroyMontageInfo func(montageInfo *MontageInfo) *MontageInfo
 var DestroyQuantumInfo func(quantumInfo *QuantumInfo) *QuantumInfo
-var DestroyString func(str string) string
-var DestroyStringList func(list []string) []string
+var DestroyString func(str *Char) *Char
+var DestroyStringList func(list **Char) **Char
 var DestroyThresholdMap func(map_ *ThresholdMap) *ThresholdMap
 var DestroyXResources func()
 var DestroyXWidget func()
-var EscapeString func(source string, escape int8) string
+var EscapeString func(source string, escape int8) String
 var ExpandAffine func(affine *AffineMatrix) float64
 var ExpandFilename func(path string)
 var ExpandFilenames func(argc *int, argv *[]string) bool
 var FileToBlob func(filename string, extent uint32, length *uint32, exception *ExceptionInfo) *byte
-var FileToString func(filename string, extent uint32, exception *ExceptionInfo) string
+var FileToString func(filename string, extent uint32, exception *ExceptionInfo) String
 var FileToStringInfo func(filename string, extent uint32, exception *ExceptionInfo) *StringInfo
 var FormatMagickSize func(size MagickSizeType, format string) SSize
 
@@ -3473,47 +3504,47 @@ var GetClientName func() string
 var GetClientPath func() string
 var GetCoderInfo func(name string, exception *ExceptionInfo) *CoderInfo
 var GetCoderInfoList func(pattern string, numberCoders *Size, exception *ExceptionInfo) **CoderInfo
-var GetCoderList func(pattern string, numberCoders *Size, exception *ExceptionInfo) []string
+var GetCoderList func(pattern string, numberCoders *Size, exception *ExceptionInfo) StrSlice2
 var GetColorInfo func(name string, exception *ExceptionInfo) *ColorInfo
 var GetColorInfoList func(pattern string, numberColors *Size, exception *ExceptionInfo) **ColorInfo
-var GetColorList func(pattern string, numberColors *Size, exception *ExceptionInfo) []string
+var GetColorList func(pattern string, numberColors *Size, exception *ExceptionInfo) StrSlice2
 
 // Deprecated
 var GetConfigureBlob func(filename, path string, length *uint32, exception *ExceptionInfo) *Void
 var GetConfigureInfo func(name string, exception *ExceptionInfo) *ConfigureInfo
 var GetConfigureInfoList func(pattern string, numberOptions *Size, exception *ExceptionInfo) **ConfigureInfo
-var GetConfigureList func(pattern string, numberOptions *Size, exception *ExceptionInfo) []string
+var GetConfigureList func(pattern string, numberOptions *Size, exception *ExceptionInfo) StrSlice2
 var GetConfigureOptions func(filename string, exception *ExceptionInfo) *LinkedListInfo
 var GetConfigurePaths func(filename string, exception *ExceptionInfo) *LinkedListInfo
 var GetConfigureValue func(configureInfo *ConfigureInfo) string
-var GetDelegateList func(pattern string, numberDelegates *Size, exception *ExceptionInfo) []string
-var GetEnvironmentValue func(name string) string
-var GetExceptionMessage func(errorCode int) string
+var GetDelegateList func(pattern string, numberDelegates *Size, exception *ExceptionInfo) StrSlice2
+var GetEnvironmentValue func(name string) String
+var GetExceptionMessage func(errorCode int) String
 var GetExecutionPath func(path string, extent uint32) bool
 var GetGeometry func(geometry string, x, y *Long, width, height *Size) MagickStatusType
 
 // Deprecated
 var GetImageFromMagickRegistry func(name string, id *Long, exception *ExceptionInfo) *Image
-var GetImageMagick func(magick *byte, length uint32, format string) string
+var GetImageMagick func(magick *byte, length uint32, format *Char) bool
 var GetImageRegistry func(type_ RegistryType, key string, exception *ExceptionInfo) *Void
 var GetLocaleExceptionMessage func(severity ExceptionType, tag string) string
 var GetLocaleInfo func(tag string, exception *ExceptionInfo) *LocaleInfo
 var GetLocaleInfoList func(pattern string, numberMessages *Size, exception *ExceptionInfo) []*LocaleInfo
-var GetLocaleList func(pattern string, numberMessages *Size, exception *ExceptionInfo) []string
+var GetLocaleList func(pattern string, numberMessages *Size, exception *ExceptionInfo) StrSlice2
 var GetLocaleMessage func(tag string) string
 var GetLocaleOptions func(filename string, exception *ExceptionInfo) *LinkedListInfo
 var GetLocaleValue func(localeInfo *LocaleInfo) string
-var GetLogInfoList func(pattern string, numberPreferences *Size, exception *ExceptionInfo) []*LogInfo
-var GetLogList func(pattern string, numberPreferences *Size, exception *ExceptionInfo) []string
+var GetLogInfoList func(pattern string, numberPreferences *Size, exception *ExceptionInfo) StrSlice2
+var GetLogList func(pattern string, numberPreferences *Size, exception *ExceptionInfo) StrSlice2
 var GetLogName func() string
 var GetMagicInfo func(magic *byte, length uint32, exception *ExceptionInfo) *MagicInfo
 var GetMagicInfoList func(pattern string, numberAliases *Size, exception *ExceptionInfo) []*MagicInfo
 var GetMagickCopyright func() string
 var GetMagickGeometry func(geometry string, x, y *Long, width, height *Size) uint
-var GetMagickHomeURL func() string
+var GetMagickHomeURL func() String
 var GetMagickInfo func(name string, exception *ExceptionInfo) *MagickInfo
 var GetMagickInfoList func(pattern string, numberFormats *Size, exception *ExceptionInfo) []*MagickInfo
-var GetMagickList func(pattern string, numberFormats *Size, exception *ExceptionInfo) []string
+var GetMagickList func(pattern string, numberFormats *Size, exception *ExceptionInfo) StrSlice2
 var GetMagickPackageName func() string
 var GetMagickQuantumDepth func(depth *Size) string
 var GetMagickQuantumRange func(range_ *Size) string
@@ -3524,7 +3555,7 @@ var GetMagickReleaseDate func() string
 var GetMagickToken func(start string, end []string, token string)
 var GetMagickPrecision func() int
 var GetMagickVersion func(version *Size) string
-var GetMagicList func(pattern string, numberAliases *Size, exception *ExceptionInfo) []string
+var GetMagicList func(pattern string, numberAliases *Size, exception *ExceptionInfo) StrSlice2
 var GetMagicName func(magicInfo *MagicInfo) string
 var GetMimeDescription func(m *MimeInfo) string
 
@@ -3532,22 +3563,22 @@ func (m *MimeInfo) Description() string { return GetMimeDescription(m) }
 
 var GetMimeInfo func(filename string, magic *byte, length uint32, exception *ExceptionInfo) *MimeInfo
 var GetMimeInfoList func(pattern string, numberAliases *Size, exception *ExceptionInfo) []*MimeInfo
-var GetMimeList func(pattern string, numberAliases *Size, exception *ExceptionInfo) []string
+var GetMimeList func(pattern string, numberAliases *Size, exception *ExceptionInfo) StrSlice2
 var GetMimeType func(m *MimeInfo) string
 
 func (m *MimeInfo) Type() string { return GetMimeType(m) }
 
 var GetModuleInfo func(tag string, exception *ExceptionInfo) *ModuleInfo
 var GetModuleInfoList func(pattern string, numberModules *Size, exception *ExceptionInfo) **ModuleInfo
-var GetModuleList func(pattern string, numberModules *Size, exception *ExceptionInfo) []string
+var GetModuleList func(pattern string, numberModules *Size, exception *ExceptionInfo) StrSlice2
 var GetMonitorHandler func() MonitorHandler
 var GetNextImageRegistry func() string
 var GetOptimalKernelWidth func(radius, sigma float64) Size
 var GetOptimalKernelWidth1D func(radius, sigma float64) Size
 var GetOptimalKernelWidth2D func(radius, sigma float64) Size
-var GetPageGeometry func(pageGeometry string) string
+var GetPageGeometry func(pageGeometry string) String
 var GetPathComponent func(path string, type_ PathType, component string)
-var GetPathComponents func(path string, numberComponents *Size) []string
+var GetPathComponents func(path string, numberComponents *Size) StrSlice2
 var GetRandomKey func(key *byte, length uint32)
 var GetRandomValue func() float64
 var GetThresholdMap func(mapId string, exception *ExceptionInfo) *ThresholdMap
@@ -3555,7 +3586,7 @@ var GetThresholdMapFile func(xml, filename, mapId string, exception *ExceptionIn
 var GetTypeInfo func(name string, exception *ExceptionInfo) *TypeInfo
 var GetTypeInfoByFamily func(family string, style StyleType, stretch StretchType, weight Size, exception *ExceptionInfo) *TypeInfo
 var GetTypeInfoList func(pattern string, numberFonts *Size, exception *ExceptionInfo) **TypeInfo
-var GetTypeList func(pattern string, numberFonts *Size, exception *ExceptionInfo) []string
+var GetTypeList func(pattern string, numberFonts *Size, exception *ExceptionInfo) StrSlice2
 var GlobExpression func(expression, pattern string, caseInsensitive bool) bool
 var GravityAdjustGeometry func(width, height Size, gravity GravityType, region *RectangleInfo)
 var HashPointerType func(pointer *Void) uint32
@@ -3582,7 +3613,9 @@ var LeastSquaresAddTerms func(matrix, vectors **float64, terms, results *float64
 
 // Deprecated
 var LiberateMemory func(memory **Void)
-var ListFiles func(directory, pattern string, numberEntries *Size) []string
+
+//NOTE(t): Will woek with []string return (is a nil terminated array)
+var ListFiles func(directory, pattern string, numberEntries *Size) StrSlice3
 var LoadMimeLists func(filename string, exception *ExceptionInfo) bool
 var LocaleCompare func(p, q string) SSize
 var LocaleLower func(str string)
@@ -3600,7 +3633,7 @@ var MagickIncarnate func(path string)
 
 // Deprecated
 var MagickMonitor func(text string, offset MagickOffsetType, span MagickSizeType, clientData *Void) bool
-var MagickToMime func(magick string) string
+var MagickToMime func(magick string) String
 var MagickWarning func(warning ExceptionType, reason, description string)
 var MapBlob func(file int, mode MapMode, offset MagickOffsetType, length uint32) *byte
 
@@ -3624,7 +3657,7 @@ var ParseImageGeometry func(geometry string, x, y *Long, width, height *Size) in
 var ParseMetaGeometry func(geometry string, x, y *Long, width, height *Size) MagickStatusType
 
 // Deprecated
-var PostscriptGeometry func(page string) string
+var PostscriptGeometry func(page string) String
 var PrintStringInfo func(file *FILE, id string, stringInfo *StringInfo)
 
 func (f *FILE) PrintStringInfo(id string, stringInfo *StringInfo) {
@@ -3661,10 +3694,10 @@ var SetMagickRegistry func(type_ RegistryType, blob *Void, length uint32, except
 // Deprecated
 var SetMonitorHandler func(handler MonitorHandler) MonitorHandler
 var SetWarningHandler func(handler WarningHandler) WarningHandler
-var StringToArgv func(text string, argc *int) []string
+var StringToArgv func(text string, argc *int) StrSlice2
 var StringToDouble func(str string, interval float64) float64
-var StringToken func(delimiters string, string []string) string
-var StringToList func(text string) []string
+var StringToken func(delimiters string, str **Char) string
+var StringToList func(text string) StrSlice
 var StringToStringInfo func(str string) *StringInfo
 
 // Deprecated
@@ -3705,7 +3738,7 @@ var DestroyKernelInfo func(kernel *KernelInfo) *KernelInfo
 var DestroyPixelCache func()
 var DuplicateImages func(images *Image, numberDuplicates uint32, scenes string, exception *ExceptionInfo) *Image
 var EvaluateImages func(images *Image, op MagickEvaluateOperator, value float64, exception *ExceptionInfo) bool
-var GetImageViewException func(pixelImage *ImageView, severity *ExceptionType) string
+var GetImageViewException func(pixelImage *ImageView, severity *ExceptionType) String
 var GetMagickFeatures func() string
 var GetMagickMemoryMethods func(a *AcquireMemoryHandler, r *ResizeMemoryHandler, destroyMemoryHandler *DestroyMemoryHandler)
 
@@ -3749,7 +3782,7 @@ var NTElapsedTime func() float64
 var NTErrorHandler func(severity ExceptionType, reason string, description string)
 var NTExitLibrary func() int
 var NTGetExecutionPath func(string, uint32) bool
-var NTGetLastError func() string
+var NTGetLastError func() String
 var NTGetLibraryError func() string
 var NTGetLibrarySymbol func(handle *Void, name string) *Void
 var NTGetModulePath func(string, string) bool
@@ -3766,7 +3799,7 @@ var NTMapMemory func(address string, length uint32, protection int, access int, 
 var NTOpenDirectory func(string) *DIR
 var NTOpenLibrary func(filename string) *Void
 var NTReadDirectory func(*DIR) *Dirent
-var NTRegistryKeyLookup func(string) string
+var NTRegistryKeyLookup func(string) *byte
 var NTReportEvent func(string, bool) bool
 var NTResourceToBlob func(string) *byte
 var NTSeekDirectory func(entry *DIR, position SSize)
@@ -3836,7 +3869,7 @@ var allApis = Apis{
 	{"AcquireSemaphoreInfo", &AcquireSemaphoreInfo},
 	{"AcquireSignatureInfo", &AcquireSignatureInfo},
 	{"AcquireStreamInfo", &AcquireStreamInfo},
-	{"AcquireString", &AcquireString},
+	// NOTE(t):Pointless {"AcquireString", &AcquireString},
 	{"AcquireStringInfo", &AcquireStringInfo},
 	{"AcquireTimerInfo", &AcquireTimerInfo},
 	{"AcquireTokenInfo", &AcquireTokenInfo},
@@ -3862,7 +3895,7 @@ var allApis = Apis{
 	{"AllocateImageColormap", &AllocateImageColormap},
 	{"AllocateNextImage", &AllocateNextImage},
 	{"AllocateSemaphoreInfo", &AllocateSemaphoreInfo},
-	{"AllocateString", &AllocateString},
+	// NOTE(t):Pointless {"AllocateString", &AllocateString},
 	{"AnimateImages", &AnimateImages},
 	{"AnnotateComponentGenesis", &AnnotateComponentGenesis},
 	{"AnnotateComponentTerminus", &AnnotateComponentTerminus},
@@ -3934,7 +3967,7 @@ var allApis = Apis{
 	{"ClonePixelCacheMethods", &ClonePixelCacheMethods},
 	{"CloneQuantizeInfo", &CloneQuantizeInfo},
 	{"CloneSplayTree", &CloneSplayTree},
-	{"CloneString", &CloneString},
+	// NOTE(t):Pointless {"CloneString", &CloneString},
 	{"CloneStringInfo", &CloneStringInfo},
 	{"CloseBlob", &CloseBlob},
 	{"CloseCacheView", &CloseCacheView},
@@ -3972,7 +4005,7 @@ var allApis = Apis{
 	{"ConfigureComponentTerminus", &ConfigureComponentTerminus},
 	{"ConfigureFileToStringInfo", &ConfigureFileToStringInfo},
 	{"ConsolidateCMYKImages", &ConsolidateCMYKImages},
-	{"ConstantString", &ConstantString},
+	// NOTE(t):Pointless {"ConstantString", &ConstantString},
 	{"ConstituteComponentGenesis", &ConstituteComponentGenesis},
 	{"ConstituteComponentTerminus", &ConstituteComponentTerminus},
 	{"ConstituteImage", &ConstituteImage},

@@ -82,7 +82,26 @@ func TestCommandOptions(t *testing.T) {
 	}
 }
 
-func TestListFiles(t *testing.T) {
-	var n Size
+func TestLists(t *testing.T) {
+	var (
+		n Size
+		e ExceptionInfo
+		u uint32
+	)
 	t.Log(ListFiles(".", "*", &n))
+	t.Log(GetCoderList("*", &n, &e))
+	t.Log(GetColorList("*", &n, &e))
+	t.Log(GetConfigureList("*", &n, &e))
+	//t.Log(GetDelegateList("*", &n, &e)) // Fails - non-utf8
+	t.Log(GetLocaleList("*", &n, &e))
+	t.Log(GetLogInfoList("*", &n, &e))
+	t.Log(GetLogList("*", &n, &e))
+	//t.Log(GetMagickList("*", &n, &e)) // Deadlock
+	t.Log(GetMagicList("*", &n, &e))
+	t.Log(GetMimeList("*", &n, &e))
+	//t.Log(GetModuleList("*", &n, &e)) // Deadlock
+	t.Log(n, GetPathComponents("a/b/c\\d\\e", &n))
+	t.Log(GetTypeList("*", &n, &e))
+
+	t.Log(GetPolicyList("*", &u, &e)) // Empty?
 }
