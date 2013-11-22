@@ -1,8 +1,9 @@
 // Copyright (c) 2013 Tony Wilson. All rights reserved.
 // See LICENCE file for permissions and restrictions.
 
-//Package imagemagick provides API definitions for
+//Package outside-imagemagick provides API definitions for
 //accessing CORE_RL_magick_.dll.
+//Based on ImageMagick v6.8.7
 package core
 
 import (
@@ -5523,7 +5524,7 @@ const (
 	LMSColorspace
 	LCHabColorspace
 	LCHuvColorspace
-	scRGBColorspace
+	ScRGBColorspace
 	HSIColorspace
 	HSVColorspace
 	HCLpColorspace
@@ -7003,7 +7004,7 @@ type StorageType Enum
 const (
 	UndefinedPixel StorageType = iota
 	CharPixel
-	float64Pixel
+	DoublePixel
 	FloatPixel
 	IntegerPixel
 	LongPixel
