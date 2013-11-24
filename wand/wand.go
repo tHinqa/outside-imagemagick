@@ -8,7 +8,6 @@ package wand
 import (
 	. "github.com/tHinqa/outside"
 	I "github.com/tHinqa/outside-imagemagick"
-	// . "github.com/tHinqa/outside/types"
 )
 
 // Opaque

@@ -2,10 +2,11 @@ package wand
 
 import (
 	I "github.com/tHinqa/outside-imagemagick"
+	"os"
 	"testing"
 )
 
-func aTestInit(t *testing.T) {
+func TestInit(t *testing.T) {
 	var w *MagickWand
 	t.Log(QueryConfigureOption("NAME"),
 		QueryConfigureOption("VERSION"))
@@ -28,16 +29,16 @@ func aTestInit(t *testing.T) {
 
 func TestQuery(t *testing.T) {
 	var n uint32
-	t.Log(n, QueryFonts("*", &n))
-	t.Log(n, QueryFormats("*", &n))
-	os := QueryConfigureOptions("*", &n)
-	t.Log(n, os)
-	for i, o := range os {
+	t.Log(n, "fonts", QueryFonts("*", &n))
+	t.Log(n, "formats", QueryFormats("*", &n))
+	opts := QueryConfigureOptions("*", &n)
+	t.Log(n, opts)
+	for i, o := range opts {
 		t.Log(i, ":", o, ":", QueryConfigureOption(o))
 	}
 }
 
-func aTestMagickWand(t *testing.T) {
+func TestMagickWand(t *testing.T) {
 	w := NewMagickWand()
 	defer w.Destroy()
 	if w.New(1, 1, w.BackgroundColor()) {
@@ -50,6 +51,9 @@ func aTestMagickWand(t *testing.T) {
 		w.Equalize()
 		for _, f := range []string{"png" /*, "gif", "jpg", "svg", "xbm"*/} {
 			t.Log(f, w.Write("_test."+f))
+			if e := os.Remove("_test." + f); e != nil {
+				t.Error(e)
+			}
 		}
 	}
 }
