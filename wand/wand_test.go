@@ -50,8 +50,9 @@ func TestMagickWand(t *testing.T) {
 		w.Emboss(10, 2)
 		w.Equalize()
 		for _, f := range []string{"png" /*, "gif", "jpg", "svg", "xbm"*/} {
-			t.Log(f, w.Write("_test."+f))
-			if e := os.Remove("_test." + f); e != nil {
+			fn := os.TempDir() + "/_test." + f
+			t.Log(f, w.Write(fn))
+			if e := os.Remove(fn); e != nil {
 				t.Error(e)
 			}
 		}

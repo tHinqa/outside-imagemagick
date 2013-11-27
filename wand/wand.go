@@ -3,12 +3,27 @@
 
 //Package wand provides API definitions for
 //accessing CORE_RL_wand_.dll.
+//Based on ImageMagick v6.8.7
 package wand
 
 import (
 	. "github.com/tHinqa/outside"
 	I "github.com/tHinqa/outside-imagemagick"
+	"runtime"
 )
+
+func init() {
+	var DLL string
+	if runtime.GOOS == "windows" {
+		DLL = "CORE_RL_wand_.dll"
+		AddDllApis(DLL, false, extraApis)
+	}
+	if runtime.GOOS == "linux" {
+		DLL = "libMagickWand.so.5"
+	}
+	AddDllApis(DLL, false, allApis)
+	allApis = nil
+}
 
 // Opaque
 type (
@@ -3080,12 +3095,371 @@ var SolarizeImageChannel func(*MagickWand, I.ChannelType, float64) bool
 
 var RelinquishWandId func(uint32)
 
-var DLL = "CORE_RL_wand_.dll"
+// Deprecated.
+var AverageImages func(m *MagickWand) *MagickWand
 
-func init() {
-	AddDllApis(DLL, false, allApis)
-	allApis = nil
+// Deprecated.
+func (m *MagickWand) Average() *MagickWand { return AverageImages(m) }
+
+// Deprecated.
+var ColorFloodfillImage func(m *MagickWand, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32) bool
+
+// Deprecated.
+func (m *MagickWand) ColorFloodfill(fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32) bool {
+	return ColorFloodfillImage(m, fill, fuzz, bordercolor, x, y)
 }
+
+// Deprecated.
+var DescribeImage func(m *MagickWand) string
+
+// Deprecated.
+func (m *MagickWand) Describe() string { return DescribeImage(m) }
+
+// Deprecated.
+var FlattenImages func(m *MagickWand) *MagickWand
+
+// Deprecated.
+func (m *MagickWand) Flatten() *MagickWand { return FlattenImages(m) }
+
+// Deprecated.
+var GetImageAttribute func(m *MagickWand, property string) string
+
+// Deprecated.
+func (m *MagickWand) Attribute(property string) string {
+	return GetImageAttribute(m, property)
+}
+
+// Deprecated.
+var GetImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *Void) bool
+
+// Deprecated.
+func (m *MagickWand) Pixels(x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *Void) bool {
+	return GetImagePixels(m, x, y, columns, rows, map_, storage, pixels)
+}
+
+// Deprecated.
+var GetImageSize func(m *MagickWand, length *I.MagickSizeType) bool
+
+// Deprecated.
+func (m *MagickWand) ImageSize(length *I.MagickSizeType) bool { return GetImageSize(m, length) }
+
+// Deprecated.
+var MatteFloodfillImage func(m *MagickWand, alpha, fuzz float64, bordercolor *PixelWand, x, y int32) bool
+
+// Deprecated.
+func (m *MagickWand) MatteFloodfill(alpha, fuzz float64, bordercolor *PixelWand, x, y int32) bool {
+	return MatteFloodfillImage(m, alpha, fuzz, bordercolor, x, y)
+}
+
+// Deprecated.
+var MedianFilterImage func(m *MagickWand, radius float64) bool
+
+// Deprecated.
+func (m *MagickWand) MedianFilter(radius float64) bool {
+	return MedianFilterImage(m, radius)
+}
+
+// Deprecated.
+var MosaicImages func(m *MagickWand) *MagickWand
+
+// Deprecated.
+func (m *MagickWand) Mosaic() *MagickWand { return MosaicImages(m) }
+
+// Deprecated.
+var OpaqueImage func(m *MagickWand, target, fill *PixelWand, fuzz float64) bool
+
+// Deprecated.
+func (m *MagickWand) Opaque(target, fill *PixelWand, fuzz float64) bool {
+	return OpaqueImage(m, target, fill, fuzz)
+}
+
+// Deprecated.
+var ReduceNoiseImage func(m *MagickWand, radius float64) bool
+
+// Deprecated.
+func (m *MagickWand) ReduceNoise(radius float64) bool { return ReduceNoiseImage(m, radius) }
+
+// Deprecated.
+var SetImageAttribute func(m *MagickWand, property, value string) bool
+
+// Deprecated.
+func (m *MagickWand) SetAttribute(property, value string) bool {
+	return SetImageAttribute(m, property, value)
+}
+
+// Deprecated.
+var SetImageIndex func(m *MagickWand, index int32) bool
+
+// Deprecated.
+func (m *MagickWand) SetIndex(index int32) bool { return SetImageIndex(m, index) }
+
+// Deprecated.
+var SetImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *Void) bool
+
+// Deprecated.
+func (m *MagickWand) SetImagePixels(x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *Void) bool {
+	return SetImagePixels(m, x, y, columns, rows, map_, storage, pixels)
+}
+
+// Deprecated.
+var TransparentImage func(m *MagickWand, target *PixelWand, alpha, fuzz float64) bool
+
+// Deprecated.
+func (m *MagickWand) Transparent(target *PixelWand, alpha, fuzz float64) bool {
+	return TransparentImage(m, target, alpha, fuzz)
+}
+
+// Deprecated.
+var WriteImageBlob func(m *MagickWand, length *uint32) *byte
+
+// Deprecated.
+func (m *MagickWand) WriteBlob(length *uint32) *byte {
+	return WriteImageBlob(m, length)
+}
+
+// Deprecated.
+var SetImageOption func(m *MagickWand, format, key, value string) bool
+
+// Deprecated.
+func (m *MagickWand) SetImageOption(format, key, value string) bool {
+	return SetImageOption(m, format, key, value)
+}
+
+// Deprecated.
+var NewPixelView func(m *MagickWand) *PixelView
+
+// Deprecated.
+var NewPixelViewRegion func(m *MagickWand, x, y int32, width, height uint32) *PixelView
+
+// Deprecated.
+var GetImageMatte func(m *MagickWand) uint32
+
+// Deprecated.
+func (m *MagickWand) Matte() uint32 { return GetImageMatte(m) }
+
+// Deprecated.
+var MaximumImages func(m *MagickWand) *MagickWand
+
+// Deprecated.
+func (m *MagickWand) MaximumImages() *MagickWand { return MaximumImages(m) }
+
+// Deprecated.
+var MinimumImages func(m *MagickWand) *MagickWand
+
+// Deprecated.
+func (m *MagickWand) MinimumImages() *MagickWand { return MinimumImages(m) }
+
+// Deprecated.
+var ModeImage func(m *MagickWand, radius float64) bool
+
+// Deprecated.
+func (m *MagickWand) Mode(radius float64) bool { return ModeImage(m, radius) }
+
+// Deprecated.
+var PaintFloodfillImage func(m *MagickWand, channel I.ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32) bool
+
+// Deprecated.
+func (m *MagickWand) PaintFloodfill(channel I.ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32) bool {
+	return PaintFloodfillImage(m, channel, fill, fuzz, bordercolor, x, y)
+}
+
+// Deprecated.
+var PaintOpaqueImage func(m *MagickWand, target, fill *PixelWand, fuzz float64) bool
+
+// Deprecated.
+func (m *MagickWand) PaintOpaque(target, fill *PixelWand, fuzz float64) bool {
+	return PaintOpaqueImage(m, target, fill, fuzz)
+}
+
+// Deprecated.
+var PaintTransparentImage func(m *MagickWand, target *PixelWand, alpha, fuzz float64) bool
+
+// Deprecated.
+func (m *MagickWand) PaintTransparent(target *PixelWand, alpha, fuzz float64) bool {
+	return PaintTransparentImage(m, target, alpha, fuzz)
+}
+
+// Deprecated.
+var RecolorImage func(m *MagickWand, order uint32, colorMatrix *float64) bool
+
+// Deprecated.
+func (m *MagickWand) Recolor(order uint32, colorMatrix *float64) bool {
+	return RecolorImage(m, order, colorMatrix)
+}
+
+// Deprecated.
+var RegionOfInterestImage func(m *MagickWand, width, height uint32, x, y int32) *MagickWand
+
+// Deprecated.
+func (m *MagickWand) RegionOfInterest(width, height uint32, x, y int32) *MagickWand {
+	return RegionOfInterestImage(m, width, height, x, y)
+}
+
+// Deprecated.
+var DrawGetFillAlpha func(d *DrawingWand) float64
+
+// Deprecated.
+func (d *DrawingWand) FillAlpha() float64 { return DrawGetFillAlpha(d) }
+
+// Deprecated.
+var DrawGetStrokeAlpha func(d *DrawingWand) float64
+
+// Deprecated.
+func (d *DrawingWand) StrokeAlpha() float64 { return DrawGetStrokeAlpha(d) }
+
+// Deprecated.
+var DrawPeekGraphicWand func(d *DrawingWand) *DrawInfo
+
+// Deprecated.
+func (d *DrawingWand) PeekGraphicWand() *DrawInfo { return DrawPeekGraphicWand(d) }
+
+// Deprecated.
+var DrawPopGraphicContext func(d *DrawingWand) bool
+
+// Deprecated.
+func (d *DrawingWand) PopGraphicContext() bool { return DrawPopGraphicContext(d) }
+
+// Deprecated.
+var DrawPushGraphicContext func(d *DrawingWand) bool
+
+// Deprecated.
+func (d *DrawingWand) PushGraphicContext() bool { return DrawPushGraphicContext(d) }
+
+// Deprecated.
+var DrawSetFillAlpha func(d *DrawingWand, fillAlpha float64)
+
+// Deprecated.
+func (d *DrawingWand) SetFillAlpha(fillAlpha float64) { DrawSetFillAlpha(d, fillAlpha) }
+
+// Deprecated.
+var DrawSetStrokeAlpha func(d *DrawingWand, strokeAlpha float64)
+
+// Deprecated.
+func (d *DrawingWand) SetStrokeAlpha(strokeAlpha float64) { DrawSetStrokeAlpha(d, strokeAlpha) }
+
+// Deprecated.
+var GetPixelViewException func(p *PixelWand, severity *I.ExceptionType) string
+
+// Deprecated.
+func (p *PixelWand) PixelViewException(severity *I.ExceptionType) string {
+	return GetPixelViewException(p, severity)
+}
+
+// Deprecated.
+var ClonePixelView func(pixelView *PixelView) *PixelView
+
+// Deprecated.
+var DestroyPixelView func(pixelView *PixelView, numberWands, numberThreads uint32) *PixelView
+
+// Deprecated.
+var DuplexTransferPixelViewIterator func(source, duplex, destination *PixelView, transfer DuplexTransferPixelViewMethod, context *Void) bool
+
+// Deprecated.
+func (p *PixelView) DuplexTransferIterator(duplex, destination *PixelView, transfer DuplexTransferPixelViewMethod, context *Void) bool {
+	return DuplexTransferPixelViewIterator(p, duplex, destination, transfer, context)
+}
+
+// Deprecated.
+var GetPixelViewHeight func(pixelView *PixelView) uint32
+
+// Deprecated.
+func (p *PixelView) Height() uint32 { return GetPixelViewHeight(p) }
+
+// Deprecated.
+var GetPixelViewIterator func(source *PixelView, get GetPixelViewMethod, context *Void) bool
+
+// Deprecated.
+func (p *PixelView) Iterator(get GetPixelViewMethod, context *Void) bool {
+	return GetPixelViewIterator(p, get, context)
+}
+
+// Deprecated.
+var GetPixelViewPixels func(pixelView *PixelView) *PixelWand
+
+// Deprecated.
+func (p *PixelView) Pixels() *PixelWand { return GetPixelViewPixels(p) }
+
+// Deprecated.
+var GetPixelViewWand func(pixelView *PixelView) *MagickWand
+
+// Deprecated.
+func (p *PixelView) Wand() *MagickWand { return GetPixelViewWand(p) }
+
+// Deprecated.
+var GetPixelViewWidth func(pixelView *PixelView) uint32
+
+// Deprecated.
+func (p *PixelView) Width() uint32 { return GetPixelViewWidth(p) }
+
+// Deprecated.
+var GetPixelViewX func(pixelView *PixelView) int32
+
+// Deprecated.
+func (p *PixelView) X() int32 { return GetPixelViewX(p) }
+
+// Deprecated.
+var GetPixelViewY func(pixelView *PixelView) int32
+
+// Deprecated.
+func (p *PixelView) Y() int32 { return GetPixelViewY(p) }
+
+// Deprecated.
+var IsPixelView func(pixelView *PixelView) bool
+
+// Deprecated.
+func (p *PixelView) IsPixelView() bool { return IsPixelView(p) }
+
+// Deprecated.
+var SetPixelViewIterator func(destination *PixelView, set SetPixelViewMethod, context *Void) bool
+
+// Deprecated.
+func (p *PixelView) SetIterator(set SetPixelViewMethod, context *Void) bool {
+	return SetPixelViewIterator(p, set, context)
+}
+
+// Deprecated.
+var TransferPixelViewIterator func(source, destination *PixelView, transfer TransferPixelViewMethod, context *Void) bool
+
+// Deprecated.
+func (p *PixelView) TransIterator(destination *PixelView, transfer TransferPixelViewMethod, context *Void) bool {
+	return TransferPixelViewIterator(p, destination, transfer, context)
+}
+
+// Deprecated.
+var UpdatePixelViewIterator func(source *PixelView, update UpdatePixelViewMethod, context *Void) bool
+
+// Deprecated.
+func (p *PixelView) UpdateIterator(update UpdatePixelViewMethod, context *Void) bool {
+	return UpdatePixelViewIterator(p, update, context)
+}
+
+// Deprecated.
+var PixelGetNextRow func(p *PixelIterator, numberWands *uint32) []*PixelWand
+
+// Deprecated.
+func (p *PixelIterator) GetNextRow(numberWands *uint32) []*PixelWand {
+	return PixelGetNextRow(p, numberWands)
+}
+
+// Deprecated.
+var PixelIteratorGetException func(p *PixelIterator, severity *I.ExceptionType) string
+
+// Deprecated.
+func (p *PixelIterator) Exception(severity *I.ExceptionType) string {
+	return PixelIteratorGetException(p, severity)
+}
+
+// Deprecated.
+var ClipPathImage func(m *MagickWand, pathname string, inside bool) bool
+
+type MontageMode Enum
+
+const (
+	UndefinedMode MontageMode = iota
+	FrameMode
+	UnframeMode
+	ConcatenateMode
+)
 
 var allApis = Apis{
 	{"AcquireWandId", &AcquireWandId},
@@ -3513,7 +3887,6 @@ var allApis = Apis{
 	{"MagickOpaquePaintImage", &OpaquePaintImage},
 	{"MagickOpaquePaintImageChannel", &OpaquePaintImageChannel},
 	{"MagickOptimizeImageLayers", &OptimizeImageLayers},
-	{"MagickOptimizeImageTransparency", &OptimizeImageTransparency},
 	{"MagickOrderedPosterizeImage", &OrderedPosterizeImage},
 	{"MagickOrderedPosterizeImageChannel", &OrderedPosterizeImageChannel},
 	{"MagickPaintFloodfillImage", &PaintFloodfillImage},
@@ -3654,7 +4027,6 @@ var allApis = Apis{
 	{"MagickSketchImage", &SketchImage},
 	{"MagickSmushImages", &SmushImages},
 	{"MagickSolarizeImage", &SolarizeImage},
-	{"MagickSolarizeImageChannel", &SolarizeImageChannel},
 	{"MagickSparseColorImage", &SparseColorImage},
 	{"MagickSpliceImage", &SpliceImage},
 	{"MagickSpreadImage", &SpreadImage},
@@ -3790,368 +4162,7 @@ var allApis = Apis{
 	{"UpdateWandViewIterator", &UpdateWandViewIterator},
 }
 
-// Deprecated.
-var AverageImages func(m *MagickWand) *MagickWand
-
-// Deprecated.
-func (m *MagickWand) Average() *MagickWand { return AverageImages(m) }
-
-// Deprecated.
-var ColorFloodfillImage func(m *MagickWand, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32) bool
-
-// Deprecated.
-func (m *MagickWand) ColorFloodfill(fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32) bool {
-	return ColorFloodfillImage(m, fill, fuzz, bordercolor, x, y)
+var extraApis = Apis{ // TODO(t): Windows only or not in <6.8.0
+	{"MagickOptimizeImageTransparency", &OptimizeImageTransparency},
+	{"MagickSolarizeImageChannel", &SolarizeImageChannel},
 }
-
-// Deprecated.
-var DescribeImage func(m *MagickWand) string
-
-// Deprecated.
-func (m *MagickWand) Describe() string { return DescribeImage(m) }
-
-// Deprecated.
-var FlattenImages func(m *MagickWand) *MagickWand
-
-// Deprecated.
-func (m *MagickWand) Flatten() *MagickWand { return FlattenImages(m) }
-
-// Deprecated.
-var GetImageAttribute func(m *MagickWand, property string) string
-
-// Deprecated.
-func (m *MagickWand) Attribute(property string) string {
-	return GetImageAttribute(m, property)
-}
-
-// Deprecated.
-var GetImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *Void) bool
-
-// Deprecated.
-func (m *MagickWand) Pixels(x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *Void) bool {
-	return GetImagePixels(m, x, y, columns, rows, map_, storage, pixels)
-}
-
-// Deprecated.
-var GetImageSize func(m *MagickWand, length *I.MagickSizeType) bool
-
-// Deprecated.
-func (m *MagickWand) ImageSize(length *I.MagickSizeType) bool { return GetImageSize(m, length) }
-
-// Deprecated.
-var MatteFloodfillImage func(m *MagickWand, alpha, fuzz float64, bordercolor *PixelWand, x, y int32) bool
-
-// Deprecated.
-func (m *MagickWand) MatteFloodfill(alpha, fuzz float64, bordercolor *PixelWand, x, y int32) bool {
-	return MatteFloodfillImage(m, alpha, fuzz, bordercolor, x, y)
-}
-
-// Deprecated.
-var MedianFilterImage func(m *MagickWand, radius float64) bool
-
-// Deprecated.
-func (m *MagickWand) MedianFilter(radius float64) bool {
-	return MedianFilterImage(m, radius)
-}
-
-// Deprecated.
-var MosaicImages func(m *MagickWand) *MagickWand
-
-// Deprecated.
-func (m *MagickWand) Mosaic() *MagickWand { return MosaicImages(m) }
-
-// Deprecated.
-var OpaqueImage func(m *MagickWand, target, fill *PixelWand, fuzz float64) bool
-
-// Deprecated.
-func (m *MagickWand) Opaque(target, fill *PixelWand, fuzz float64) bool {
-	return OpaqueImage(m, target, fill, fuzz)
-}
-
-// Deprecated.
-var ReduceNoiseImage func(m *MagickWand, radius float64) bool
-
-// Deprecated.
-func (m *MagickWand) ReduceNoise(radius float64) bool { return ReduceNoiseImage(m, radius) }
-
-// Deprecated.
-var SetImageAttribute func(m *MagickWand, property, value string) bool
-
-// Deprecated.
-func (m *MagickWand) SetAttribute(property, value string) bool {
-	return SetImageAttribute(m, property, value)
-}
-
-// Deprecated.
-var SetImageIndex func(m *MagickWand, index int32) bool
-
-// Deprecated.
-func (m *MagickWand) SetIndex(index int32) bool { return SetImageIndex(m, index) }
-
-// Deprecated.
-var SetImagePixels func(m *MagickWand, x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *Void) bool
-
-// Deprecated.
-func (m *MagickWand) SetImagePixels(x, y int32, columns, rows uint32, map_ string, storage I.StorageType, pixels *Void) bool {
-	return SetImagePixels(m, x, y, columns, rows, map_, storage, pixels)
-}
-
-// Deprecated.
-var TransparentImage func(m *MagickWand, target *PixelWand, alpha, fuzz float64) bool
-
-// Deprecated.
-func (m *MagickWand) Transparent(target *PixelWand, alpha, fuzz float64) bool {
-	return TransparentImage(m, target, alpha, fuzz)
-}
-
-// Deprecated.
-var WriteImageBlob func(m *MagickWand, length *uint32) *byte
-
-// Deprecated.
-func (m *MagickWand) WriteBlob(length *uint32) *byte {
-	return WriteImageBlob(m, length)
-}
-
-// Deprecated.
-var SetImageOption func(m *MagickWand, format, key, value string) bool
-
-// Deprecated.
-func (m *MagickWand) SetImageOption(format, key, value string) bool {
-	return SetImageOption(m, format, key, value)
-}
-
-// Deprecated.
-var NewPixelView func(m *MagickWand) *PixelView
-
-// Deprecated.
-var NewPixelViewRegion func(m *MagickWand, x, y int32, width, height uint32) *PixelView
-
-// Deprecated.
-var GetImageMatte func(m *MagickWand) uint32
-
-// Deprecated.
-func (m *MagickWand) Matte() uint32 { return GetImageMatte(m) }
-
-// Deprecated.
-var MaximumImages func(m *MagickWand) *MagickWand
-
-// Deprecated.
-func (m *MagickWand) MaximumImages() *MagickWand { return MaximumImages(m) }
-
-// Deprecated.
-var MinimumImages func(m *MagickWand) *MagickWand
-
-// Deprecated.
-func (m *MagickWand) MinimumImages() *MagickWand { return MinimumImages(m) }
-
-// Deprecated.
-var ModeImage func(m *MagickWand, radius float64) bool
-
-// Deprecated.
-func (m *MagickWand) Mode(radius float64) bool { return ModeImage(m, radius) }
-
-// Deprecated.
-var PaintFloodfillImage func(m *MagickWand, channel I.ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32) bool
-
-// Deprecated.
-func (m *MagickWand) PaintFloodfill(channel I.ChannelType, fill *PixelWand, fuzz float64, bordercolor *PixelWand, x, y int32) bool {
-	return PaintFloodfillImage(m, channel, fill, fuzz, bordercolor, x, y)
-}
-
-// Deprecated.
-var PaintOpaqueImage func(m *MagickWand, target, fill *PixelWand, fuzz float64) bool
-
-// Deprecated.
-func (m *MagickWand) PaintOpaque(target, fill *PixelWand, fuzz float64) bool {
-	return PaintOpaqueImage(m, target, fill, fuzz)
-}
-
-// Deprecated.
-var PaintTransparentImage func(m *MagickWand, target *PixelWand, alpha, fuzz float64) bool
-
-// Deprecated.
-func (m *MagickWand) PaintTransparent(target *PixelWand, alpha, fuzz float64) bool {
-	return PaintTransparentImage(m, target, alpha, fuzz)
-}
-
-// Deprecated.
-var RecolorImage func(m *MagickWand, order uint32, colorMatrix *float64) bool
-
-// Deprecated.
-func (m *MagickWand) Recolor(order uint32, colorMatrix *float64) bool {
-	return RecolorImage(m, order, colorMatrix)
-}
-
-// Deprecated.
-var RegionOfInterestImage func(m *MagickWand, width, height uint32, x, y int32) *MagickWand
-
-// Deprecated.
-func (m *MagickWand) RegionOfInterest(width, height uint32, x, y int32) *MagickWand {
-	return RegionOfInterestImage(m, width, height, x, y)
-}
-
-// Deprecated.
-var DrawGetFillAlpha func(d *DrawingWand) float64
-
-// Deprecated.
-func (d *DrawingWand) FillAlpha() float64 { return DrawGetFillAlpha(d) }
-
-// Deprecated.
-var DrawGetStrokeAlpha func(d *DrawingWand) float64
-
-// Deprecated.
-func (d *DrawingWand) StrokeAlpha() float64 { return DrawGetStrokeAlpha(d) }
-
-// Deprecated.
-var DrawPeekGraphicWand func(d *DrawingWand) *DrawInfo
-
-// Deprecated.
-func (d *DrawingWand) PeekGraphicWand() *DrawInfo { return DrawPeekGraphicWand(d) }
-
-// Deprecated.
-var DrawPopGraphicContext func(d *DrawingWand) bool
-
-// Deprecated.
-func (d *DrawingWand) PopGraphicContext() bool { return DrawPopGraphicContext(d) }
-
-// Deprecated.
-var DrawPushGraphicContext func(d *DrawingWand) bool
-
-// Deprecated.
-func (d *DrawingWand) PushGraphicContext() bool { return DrawPushGraphicContext(d) }
-
-// Deprecated.
-var DrawSetFillAlpha func(d *DrawingWand, fillAlpha float64)
-
-// Deprecated.
-func (d *DrawingWand) SetFillAlpha(fillAlpha float64) { DrawSetFillAlpha(d, fillAlpha) }
-
-// Deprecated.
-var DrawSetStrokeAlpha func(d *DrawingWand, strokeAlpha float64)
-
-// Deprecated.
-func (d *DrawingWand) SetStrokeAlpha(strokeAlpha float64) { DrawSetStrokeAlpha(d, strokeAlpha) }
-
-// Deprecated.
-var GetPixelViewException func(p *PixelWand, severity *I.ExceptionType) string
-
-// Deprecated.
-func (p *PixelWand) PixelViewException(severity *I.ExceptionType) string {
-	return GetPixelViewException(p, severity)
-}
-
-// Deprecated.
-var ClonePixelView func(pixelView *PixelView) *PixelView
-
-// Deprecated.
-var DestroyPixelView func(pixelView *PixelView, numberWands, numberThreads uint32) *PixelView
-
-// Deprecated.
-var DuplexTransferPixelViewIterator func(source, duplex, destination *PixelView, transfer DuplexTransferPixelViewMethod, context *Void) bool
-
-// Deprecated.
-func (p *PixelView) DuplexTransferIterator(duplex, destination *PixelView, transfer DuplexTransferPixelViewMethod, context *Void) bool {
-	return DuplexTransferPixelViewIterator(p, duplex, destination, transfer, context)
-}
-
-// Deprecated.
-var GetPixelViewHeight func(pixelView *PixelView) uint32
-
-// Deprecated.
-func (p *PixelView) Height() uint32 { return GetPixelViewHeight(p) }
-
-// Deprecated.
-var GetPixelViewIterator func(source *PixelView, get GetPixelViewMethod, context *Void) bool
-
-// Deprecated.
-func (p *PixelView) Iterator(get GetPixelViewMethod, context *Void) bool {
-	return GetPixelViewIterator(p, get, context)
-}
-
-// Deprecated.
-var GetPixelViewPixels func(pixelView *PixelView) *PixelWand
-
-// Deprecated.
-func (p *PixelView) Pixels() *PixelWand { return GetPixelViewPixels(p) }
-
-// Deprecated.
-var GetPixelViewWand func(pixelView *PixelView) *MagickWand
-
-// Deprecated.
-func (p *PixelView) Wand() *MagickWand { return GetPixelViewWand(p) }
-
-// Deprecated.
-var GetPixelViewWidth func(pixelView *PixelView) uint32
-
-// Deprecated.
-func (p *PixelView) Width() uint32 { return GetPixelViewWidth(p) }
-
-// Deprecated.
-var GetPixelViewX func(pixelView *PixelView) int32
-
-// Deprecated.
-func (p *PixelView) X() int32 { return GetPixelViewX(p) }
-
-// Deprecated.
-var GetPixelViewY func(pixelView *PixelView) int32
-
-// Deprecated.
-func (p *PixelView) Y() int32 { return GetPixelViewY(p) }
-
-// Deprecated.
-var IsPixelView func(pixelView *PixelView) bool
-
-// Deprecated.
-func (p *PixelView) IsPixelView() bool { return IsPixelView(p) }
-
-// Deprecated.
-var SetPixelViewIterator func(destination *PixelView, set SetPixelViewMethod, context *Void) bool
-
-// Deprecated.
-func (p *PixelView) SetIterator(set SetPixelViewMethod, context *Void) bool {
-	return SetPixelViewIterator(p, set, context)
-}
-
-// Deprecated.
-var TransferPixelViewIterator func(source, destination *PixelView, transfer TransferPixelViewMethod, context *Void) bool
-
-// Deprecated.
-func (p *PixelView) TransIterator(destination *PixelView, transfer TransferPixelViewMethod, context *Void) bool {
-	return TransferPixelViewIterator(p, destination, transfer, context)
-}
-
-// Deprecated.
-var UpdatePixelViewIterator func(source *PixelView, update UpdatePixelViewMethod, context *Void) bool
-
-// Deprecated.
-func (p *PixelView) UpdateIterator(update UpdatePixelViewMethod, context *Void) bool {
-	return UpdatePixelViewIterator(p, update, context)
-}
-
-// Deprecated.
-var PixelGetNextRow func(p *PixelIterator, numberWands *uint32) []*PixelWand
-
-// Deprecated.
-func (p *PixelIterator) GetNextRow(numberWands *uint32) []*PixelWand {
-	return PixelGetNextRow(p, numberWands)
-}
-
-// Deprecated.
-var PixelIteratorGetException func(p *PixelIterator, severity *I.ExceptionType) string
-
-// Deprecated.
-func (p *PixelIterator) Exception(severity *I.ExceptionType) string {
-	return PixelIteratorGetException(p, severity)
-}
-
-// Deprecated.
-var ClipPathImage func(m *MagickWand, pathname string, inside bool) bool
-
-type MontageMode Enum
-
-const (
-	UndefinedMode MontageMode = iota
-	FrameMode
-	UnframeMode
-	ConcatenateMode
-)
