@@ -1629,7 +1629,7 @@ func (m *MagickWand) SetRenderingIntent(renderingIntent I.RenderingIntent) bool 
 var SetImageResolution func(m *MagickWand, xResolution, yResolution float64) bool
 
 func (m *MagickWand) SetImageResolution(xResolution, yResolution float64) bool {
-	return SetResolution(m, xResolution, yResolution)
+	return SetImageResolution(m, xResolution, yResolution)
 }
 
 var SetImageScene func(m *MagickWand, scene uint32) bool

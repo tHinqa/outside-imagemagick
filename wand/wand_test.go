@@ -11,7 +11,7 @@ func TestInit(t *testing.T) {
 	t.Log(QueryConfigureOption("NAME"),
 		QueryConfigureOption("VERSION"))
 	w = NewMagickWand()
-	if !IsMagickWand(NewMagickWand()) {
+	if !IsMagickWand(w) {
 		t.Error("IsMagickWand(NewMagickWand()) failed")
 	}
 	if w != nil {
